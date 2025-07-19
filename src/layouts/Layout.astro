@@ -26,7 +26,13 @@ const metaOgType = ogType || "website";
 const metaOgUrl = ogUrl || Astro.url.href;
 const metaOgTitle = ogTitle || title;
 const metaOgDescription = ogDescription || description;
-const metaOgImage = ogImage || "/img/icon_196.png";
+
+// OGP画像URLを絶対URLに変換
+const ogImagePath = ogImage || "/img/icon_196.png";
+const metaOgImage = ogImagePath.startsWith('http') 
+  ? ogImagePath 
+  : new URL(ogImagePath, Astro.url.origin).href;
+
 const metaTwitterCard = twitterCard || "summary";
 ---
 
