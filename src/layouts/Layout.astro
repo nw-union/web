@@ -2,9 +2,32 @@
 export interface Props {
   title: string;
   description: string;
+  ogType?: string;
+  ogUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: string;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  ogType,
+  ogUrl,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  twitterCard,
+} = Astro.props;
+
+// OGPメタデータのデフォルト値を設定
+const metaOgType = ogType || "website";
+const metaOgUrl = ogUrl || Astro.url.href;
+const metaOgTitle = ogTitle || title;
+const metaOgDescription = ogDescription || description;
+const metaOgImage = ogImage || "/img/icon_196.png";
+const metaTwitterCard = twitterCard || "summary";
 ---
 
 <!DOCTYPE html>
@@ -17,20 +40,21 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content="/img/icon_512.png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
+    <meta property="og:type" content={metaOgType} />
+    <meta property="og:url" content={metaOgUrl} />
+    <meta property="og:title" content={metaOgTitle} />
+    <meta property="og:description" content={metaOgDescription} />
+    <meta property="og:image" content={metaOgImage} />
+    <meta property="og:site_name" content="NWU" />
+    <meta property="og:locale" content="ja_JP" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content="/img/icon_512.png" />
+    <meta property="twitter:card" content={metaTwitterCard} />
+    <meta property="twitter:url" content={metaOgUrl} />
+    <meta property="twitter:title" content={metaOgTitle} />
+    <meta property="twitter:description" content={metaOgDescription} />
+    <meta property="twitter:image" content={metaOgImage} />
+
     <link
       rel="apple-touch-icon"
       sizes="192x192"

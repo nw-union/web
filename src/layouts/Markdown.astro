@@ -2,6 +2,14 @@
 import "../styles/markdown.css";
 
 const { frontmatter } = Astro.props;
+
+// OGPメタデータのデフォルト値を設定
+const ogType = frontmatter.ogType || "website";
+const ogUrl = frontmatter.ogUrl || Astro.url.href;
+const ogTitle = frontmatter.ogTitle || frontmatter.title;
+const ogDescription = frontmatter.ogDescription || frontmatter.description;
+const ogImage = frontmatter.ogImage || "/img/icon_196.png";
+const twitterCard = frontmatter.twitterCard || "summary";
 ---
 
 <!DOCTYPE html>
@@ -12,6 +20,23 @@ const { frontmatter } = Astro.props;
 
     <title>{frontmatter.title}</title>
     <meta name="description" content={frontmatter.description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="NWU" />
+    <meta property="og:locale" content="ja_JP" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content={twitterCard} />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={ogTitle} />
+    <meta property="twitter:description" content={ogDescription} />
+    <meta property="twitter:image" content={ogImage} />
+
     <link
       rel="apple-touch-icon"
       sizes="192x192"
