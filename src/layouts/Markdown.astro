@@ -38,11 +38,11 @@ const twitterCard = frontmatter.twitterCard || "summary";
     <meta property="og:locale" content="ja_JP" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content={twitterCard} />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={ogTitle} />
-    <meta property="twitter:description" content={ogDescription} />
-    <meta property="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:url" content={ogUrl} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link
       rel="apple-touch-icon"
