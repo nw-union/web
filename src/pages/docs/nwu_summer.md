@@ -1,6 +1,9 @@
 ---
 layout: "../../layouts/Markdown.astro"
 title: "NWU SUMMER"
+description: "夏だから面白いことしようぜ！"
+ogImage: "/img/docs/nwu_summer.png"
+twitterCard: "summary_large_image"
 ---
 
 # NWU SUMMER
