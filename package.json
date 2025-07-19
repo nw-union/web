@@ -1,0 +1,26 @@
+{
+  "name": "web",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro dev",
+    "astro": "astro",
+    "check": "biome check --write src",
+    "deploy": "wrangler deploy --env production",
+    "typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.0",
+    "astro": "^5.11.1"
+  },
+  "devDependencies": {
+    "@astrojs/tailwind": "^6.0.2",
+    "@biomejs/biome": "^2.1.1",
+    "@types/node": "^24.0.14",
+    "autoprefixer": "^10.4.21",
+    "tailwindcss": "^3.4.16",
+    "wrangler": "^4.24.3"
+  }
+}

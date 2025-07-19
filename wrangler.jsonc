@@ -1,0 +1,31 @@
+{
+  "name": "web",
+  "main": "./build/_worker.js/index.js",
+  "compatibility_date": "2025-06-12",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./build"
+  },
+  "workers_dev": true,
+  "preview_urls": true,
+
+  "env": {
+    // ---------------------------
+    // Production 設定
+    // ---------------------------
+    "production": {
+      "compatibility_date": "2025-06-12",
+      "routes": [
+        {
+          "pattern": "nw-union.net",
+          "custom_domain": true
+        },
+        {
+          "pattern": "www.nw-union.net",
+          "custom_domain": true
+        }
+      ]
+    }
+  }
+}

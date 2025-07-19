@@ -1,0 +1,27 @@
+---
+import "../styles/markdown.css";
+
+const { frontmatter } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>{frontmatter.title}</title>
+    <meta name="description" content={frontmatter.description} />
+    <link
+      rel="apple-touch-icon"
+      sizes="192x192"
+      href="/img/icon_196.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sawarabi+Gothic&family=VT323&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-black font-sg leading-relaxed text-base md:w-700 w-full mx-auto p-6 text-gray-300">
+    <slot />
+  </body>
+</html>
