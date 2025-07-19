@@ -28,10 +28,11 @@ const metaOgTitle = ogTitle || title;
 const metaOgDescription = ogDescription || description;
 
 // OGP画像URLを絶対URLに変換
+const siteUrl = Astro.site?.href || "https://nw-union.net";
 const ogImagePath = ogImage || "/img/icon_196.png";
 const metaOgImage = ogImagePath.startsWith("http")
   ? ogImagePath
-  : new URL(ogImagePath, Astro.url.origin).href;
+  : new URL(ogImagePath, siteUrl).href;
 
 const metaTwitterCard = twitterCard || "summary";
 ---

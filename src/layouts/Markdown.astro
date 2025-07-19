@@ -10,10 +10,11 @@ const ogTitle = frontmatter.ogTitle || frontmatter.title;
 const ogDescription = frontmatter.ogDescription || frontmatter.description;
 
 // OGP画像URLを絶対URLに変換
+const siteUrl = Astro.site?.href || "https://nw-union.net";
 const ogImagePath = frontmatter.ogImage || "/img/icon_196.png";
 const ogImage = ogImagePath.startsWith("http")
   ? ogImagePath
-  : new URL(ogImagePath, Astro.url.origin).href;
+  : new URL(ogImagePath, siteUrl).href;
 
 const twitterCard = frontmatter.twitterCard || "summary";
 ---
