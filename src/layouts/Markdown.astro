@@ -11,7 +11,7 @@ const ogDescription = frontmatter.ogDescription || frontmatter.description;
 
 // OGP画像URLを絶対URLに変換
 const ogImagePath = frontmatter.ogImage || "/img/icon_196.png";
-const ogImage = ogImagePath.startsWith('http')
+const ogImage = ogImagePath.startsWith("http")
   ? ogImagePath
   : new URL(ogImagePath, Astro.url.origin).href;
 
