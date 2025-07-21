@@ -1,5 +1,6 @@
 ---
 import "../styles/markdown.css";
+import Breadcrumb from "../components/Breadcrumb.astro";
 
 const { frontmatter } = Astro.props;
 
@@ -54,6 +55,7 @@ const twitterCard = frontmatter.twitterCard || "summary";
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sawarabi+Gothic&family=VT323&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-black font-sg leading-relaxed text-base md:w-700 w-full mx-auto p-6 text-gray-300">
+    <Breadcrumb currentTitle={frontmatter.title} />
     <slot />
   </body>
 </html>

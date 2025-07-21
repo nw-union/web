@@ -1,0 +1,40 @@
+---
+interface Props {
+  currentTitle: string;
+}
+
+const { currentTitle } = Astro.props;
+const pathname = Astro.url.pathname;
+
+// パンクズリスト生成ロジック
+const breadcrumbs = [];
+
+if (pathname.startsWith('/docs')) {
+  breadcrumbs.push({ title: 'TOP', url: '/' });
+  breadcrumbs.push({ title: 'Docs', url: '/docs' });
+  
+  // 現在のページが /docs 自体でない場合は、現在のページタイトルを追加
+  if (pathname !== '/docs' && pathname !== '/docs/') {
+    // タイトルから " | NWU" を除去してクリーンなタイトルを取得
+    const cleanTitle = currentTitle?.replace(/\s*\|\s*NWU$/, '') || 'ページ';
+    breadcrumbs.push({ title: cleanTitle, url: null }); // 現在のページはリンクなし
+  }
+}
+---
+
+{breadcrumbs.length > 0 && (
+  <nav class="mb-8 text-sm text-gray-400" aria-label="パンクズリスト">
+    {breadcrumbs.map((crumb, index) => (
+      <span key={index}>
+        {crumb.url ? (
+          <a href={crumb.url} class="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">
+            {crumb.title}
+          </a>
+        ) : (
+          <span class="text-gray-300">{crumb.title}</span>
+        )}
+        {index < breadcrumbs.length - 1 && <span class="mx-2">＞</span>}
+      </span>
+    ))}
+  </nav>
+)}
