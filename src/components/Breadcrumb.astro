@@ -6,7 +6,7 @@ interface Props {
 const { currentTitle } = Astro.props;
 const pathname = Astro.url.pathname;
 
-// パンクズリスト生成ロジック
+// パンくずリスト生成ロジック
 const breadcrumbs = [];
 
 if (pathname.startsWith("/docs")) {
@@ -23,9 +23,9 @@ if (pathname.startsWith("/docs")) {
 ---
 
 {breadcrumbs.length > 0 && (
-  <nav class="mb-8 text-sm text-gray-400" aria-label="パンクズリスト">
+  <nav class="mb-8 text-sm text-gray-400" aria-label="breadcrumb navigation">
     {breadcrumbs.map((crumb, index) => (
-      <span key={index}>
+      <span>
         {crumb.url ? (
           <a href={crumb.url} class="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">
             {crumb.title}
