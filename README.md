@@ -67,7 +67,7 @@ bun run build
 
 <br/>
 
-## 🚀　Execution Servise
+## 🚀　Infrastructure
 
 アプリケーションは、nw-union の Cloudflare Workers で動いています。
 
