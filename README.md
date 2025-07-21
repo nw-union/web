@@ -69,7 +69,7 @@ bun run build
 
 ## 🚀　Execution Servise
 
-アプリケーションは、nw-union の CLoudflare Workers で動いています。
+アプリケーションは、nw-union の Cloudflare Workers で動いています。
 
 <img src="public/img/docs/cloudflareworkers.png" alt="cloudflareworkers" width="792">
 
