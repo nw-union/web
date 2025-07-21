@@ -11,10 +11,13 @@ const breadcrumbs = [];
 
 if (pathname.startsWith("/docs")) {
   breadcrumbs.push({ title: "TOP", url: "/" });
-  breadcrumbs.push({ title: "Docs", url: "/docs" });
+  
+  // /docs ページの場合はDocsをリンクなしに、それより深い場合はリンクありに
+  const isDocsRoot = pathname === "/docs" || pathname === "/docs/";
+  breadcrumbs.push({ title: "Docs", url: isDocsRoot ? null : "/docs" });
 
   // 現在のページが /docs 自体でない場合は、現在のページタイトルを追加
-  if (pathname !== "/docs" && pathname !== "/docs/") {
+  if (!isDocsRoot) {
     // タイトルから " | NWU" を除去してクリーンなタイトルを取得
     const cleanTitle = currentTitle?.replace(/\s*\|\s*NWU$/, "") || "ページ";
     breadcrumbs.push({ title: cleanTitle, url: null }); // 現在のページはリンクなし
