@@ -13,7 +13,7 @@
 
 <!-- About this Project -->
 <p align="center">
-NWU のコーポレートサイト。ドキュメント置き場。
+ウェブサイト。ドキュメント置き場
 </p>
 <br />
 
