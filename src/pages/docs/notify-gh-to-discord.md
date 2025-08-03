@@ -28,4 +28,4 @@ Discord の github チャンネルの [Webhook URL](https://discord.com/channels
 
 ## スクリーンショット
 
-![notify-gh-to-discord](/img/docs/notify-gh-to-discord.png)
+![GitHub Webhook 設定のスクリーンショット](/img/docs/notify-gh-to-discord.png)
