@@ -1,6 +1,7 @@
 ---
 import "../styles/markdown.css";
 import Breadcrumb from "../components/Breadcrumb.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 
 const { frontmatter } = Astro.props;
 
@@ -54,7 +55,8 @@ const twitterCard = frontmatter.twitterCard || "summary";
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sawarabi+Gothic&family=VT323&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-black font-sg leading-relaxed text-base md:w-700 w-full mx-auto p-6 text-gray-300">
+  <body class="bg-white dark:bg-black font-sg leading-relaxed text-base md:w-700 w-full mx-auto p-6 text-gray-800 dark:text-gray-300 transition-colors duration-300">
+    <ThemeToggle />
     <Breadcrumb currentTitle={frontmatter.title} />
     <slot />
   </body>
