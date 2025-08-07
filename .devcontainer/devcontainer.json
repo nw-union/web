@@ -1,0 +1,21 @@
+{
+  "name": "nw-union/web",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:latest": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/rails/devcontainer/features/bun:latest": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["oven.bun-vscode", "astro-build.astro-vscode"]
+    }
+  },
+  "forwardPorts": [4321],
+  "appPort": ["4321:4321"],
+  "runArgs": ["--name", "nw-union-web"],
+  "postCreateCommand": "bun install --frozen-lockfile"
+}

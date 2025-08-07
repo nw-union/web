@@ -11,17 +11,18 @@
 
 - すべてのコミットメッセージは日本語で記述すること
 - コミットメッセージは Conventional Commits に従うこと
+- コミットの前に、`bun run check` を実行すること
 
 ## Pull Request Rules
 
-- PR を作成する際は, https://raw.githubusercontent.com/nw-union/.github/refs/heads/main/.github/pull_request_template.md のテンプレートに従うこと
+- [組織のテンプレート](https://raw.githubusercontent.com/nw-union/.github/refs/heads/main/.github/pull_request_template.md) に従うこと
 - すべてのセクションを適切に記入すること
 
 ## Core Architecture
 
 - **フレームワーク**: Astro（静的サイト生成）
 - **スタイリング**: Tailwind CSS
-- **パッケージマネージャー**: Bun（`package-lock.json`が存在、実際はBunを）
+- **パッケージマネージャー**: Bun
 - **コード品質**: Biome（フォーマッターのみ、リンターは無効）
 - **デプロイメント**: Cloudflare Workers
 
