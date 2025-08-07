@@ -11,10 +11,7 @@
   },
   "customizations": {
     "vscode": {
-      "extensions": [
-        "oven.bun-vscode",
-        "astro-build.astro-vscode"
-      ]
+      "extensions": ["oven.bun-vscode", "astro-build.astro-vscode"]
     }
   },
   "forwardPorts": [4321],
