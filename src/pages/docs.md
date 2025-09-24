@@ -9,3 +9,4 @@ title: Docs | NWU
 
 - [Discord Server について](/docs/discord)
 - [NWU SUMMER](/docs/nwu_summer)
+- [画像について](docs/images)
