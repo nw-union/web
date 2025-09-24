@@ -20,6 +20,6 @@ jobs:
 
   # PR の設定確認
   chores:
-    uses: nw-union/.github/.github/workflows/chores.yml@main
+    uses: nw-union/.github/.github/workflows/pr_chores.yml@main
     secrets: inherit
 
