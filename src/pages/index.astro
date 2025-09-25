@@ -140,22 +140,6 @@ import Layout from "../layouts/Layout.astro";
             break;
           case 2:
             await this.showLine('line-4');
-            setTimeout(() => {
-              this.animateStep(3);
-            }, 40000); // 40秒後 (40000ms)
-            break;
-          case 3:
-            // rm -rf / コマンドを入力
-            const cursor = document.getElementById('cursor');
-            if (cursor) cursor.style.display = 'none';
-            await this.typeCommand('cmd-4', 'rm -rf /');
-
-            // 画面全体を黒にフェードアウト
-            const main = document.querySelector('main');
-            if (main) {
-              main.style.transition = 'opacity 2s ease-out';
-              main.style.opacity = '0';
-            }
             break;
         }
       }
