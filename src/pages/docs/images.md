@@ -1,6 +1,7 @@
 ---
 layout: "../../layouts/Markdown.astro"
-title: "画像について | NWU"
+title: "画像について"
+pubDate: 2025-09-25
 ---
 
 # 画像について

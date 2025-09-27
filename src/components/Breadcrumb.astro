@@ -17,9 +17,7 @@ if (pathname.startsWith("/docs")) {
 
   // 現在のページが /docs 自体でない場合は、現在のページタイトルを追加
   if (!isDocsRoot) {
-    // タイトルから " | NWU" を除去してクリーンなタイトルを取得
-    const cleanTitle = currentTitle?.replace(/\s*\|\s*NWU$/, "") || "ページ";
-    breadcrumbs.push({ title: cleanTitle, url: null }); // 現在のページはリンクなし
+    breadcrumbs.push({ title: currentTitle, url: null }); // 現在のページはリンクなし
   }
 }
 ---

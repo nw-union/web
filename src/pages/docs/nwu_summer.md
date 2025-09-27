@@ -2,6 +2,7 @@
 layout: "../../layouts/Markdown.astro"
 title: "NWU SUMMER"
 description: "夏だから面白いことしようぜ！"
+pubDate: 2025-07-20
 ogImage: "/img/docs/nwu_summer.png"
 twitterCard: "summary_large_image"
 ---
