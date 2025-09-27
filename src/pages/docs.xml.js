@@ -1,4 +1,4 @@
-import rss from '@astrojs/rss';
+import rss from "@astrojs/rss";
 
 export async function GET(context) {
   const allDocs = Object.values(
