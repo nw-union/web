@@ -1,6 +1,7 @@
 ---
 layout: "../../layouts/Markdown.astro"
-title: "Discord Server について | NWU"
+title: "Discord Server について"
+pubDate: 2025-05-20
 ---
 
 # Discord Server について

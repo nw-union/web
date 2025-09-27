@@ -1,9 +1,11 @@
 ---
 layout: "../../layouts/Markdown.astro"
-title: "マークダウンデモページ | NWU"
+title: "マークダウンデモページ"
+pubDate: 2025-09-02
 description: "Astroで作成されたサイトのマークダウンレンダリングのデモページです"
 ogTitle: "マークダウンデモページ | NW UNION"
 ogDescription: "マークダウンの各種要素の表示を確認できるデモページです"
+hiddenList: true
 ---
 
 # マークダウン デモページ

@@ -1,6 +1,7 @@
 ---
 layout: "../../layouts/Markdown.astro"
 title: "GitHub レポジトリから Discord への通知設定方法"
+pubDate: 2025-08-03
 ---
 
 # GitHub レポジトリから Discord への通知設定方法
