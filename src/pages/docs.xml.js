@@ -13,8 +13,8 @@ export async function GET(context) {
     .filter((doc) => !doc.frontmatter.hiddenList);
 
   return rss({
-    title: 'Docs | NWU',
-    description: 'ドキュメント一覧',
+    title: "Docs | NWU",
+    description: "ドキュメント一覧",
     site: `${context.site}/docs`,
     items: sortedDocs.map((doc) => ({
       title: doc.frontmatter.title,
