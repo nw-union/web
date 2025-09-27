@@ -1,7 +1,9 @@
 import rss from '@astrojs/rss';
 
 export async function GET(context) {
-  const allDocs = Object.values(import.meta.glob("./docs/*.md", { eager: true }));
+  const allDocs = Object.values(
+    import.meta.glob("./docs/*.md", { eager: true }),
+  );
 
   // ドキュメントを新しい順に並び替えて、hiddenListがtrueのものを除外
   const sortedDocs = allDocs
