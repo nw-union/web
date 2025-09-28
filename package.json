@@ -5,23 +5,21 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro dev",
+    "preview": "astro preview",
     "astro": "astro",
     "check": "biome check --write src",
     "deploy": "wrangler deploy --env production",
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.0",
+    "@astrojs/cloudflare": "^12.6.9",
     "@astrojs/rss": "^4.0.12",
-    "astro": "^5.11.1"
+    "@tailwindcss/vite": "^4.1.13",
+    "astro": "^5.14.1",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
-    "@astrojs/tailwind": "^6.0.2",
-    "@biomejs/biome": "^2.1.1",
-    "@types/node": "^24.0.14",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^3.4.16",
-    "wrangler": "^4.24.3"
+    "@biomejs/biome": "^2.2.4",
+    "wrangler": "^4.40.2"
   }
 }

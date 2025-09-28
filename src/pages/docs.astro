@@ -32,10 +32,15 @@ const sortedDocs = allDocs
       </div>
 
       <div>
-        <ul>
+        <ul class="list-disc mb-4 ml-5 text-gray-700 dark:text-gray-300">
           {sortedDocs.map((doc) =>
-            <li>
-              <a href={doc.url}>{doc.frontmatter.title}</a>
+            <li class="m-1 text-gray-700 dark:text-gray-300">
+              <a
+                class="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300"
+                href={doc.url}
+              >
+                {doc.frontmatter.title}
+              </a>
             </li>
           )}
         </ul>
