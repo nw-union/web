@@ -53,7 +53,7 @@ description: "NWU の持っているアカウント・サービスの一覧と�
 
 ## GitHub
 
-[nw-uinon](https://github.com/nw-union)
+[nw-union](https://github.com/nw-union)
 
 ### About
 
