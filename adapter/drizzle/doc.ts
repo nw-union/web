@@ -155,7 +155,7 @@ const readDoc =
         // クエリ実行
         const docs = await query.all();
 
-        // content が null / undefind の場合は、NotFound とする
+        // content が null / undefined の場合は、NotFound とする
         if (!docs || docs.length === 0) {
           throw new NotFoundError(`doc not found. id=${id}`);
         }
