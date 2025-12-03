@@ -56,7 +56,7 @@ const convToDocInsertModelList = (doc: Doc | Doc[]): DocInsertModel[] =>
     : [convToDocInsertModel(doc)];
 
 // ----------------------------------------------------------------------------
-// Validater (DTO -> Domain Type / DTO -> DTO)
+// Validator (DTO -> Domain Type / DTO -> DTO)
 // ----------------------------------------------------------------------------
 /**
  * ElementSelectModel を Element (Domain) に変換
