@@ -1,14 +1,14 @@
-import type { MetaFunction } from "react-router";
 import type React from "react";
-import type { Route } from "./+types/root.ts";
+import type { MetaFunction } from "react-router";
 import {
+  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
 } from "react-router";
+import type { Route } from "./+types/root.ts";
 
 import "./app.css";
 

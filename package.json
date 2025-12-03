@@ -12,10 +12,8 @@
     "start": "wrangler dev",
     "deploy:development": "wrangler deploy --env development",
     "deploy:production": "wrangler deploy --env production",
-    "fmt": "biome format --write .",
-    "lint": "biome lint --write .",
     "typecheck": "wrangler types && react-router typegen && tsc -b",
-    "check": "bun run fmt && bun run lint && bun run typecheck",
+    "check": "biome check --write . && bun run typecheck",
     "typegen": "wrangler types"
   },
   "dependencies": {

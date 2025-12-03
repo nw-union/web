@@ -1,9 +1,9 @@
-import { ThemeToggle } from "../../components/ThemeToggle.tsx";
-import type { Route } from "./+types/view.ts";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
+import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
-import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
+import { ThemeToggle } from "../../components/ThemeToggle.tsx";
+import type { Route } from "./+types/view.ts";
 
 /**
  * ドキュメント詳細 Loader

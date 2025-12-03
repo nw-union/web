@@ -1,7 +1,7 @@
-import type { ResultAsync } from "neverthrow";
-import { newType } from "@nw-union/nw-utils/lib/zod";
-import z from "zod";
 import type { AppError } from "@nw-union/nw-utils";
+import { newType } from "@nw-union/nw-utils/lib/zod";
+import type { ResultAsync } from "neverthrow";
+import z from "zod";
 
 export type Doc = {
   type: "Doc";

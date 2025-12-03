@@ -15,8 +15,9 @@
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@react-router/cloudflare", "vite/client", "@types/bun"],
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "isolatedModules": true,
-    "checkJs": true,
+    "checkJs": false,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
