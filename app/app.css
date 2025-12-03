@@ -5,26 +5,25 @@
   --width-700: 700px;
 
   /* フォントファミリーの追加 */
-  --font-family-sg: "Sawarabi Gothic", "Inter", sans-serif;
-  --font-family-vt323: "VT323", "Inter", monospace;
+  --font-sg: "Sawarabi Gothic", "Inter", sans-serif;
+  --font-vt323: "VT323", "Inter", monospace;
 }
 
 /* HTMLクラスベースのダークモード */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* カスタムユーティリティクラス */
-@layer utilities {
-  .w-700 {
-    width: var(--width-700);
+/* カーソルの高速点滅アニメーション */
+@keyframes cursor-blink {
+  0%, 50% {
+    opacity: 1;
   }
+  51%, 100% {
+    opacity: 0;
+  }
+}
 
-  .font-sg {
-    font-family: var(--font-family-sg);
-  }
-
-  .font-vt323 {
-    font-family: var(--font-family-vt323);
-  }
+.animate-cursor-blink {
+  animation: cursor-blink 0.7s infinite;
 }
 
 /* ------------------------------------------------------- */
