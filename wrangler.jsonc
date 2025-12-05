@@ -1,29 +1,54 @@
 {
   "name": "web",
-  "main": "./build/_worker.js/index.js",
-  "compatibility_date": "2025-06-12",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_date": "2025-03-11",
+  "main": "./build/server/index.js",
   "assets": {
-    "binding": "ASSETS",
-    "directory": "./build"
+    "directory": "./build/client/"
   },
   "workers_dev": true,
   "preview_urls": true,
+
+  // ---------------------------
+  // ローカル開発設定
+  // ---------------------------
+  "dev": {
+    "ip": "0.0.0.0",
+    "port": 8787,
+    "local_protocol": "http"
+  },
+  "vars": {
+    "LOG_ADAPTER": "console",
+    "LOG_LEVEL": "debug",
+    "AUTH_ADAPTER": "mock",
+    "AUTH_TEAM_DOMAIN": ""
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "web-local",
+      "database_id": "local",
+      "migrations_dir": "./adapter/drizzle/migrations"
+    }
+  ],
 
   "env": {
     // ---------------------------
     // Production 設定
     // ---------------------------
     "production": {
-      "compatibility_date": "2025-06-12",
-      "routes": [
+      "compatibility_date": "2025-03-11",
+      "vars": {
+        "LOG_ADAPTER": "json",
+        "LOG_LEVEL": "info",
+        "AUTH_ADAPTER": "cloudflare",
+        "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com"
+      },
+      "d1_databases": [
         {
-          "pattern": "nw-union.net",
-          "custom_domain": true
-        },
-        {
-          "pattern": "www.nw-union.net",
-          "custom_domain": true
+          "binding": "DB",
+          "database_name": "web-production",
+          "database_id": "f123f103-75a3-490d-a22e-bf6cc6cddabe",
+          "migrations_dir": "./adapter/drizzle/migrations"
         }
       ]
     }
