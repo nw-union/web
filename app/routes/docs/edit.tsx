@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/view.ts";
+import { MenuBar } from "../../components/EditorMenuBar.tsx";
 
 /**
  * ドキュメント編集 Loader
@@ -75,6 +76,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
+        {editor && <MenuBar editor={editor} />}
         <div className="md-body">
           <EditorContent editor={editor} />
         </div>

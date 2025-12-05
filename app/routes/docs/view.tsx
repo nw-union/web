@@ -64,7 +64,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         <ThemeToggle />
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="w-full md:w-[700px] mx-auto px-6 py-8">
         <div className="md-body">
           <EditorContent editor={editor} />
         </div>
