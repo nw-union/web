@@ -14,7 +14,7 @@ export default defineConfig({
     "/discord": {
       status: 307,
       destination: "https://discord.gg/faPNeuCQdF",
-    }
+    },
   },
   adapter: cloudflare({
     platformProxy: {
