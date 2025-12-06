@@ -10,6 +10,12 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  redirects: {
+    "/discord": {
+      status: 307,
+      destination: "https://discord.gg/faPNeuCQdF",
+    },
+  },
   adapter: cloudflare({
     platformProxy: {
       enabled: true,
