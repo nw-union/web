@@ -2,6 +2,7 @@ import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
+import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/view.ts";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
