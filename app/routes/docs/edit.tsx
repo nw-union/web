@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/view.ts";
-import { MenuBar } from "../../components/EditorMenuBar.tsx";
 
 /**
  * ドキュメント編集 Loader
