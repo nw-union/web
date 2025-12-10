@@ -25,7 +25,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
   });
 
   return (
-    <div className="border-b border-gray-200 pb-4">
+    <div className="pt-6">
       <div className="flex flex-wrap gap-2">
         <button
           type="button"

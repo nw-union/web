@@ -124,7 +124,11 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {editor && <MenuBar editor={editor} />}
+        {editor && (
+          <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 -mx-4 px-4">
+            <MenuBar editor={editor} />
+          </div>
+        )}
         <div className="md-body">
           <EditorContent editor={editor} />
         </div>
@@ -144,11 +148,16 @@ export default function Show({ loaderData }: Route.ComponentProps) {
           </button>
         </Form>
       </main>
-      <hr className="my-16" />
-      <div className="max-w-4xl mx-auto px-4 py-4">
-        <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded overflow-x-auto">
-          {JSON.stringify(editorContent)}
-        </code>
+
+      <div className="max-w-4xl mx-auto px-4 pb-8">
+        <details className="cursor-pointer">
+          <summary className="font-medium text-gray-700 dark:text-gray-300 mb-2">
+            JSON データを表示
+          </summary>
+          <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded overflow-x-auto">
+            {JSON.stringify(editorContent, null, 2)}
+          </code>
+        </details>
       </div>
     </div>
   );
