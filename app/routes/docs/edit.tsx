@@ -11,10 +11,18 @@ import type { Route } from "./+types/view.ts";
  * ドキュメント編集 Loader
  *
  */
-export async function loader({ context, params }: Route.LoaderArgs) {
-  const { log, repo } = context;
+export async function loader({ context, params, request }: Route.LoaderArgs) {
+  const { log, repo, auth } = context;
 
   log.info(`🔄 ドキュメント編集 Loader. slug: ${params.slug}`);
+
+  // 認証チェック
+  const userRes = await auth.auth(request);
+  if (userRes.isErr()) {
+    log.error("認証に失敗しました", userRes.error);
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const idRes = fromShortUuid(params.slug);
   if (idRes.isErr()) {
     log.error(`Invalid slug: ${params.slug}`);
