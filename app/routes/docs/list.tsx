@@ -145,7 +145,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300 text-sm cursor-pointer bg-transparent border-none"
+                className="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300 text-xs cursor-pointer bg-transparent border-none"
               >
                 ドキュメント新規作成
               </button>
@@ -198,7 +198,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                     onChange={(e) => setTitle(e.target.value)}
                     ref={titleInputRef}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="ドキュメントのタイトルを入力"
+                    placeholder="タイトルを入力"
                     required
                   />
                 </div>
