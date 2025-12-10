@@ -19,6 +19,8 @@
   "dependencies": {
     "@nw-union/nw-utils": "^0.0.4",
     "@react-router/cloudflare": "^7.10.1",
+    "@tiptap/extension-dropcursor": "^3.13.0",
+    "@tiptap/extension-image": "^3.13.0",
     "@tiptap/pm": "^3.13.0",
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",

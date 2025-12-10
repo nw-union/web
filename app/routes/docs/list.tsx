@@ -1,4 +1,4 @@
-import type { DocInfo } from "../../../type.ts";
+import type { DocInfo, SearchDocQuery } from "../../../type.ts";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/list.ts";
 
@@ -6,13 +6,19 @@ import type { Route } from "./+types/list.ts";
  * ドキュメント一覧 Loader
  *
  */
-export async function loader({ context }: Route.LoaderArgs) {
-  const { log, repo } = context;
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { log, repo, auth } = context;
 
   log.info("🔄 ドキュメント一覧 Loader");
 
+  // ログイン状態の確認
+  const q = await auth.auth(request).match(
+    () => ({}) as SearchDocQuery,
+    () => ({ statuses: ["public"] }) as SearchDocQuery,
+  );
+
   // ドキュメント一覧を取得
-  return await repo.searchDoc({}).match(
+  return await repo.searchDoc(q).match(
     (docs) => docs,
     (e) => {
       log.error("ドキュメント一覧の取得に失敗しました", e);

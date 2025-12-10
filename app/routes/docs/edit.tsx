@@ -1,4 +1,6 @@
 import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
@@ -67,6 +69,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const body = formData.get("body") as string;
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
+  const status = formData.get("status") as string;
 
   if (!body) {
     log.error("ドキュメント本文が空です");
@@ -78,11 +81,17 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     return new Response("Bad Request", { status: 400 });
   }
 
+  if (!status || !["public", "private", "draft"].includes(status)) {
+    log.error("無効なステータスです");
+    return new Response("Bad Request", { status: 400 });
+  }
+
   // ドキュメントを更新
   const updatedDocRes = await repo.upsertDoc({
     ...doc,
     title,
     description,
+    status: status as "public" | "private",
     body,
     updatedAt: new Date(),
   });
@@ -105,18 +114,31 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState(doc.title);
   const [description, setDescription] = useState(doc.description);
+  const [status, setStatus] = useState(doc.status);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
   // tiptap エディタの初期化
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        resize: {
+          enabled: true,
+          directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
+      Dropcursor,
+    ],
     content: "",
-    editable: true, // 閲覧モードのため編集不可
+    editable: true,
     immediatelyRender: false, // SSR環境での水和ミスマッチを回避
     editorProps: {
       attributes: {
-        class: "outline-none focus:outline-none",
+        class: "tiptap outline-none focus:outline-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -212,6 +234,27 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                           rows={3}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                         />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="status"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
+                          ステータス
+                        </label>
+                        <select
+                          id="status"
+                          name="status"
+                          value={status}
+                          onChange={(e) =>
+                            setStatus(e.target.value as typeof status)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                          required
+                        >
+                          <option value="public">公開</option>
+                          <option value="private">メンバー限定</option>
+                        </select>
                       </div>
                     </div>
                     <div className="flex justify-end gap-3 mt-6">

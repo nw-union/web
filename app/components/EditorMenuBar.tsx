@@ -1,4 +1,5 @@
 import { type Editor, useEditorState } from "@tiptap/react";
+import { useCallback } from "react";
 
 export function MenuBar({ editor }: { editor: Editor }) {
   // Read the current editor's state, and re-render the component when it changes
@@ -23,6 +24,14 @@ export function MenuBar({ editor }: { editor: Editor }) {
       };
     },
   });
+
+  const addImage = useCallback(() => {
+    const url = window.prompt("画像のURLを入力してください");
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  }, [editor]);
 
   return (
     <div className="pt-6">
@@ -153,6 +162,13 @@ export function MenuBar({ editor }: { editor: Editor }) {
           className="px-3 py-1.5 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 transition-colors"
         >
           ↵
+        </button>
+        <button
+          type="button"
+          onClick={addImage}
+          className="px-3 py-1.5 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 transition-colors"
+        >
+          画像
         </button>
       </div>
     </div>
