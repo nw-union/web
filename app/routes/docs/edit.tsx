@@ -3,8 +3,9 @@ import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Form, useNavigation } from "react-router";
+import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/view.ts";
@@ -117,6 +118,9 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const [status, setStatus] = useState(doc.status);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const titleId = useId();
+  const descriptionId = useId();
+  const statusId = useId();
 
   // tiptap エディタの初期化
   const editor = useEditor({
@@ -166,6 +170,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
+        <Breadcrumb currentTitle={doc.title} />
         {editor && (
           <>
             <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 -mx-4 px-4">
@@ -204,14 +209,14 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                     <div className="space-y-4">
                       <div>
                         <label
-                          htmlFor="title"
+                          htmlFor={titleId}
                           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                           タイトル
                         </label>
                         <input
                           type="text"
-                          id="title"
+                          id={titleId}
                           name="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
@@ -221,13 +226,13 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                       </div>
                       <div>
                         <label
-                          htmlFor="description"
+                          htmlFor={descriptionId}
                           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                           説明
                         </label>
                         <textarea
-                          id="description"
+                          id={descriptionId}
                           name="description"
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
@@ -237,13 +242,13 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                       </div>
                       <div>
                         <label
-                          htmlFor="status"
+                          htmlFor={statusId}
                           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                           ステータス
                         </label>
                         <select
-                          id="status"
+                          id={statusId}
                           name="status"
                           value={status}
                           onChange={(e) =>
