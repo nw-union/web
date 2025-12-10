@@ -1,12 +1,12 @@
 import { ThemeToggle } from "../components/ThemeToggle";
+import { metaArray } from "../util";
 import type { Route } from "./+types/apps";
 
-export function meta(_: Route.MetaArgs) {
-  return [
-    { title: "Apps | NWU" },
-    { name: "description", content: "NWUが開発したアプリケーション一覧" },
-  ];
-}
+export const meta = (_: Route.MetaArgs) =>
+  metaArray({
+    title: "Apps | NWU",
+    desc: "NWUが開発したアプリケーション一覧",
+  });
 
 export default function Apps() {
   const apps = [
