@@ -37,7 +37,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
-          Bold
+          B
         </button>
         <button
           type="button"
@@ -49,7 +49,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
-          Strike
+          S
         </button>
         <button
           type="button"
@@ -61,7 +61,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
-          Code
+          &lt;/&gt;
         </button>
         <button
           type="button"
@@ -111,7 +111,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           }`}
         >
-          Bullet list
+          •
         </button>
         <button
           type="button"
@@ -122,7 +122,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           }`}
         >
-          Ordered list
+          1.
         </button>
         <button
           type="button"
@@ -133,7 +133,8 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           }`}
         >
-          Code block
+          {"{"}
+          {"}"}
         </button>
         <button
           type="button"
@@ -144,14 +145,14 @@ export function MenuBar({ editor }: { editor: Editor }) {
               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
           }`}
         >
-          Blockquote
+          "
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().setHardBreak().run()}
           className="px-3 py-1.5 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 transition-colors"
         >
-          Hard break
+          ↵
         </button>
       </div>
     </div>
