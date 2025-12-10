@@ -1,6 +1,6 @@
 import { toShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import { useEffect, useId, useRef, useState } from "react";
-import { Form, redirect, useNavigation } from "react-router";
+import { Form, Link, redirect, useNavigation } from "react-router";
 import type { Doc, DocInfo, SearchDocQuery } from "../../../type.ts";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import { metaArray } from "../../util.ts";
@@ -156,13 +156,13 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         <ul className="list-disc mb-4 ml-5 text-gray-700 dark:text-gray-300">
           {docs.map((doc: DocInfo) => (
             <li className="m-1 text-gray-700 dark:text-gray-300" key={doc.id}>
-              <a
+              <Link
                 className="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300"
-                href={`/docs/${doc.slug}`}
+                to={`/docs/${doc.slug}`}
               >
                 {doc.title}
                 {doc.status === "private" && " 🔒"}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
