@@ -14,4 +14,7 @@ export default [
   // auth
   route("signin", "routes/signin.ts"),
   route("signout", "routes/signout.ts"),
+
+  // discord
+  route("discord", "routes/discord.ts"),
 ] satisfies RouteConfig;
