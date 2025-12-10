@@ -40,10 +40,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editorState.canBold}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isBold
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           B
@@ -52,10 +52,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editorState.canStrike}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isStrike
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           S
@@ -64,10 +64,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!editorState.canCode}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isCode
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           &lt;/&gt;
@@ -77,10 +77,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isHeading1
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           H1
@@ -90,10 +90,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isHeading2
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           H2
@@ -103,10 +103,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isHeading3
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           H3
@@ -114,10 +114,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isBulletList
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           •
@@ -125,10 +125,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isOrderedList
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           1.
@@ -136,10 +136,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isCodeBlock
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           {"{"}
@@ -148,10 +148,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
             editorState.isBlockquote
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
+              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
           }`}
         >
           "
@@ -159,14 +159,14 @@ export function MenuBar({ editor }: { editor: Editor }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().setHardBreak().run()}
-          className="px-3 py-1.5 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 transition-colors"
+          className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
         >
           ↵
         </button>
         <button
           type="button"
           onClick={addImage}
-          className="px-3 py-1.5 text-sm font-medium rounded-md border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 transition-colors"
+          className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
         >
           画像
         </button>

@@ -19,10 +19,11 @@
 
 ## 🌏 URL
 
-| Name       | URL                    |
-| :--------- | :--------------------- |
-| Production | https://nw-union.net/  |
-| Local      | http://localhost:4321/ |
+| Name       | URL                       |
+| :--------- | :------------------------ |
+| Production | https://nw-union.net/     |
+| Local (Dev)| http://localhost:5173/    |
+| Local (Wrangler) | http://localhost:8787/ |
 
 <br/>
 
@@ -43,23 +44,37 @@ bun install --frozen-lockfile
 ```
 bun run dev
 ```
-🏃 http://localhost:4321
+🏃 http://localhost:5173
+
+またはWranglerローカル環境で起動する場合:
+```
+bun run start
+```
+🏃 http://localhost:8787
 
 <br/>
 
-### ドキュメント追加方法
+### ドキュメント管理
 
-ドキュメントは、[src/pages/docs](./src/pages/docs/) にマークダウンで置かれています。ここにファイルを配置すると、ファイル名がパスとなり公開されます。
+ドキュメントはCloudflare D1データベースで管理されています。TipTapエディタを使用してWebインターフェースから作成・編集できます。
 
-#### サンプルデモページ
-- ファイル: [src/pages/docs/demo.md](./src/pages/docs/demo.md)
-- 公開URL: [https://nw-union.net/docs/demo](https://nw-union.net/docs/demo)
+データベース操作コマンド:
+```bash
+# マイグレーション生成
+bun run db:generate
+
+# ローカルDBにマイグレーション適用
+bun run db:migrate:local
+
+# サンプルデータ投入
+bun run db:sampledata:local
+```
 
 <br/>
 
 ### その他
 
-基本的に [astro](https://astro.build/) で作られたシンプルな SSG のサイトです。自由に書き換えてしまって構いません。ディレクトリ構成や開発のルールなどは [CLAUDE.md](./CLAUDE.md) を参照してください。
+React Router v7 + Cloudflare Workers + Drizzle ORM (D1) で構築されたドキュメントプラットフォームです。ヘキサゴナルアーキテクチャを採用しています。詳細なアーキテクチャ、開発ルール、使用可能なコマンドなどは [CLAUDE.md](./CLAUDE.md) を参照してください。
 
 <br/>
 
