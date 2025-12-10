@@ -42,7 +42,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const docs = loaderData;
 
   return (
-    <main className="bg-white dark:bg-black min-h-screen flex flex-col justify-start items-center p-8 pt-10 md:pt-16 mb-32 transition-colors duration-300 font-sg">
+    <main className="bg-white dark:bg-gray-900 min-h-screen flex flex-col justify-start items-center p-8 pt-10 md:pt-16 mb-32 transition-colors duration-300 font-sg">
       <ThemeToggle />
       <div className="max-w-2xl w-full">
         <div className="my-20">
@@ -62,6 +62,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                 href={`/docs/${doc.slug}`}
               >
                 {doc.title}
+                {doc.status === "private" && " 🔒"}
               </a>
             </li>
           ))}

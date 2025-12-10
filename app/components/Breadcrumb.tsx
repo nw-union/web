@@ -34,7 +34,7 @@ export function Breadcrumb({ currentTitle }: BreadcrumbProps) {
 
   return (
     <nav
-      className="mb-8 text-sm text-gray-600 dark:text-gray-400"
+      className="mb-2 text-sm text-gray-600 dark:text-gray-400"
       aria-label="breadcrumb navigation"
     >
       {breadcrumbs.map((crumb, index) => (

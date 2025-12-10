@@ -388,7 +388,7 @@ export default function Index() {
   }, []);
 
   return (
-    <>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <ThemeToggle />
 
       <main className="font-vt323 text-xl md:text-2xl md:w-[700px] w-full p-8 mx-auto leading-relaxed">
@@ -435,7 +435,7 @@ export default function Index() {
             >
               <div className="flex flex-col gap-0.5">
                 <a
-                  href="https://discord.gg/faPNeuCQdF"
+                  href="/discord"
                   target="_blank"
                   rel="noreferrer"
                   className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
@@ -512,6 +512,6 @@ export default function Index() {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }

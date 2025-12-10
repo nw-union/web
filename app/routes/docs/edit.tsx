@@ -8,7 +8,7 @@ import { Form, useNavigation } from "react-router";
 import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
-import type { Route } from "./+types/view.ts";
+import type { Route } from "./+types/edit.ts";
 
 /**
  * ドキュメント編集 Loader
@@ -182,7 +182,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200 whitespace-nowrap"
                   >
                     保存
                   </button>
@@ -266,14 +266,14 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                       <button
                         type="button"
                         onClick={() => setIsModalOpen(false)}
-                        className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg border border-gray-400 dark:border-gray-600 transition-colors duration-200"
                       >
                         キャンセル
                       </button>
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
                       >
                         {isSubmitting ? "保存中..." : "保存"}
                       </button>
