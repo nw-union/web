@@ -6,6 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
 import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
+import { metaArray } from "../../util.ts";
 import type { Route } from "./+types/view.ts";
 
 /**
@@ -40,7 +41,13 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   return doc;
 }
 
-// FIXME: Meta Data
+export const meta = ({ loaderData }: Route.MetaArgs) => {
+  const doc = loaderData;
+  return metaArray({
+    title: `${doc.title} | NWU`,
+    desc: doc.description || undefined,
+  });
+};
 
 /**
  * ドキュメント詳細 Show

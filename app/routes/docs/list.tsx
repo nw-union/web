@@ -1,5 +1,6 @@
 import type { DocInfo, SearchDocQuery } from "../../../type.ts";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
+import { metaArray } from "../../util.ts";
 import type { Route } from "./+types/list.ts";
 
 /**
@@ -27,7 +28,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   );
 }
 
-// FIXME: Meta Data
+export const meta = (_: Route.MetaArgs) =>
+  metaArray({
+    title: "Docs | NWU",
+    desc: "役にたつドキュメントや、役にたたないエッセイ。",
+  });
 
 /**
  * ドキュメント一覧 Show
