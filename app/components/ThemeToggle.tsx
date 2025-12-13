@@ -4,7 +4,7 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
 
-  // ���n��
+  // 初期化: ローカルストレージまたはシステム設定からテーマを読み込む
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as
       | "light"
@@ -22,7 +22,7 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  // ���ni(
+  // テーマ適用: テーマ変更時にDOM classを更新してローカルストレージに保存
   useEffect(() => {
     if (!mounted) return;
 
@@ -40,7 +40,7 @@ export function ThemeToggle() {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };
 
-  // SSRBka�dM2bn_�ަ��MoU�h:WjD
+  // SSR時はハイドレーションミスマッチを防ぐため何も表示しない
   if (!mounted) {
     return null;
   }

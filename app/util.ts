@@ -1,20 +1,19 @@
-export const metaArray = ({
+export const createMetaTags = ({
   title,
-  desc,
+  description,
 }: {
   title: string;
-  desc?: string;
+  description?: string;
 }) => {
-  const array = [
+  const tags = [
     { charset: "utf-8" },
-    { title: title },
-    {
-      name: "viewport",
-      content: "width=device-width,initial-scale=1",
-    },
+    { title },
+    { name: "viewport", content: "width=device-width,initial-scale=1" },
   ];
-  if (desc) {
-    array.push({ name: "description", content: desc });
+
+  if (description) {
+    tags.push({ name: "description", content: description });
   }
-  return array;
+
+  return tags;
 };
