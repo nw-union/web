@@ -9,6 +9,7 @@ import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import type { Route } from "./+types/edit.ts";
+import { validateDocUpdate } from "./validation.ts";
 
 /**
  * ドキュメント編集 Loader
@@ -72,28 +73,26 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const description = formData.get("description") as string;
   const status = formData.get("status") as string;
 
-  if (!body) {
-    log.error("ドキュメント本文が空です");
+  // バリデーション
+  const validationResult = validateDocUpdate(body, title, status);
+  if (validationResult.isErr()) {
+    log.error(validationResult.error.message);
     return new Response("Bad Request", { status: 400 });
   }
 
-  if (!title) {
-    log.error("タイトルが空です");
-    return new Response("Bad Request", { status: 400 });
-  }
-
-  if (!status || !["public", "private", "draft"].includes(status)) {
-    log.error("無効なステータスです");
-    return new Response("Bad Request", { status: 400 });
-  }
+  const {
+    body: validBody,
+    title: validTitle,
+    status: validStatus,
+  } = validationResult.value;
 
   // ドキュメントを更新
   const updatedDocRes = await repo.upsertDoc({
     ...doc,
-    title,
+    title: validTitle,
     description,
-    status: status as "public" | "private",
-    body,
+    status: validStatus,
+    body: validBody,
     updatedAt: new Date(),
   });
   if (updatedDocRes.isErr()) {

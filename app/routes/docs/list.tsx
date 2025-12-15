@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import type { Doc, DocInfo, SearchDocQuery } from "../../../type.ts";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
-import { metaArray } from "../../util.ts";
+import { createMetaTags } from "../../util";
 import type { Route } from "./+types/list.ts";
 
 /**
@@ -19,10 +19,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const userRes = await auth.auth(request);
   const isAuthenticated = userRes.isOk();
 
-  const q = userRes.match(
-    () => ({}) as SearchDocQuery,
-    () => ({ statuses: ["public"] }) as SearchDocQuery,
-  );
+  const q: SearchDocQuery = userRes.isOk() ? {} : { statuses: ["public"] };
 
   // ドキュメント一覧を取得
   const docs = await repo.searchDoc(q).match(
@@ -104,9 +101,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 }
 
 export const meta = (_: Route.MetaArgs) =>
-  metaArray({
+  createMetaTags({
     title: "Docs | NWU",
-    desc: "役にたつドキュメントや、役にたたないエッセイ。",
+    description: "役にたつドキュメントや、役にたたないエッセイ。",
   });
 
 /**

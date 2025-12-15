@@ -1,6 +1,42 @@
 import { type Editor, useEditorState } from "@tiptap/react";
 import { useCallback } from "react";
 
+// スタイルをヘルパー関数で共通化
+const getButtonClassName = (isActive: boolean, isDisabled = false) => {
+  const baseClasses =
+    "px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200";
+  const activeClasses =
+    "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700";
+  const inactiveClasses =
+    "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700";
+  const disabledClasses = "disabled:opacity-50 disabled:cursor-not-allowed";
+
+  return `${baseClasses} ${isActive ? activeClasses : inactiveClasses} ${isDisabled ? disabledClasses : ""}`;
+};
+
+interface EditorButtonProps {
+  onClick: () => void;
+  isActive: boolean;
+  disabled?: boolean;
+  children: React.ReactNode;
+}
+
+const EditorButton = ({
+  onClick,
+  isActive,
+  disabled = false,
+  children,
+}: EditorButtonProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={disabled}
+    className={getButtonClassName(isActive, disabled)}
+  >
+    {children}
+  </button>
+);
+
 export function MenuBar({ editor }: { editor: Editor }) {
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
@@ -36,126 +72,76 @@ export function MenuBar({ editor }: { editor: Editor }) {
   return (
     <div className="pt-6">
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
+        <EditorButton
           onClick={() => editor.chain().focus().toggleBold().run()}
+          isActive={editorState.isBold}
           disabled={!editorState.canBold}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isBold
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           B
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
+          isActive={editorState.isStrike}
           disabled={!editorState.canStrike}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isStrike
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           S
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleCode().run()}
+          isActive={editorState.isCode}
           disabled={!editorState.canCode}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isCode
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           &lt;/&gt;
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isHeading1
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isHeading1}
         >
           H1
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isHeading2
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isHeading2}
         >
           H2
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isHeading3
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isHeading3}
         >
           H3
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isBulletList
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isBulletList}
         >
           •
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isOrderedList
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isOrderedList}
         >
           1.
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isCodeBlock
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isCodeBlock}
         >
           {"{"}
           {"}"}
-        </button>
-        <button
-          type="button"
+        </EditorButton>
+        <EditorButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors duration-200 ${
-            editorState.isBlockquote
-              ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:border-blue-700"
-              : "bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-          }`}
+          isActive={editorState.isBlockquote}
         >
           "
-        </button>
+        </EditorButton>
         <button
           type="button"
           onClick={() => editor.chain().focus().setHardBreak().run()}
