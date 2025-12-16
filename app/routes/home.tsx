@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router";
 import { GlitchText } from "../components/GlitchText";
 import {
   AppsIcon,
@@ -24,9 +25,7 @@ const ASCII_ART = ` ███╗   ██╗ ██╗    ██╗ ██╗   
 
 const homeTerminalSequence: TerminalSequence = {
   steps: [
-    // Step 1: Show first line
-    { type: "element", elementId: "terminal-line-1" },
-    { type: "command", elementId: "terminal-cmd-1", command: "whoami" },
+    // Step 1: Show first section
     { type: "element", elementId: "terminal-output-1" },
     { type: "ascii-art", elementId: "terminal-name", text: ASCII_ART },
     { type: "element", delay: 400 }, // SHORT_DELAY
@@ -35,19 +34,26 @@ const homeTerminalSequence: TerminalSequence = {
       elementId: "terminal-about",
       text: "Hangout crew. Lovers of Culture, Art and Tech!",
     },
+    { type: "element", delay: 400 }, // SHORT_DELAY
+    { type: "element", elementId: "terminal-signup" },
     { type: "element", delay: 800 }, // MEDIUM_DELAY
 
     // Step 2: Show links
-    { type: "element", elementId: "terminal-line-3" },
-    { type: "command", elementId: "terminal-cmd-3", command: "ls -l ." },
     { type: "element", elementId: "terminal-output-3" },
     { type: "element", elementId: "terminal-links" },
     { type: "element", delay: 800 }, // MEDIUM_DELAY
 
-    // Step 3: Show final line
-    { type: "element", elementId: "terminal-line-4" },
   ],
 };
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { log, auth } = context;
+
+  log.info(`🔄 ホーム Loader`);
+
+  // 認証チェック
+  return (await auth.auth(request)).isOk();
+}
 
 export const meta = (_: Route.MetaArgs) =>
   createMetaTags({
@@ -55,10 +61,9 @@ export const meta = (_: Route.MetaArgs) =>
     description: "We are Hangout crew. Lovers of Culture, Art and Tech!",
   });
 
-export default function Home() {
-  const cmd1Ref = useRef<HTMLSpanElement>(null);
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const isLogin = loaderData;
   const aboutTextRef = useRef<HTMLDivElement>(null);
-  const cmd3Ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     // prefers-reduced-motionをチェック
@@ -69,16 +74,12 @@ export default function Home() {
     if (prefersReducedMotion) {
       // アニメーションなしで即座にすべて表示
       const elementIds = [
-        "terminal-line-1",
-        "terminal-cmd-1",
         "terminal-output-1",
         "terminal-name",
         "terminal-about",
-        "terminal-line-3",
-        "terminal-cmd-3",
+        "terminal-signup",
         "terminal-output-3",
         "terminal-links",
-        "terminal-line-4",
       ];
 
       elementIds.forEach((id) => {
@@ -89,13 +90,9 @@ export default function Home() {
       });
 
       // テキストコンテンツも即座に設定
-      const cmd1 = document.getElementById("terminal-cmd-1");
-      const cmd3 = document.getElementById("terminal-cmd-3");
       const name = document.getElementById("terminal-name");
       const about = document.getElementById("terminal-about");
 
-      if (cmd1) cmd1.textContent = "whoami";
-      if (cmd3) cmd3.textContent = "ls -l .";
       if (name) {
         name.textContent = ASCII_ART;
       }
@@ -113,31 +110,16 @@ export default function Home() {
       "Hangout crew. Lovers of Culture, Art and Tech!",
     );
 
-    const glitchCmd1 = new GlitchText("whoami");
-    const glitchCmd3 = new GlitchText("ls -l .");
-
-    // タイピング完了後に文字化けを開始（それぞれ異なるタイミングで）
+    // タイピング完了後に文字化けを開始
     const glitchTimeout1 = setTimeout(() => {
       glitchAbout.init(aboutTextRef.current);
     }, 3000);
-
-    const glitchTimeout3 = setTimeout(() => {
-      glitchCmd1.init(cmd1Ref.current);
-    }, 5000);
-
-    const glitchTimeout4 = setTimeout(() => {
-      glitchCmd3.init(cmd3Ref.current);
-    }, 6000);
 
     // クリーンアップ関数
     return () => {
       typer.destroy();
       glitchAbout.destroy();
-      glitchCmd1.destroy();
-      glitchCmd3.destroy();
       clearTimeout(glitchTimeout1);
-      clearTimeout(glitchTimeout3);
-      clearTimeout(glitchTimeout4);
     };
   }, []);
 
@@ -147,20 +129,7 @@ export default function Home() {
 
       <main className="font-vt323 text-xl md:text-2xl md:w-[700px] w-full p-8 mx-auto leading-relaxed">
         <div>
-          <div
-            className="flex items-center my-4 gap-2 opacity-0"
-            id="terminal-line-1"
-          >
-            <span className="text-green-600 dark:text-green-400 font-bold">
-              $
-            </span>
-            <span
-              className="text-gray-800 dark:text-white"
-              id="terminal-cmd-1"
-              ref={cmd1Ref}
-            ></span>
-          </div>
-          <div className="my-4 mb-6 opacity-0" id="terminal-output-1">
+          <div className="mt-10 mb-6 opacity-0" id="terminal-output-1">
             <div
               className="text-green-600 dark:text-green-400 opacity-0 whitespace-pre font-mono text-xs md:text-sm"
               id="terminal-name"
@@ -170,21 +139,18 @@ export default function Home() {
               id="terminal-about"
               ref={aboutTextRef}
             ></div>
+            {!isLogin && (
+              <div className="opacity-0 mt-6" id="terminal-signup">
+                <Link
+                  to="/signin"
+                  className="inline-block px-6 py-1 border-2 border-green-600 dark:border-green-400 text-green-600 dark:text-green-400 bg-transparent hover:border-cyan-600 hover:dark:border-cyan-400 hover:text-cyan-600 hover:dark:text-cyan-400 transition-colors duration-300 font-vt323 text-xl"
+                >
+                  JOIN US
+                </Link>
+              </div>
+            )}
           </div>
 
-          <div
-            className="flex items-center my-4 gap-2 opacity-0"
-            id="terminal-line-3"
-          >
-            <span className="text-green-600 dark:text-green-400 font-bold">
-              $
-            </span>
-            <span
-              className="text-gray-800 dark:text-white"
-              id="terminal-cmd-3"
-              ref={cmd3Ref}
-            ></span>
-          </div>
           <div className="my-4 mb-6 opacity-0" id="terminal-output-3">
             <div
               className="text-green-600 dark:text-green-400 opacity-0"
@@ -234,19 +200,6 @@ export default function Home() {
                 </a>
               </div>
             </div>
-          </div>
-
-          <div
-            className="flex items-center my-4 gap-2 opacity-0"
-            id="terminal-line-4"
-          >
-            <span className="text-green-600 dark:text-green-400 font-bold">
-              $
-            </span>
-            <span className="text-gray-800 dark:text-white"></span>
-            <span className="cursor text-green-600 dark:text-green-400 animate-cursor-blink">
-              _
-            </span>
           </div>
         </div>
       </main>
