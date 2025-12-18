@@ -15,7 +15,7 @@ export default function Apps() {
     <main className="bg-white dark:bg-gray-900 min-h-screen flex flex-col justify-start items-center p-8 pt-12 md:pt-16 mb-32 transition-colors duration-300 font-sg">
       <ThemeToggle />
       <div className="max-w-2xl w-full">
-        <div className="my-20">
+        <div className="my-8">
           <h1 className="text-2xl py-2 font-medium text-center text-gray-800 dark:text-gray-300">
             Apps
           </h1>
