@@ -51,12 +51,12 @@ export const meta: MetaFunction = () => {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="bg-white dark:bg-gray-900">
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="bg-white dark:bg-black leading-relaxed text-base w-full mx-auto text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
+      <body className="bg-white dark:bg-gray-900 leading-relaxed text-base w-full mx-auto text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
         {children}
         <ScrollRestoration />
         <Scripts />

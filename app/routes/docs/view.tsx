@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { Link } from "react-router";
 import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
-import { metaArray } from "../../util.ts";
+import { createMetaTags } from "../../util";
 import type { Route } from "./+types/view.ts";
 
 /**
@@ -43,9 +43,9 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 }
 
 export const meta = ({ loaderData }: Route.MetaArgs) => {
-  return metaArray({
+  return createMetaTags({
     title: `${loaderData.doc.title} | NWU`,
-    desc: loaderData.doc.description || undefined,
+    description: loaderData.doc.description || undefined,
   });
 };
 

@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import type { Doc, DocInfo, SearchDocQuery } from "../../../type.ts";
 import { ThemeToggle } from "../../components/ThemeToggle.tsx";
-import { metaArray } from "../../util.ts";
+import { createMetaTags } from "../../util";
 import type { Route } from "./+types/list.ts";
 
 /**
@@ -19,10 +19,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const userRes = await auth.auth(request);
   const isAuthenticated = userRes.isOk();
 
-  const q = userRes.match(
-    () => ({}) as SearchDocQuery,
-    () => ({ statuses: ["public"] }) as SearchDocQuery,
-  );
+  const q: SearchDocQuery = userRes.isOk() ? {} : { statuses: ["public"] };
 
   // ドキュメント一覧を取得
   const docs = await repo.searchDoc(q).match(
@@ -104,9 +101,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 }
 
 export const meta = (_: Route.MetaArgs) =>
-  metaArray({
+  createMetaTags({
     title: "Docs | NWU",
-    desc: "役にたつドキュメントや、役にたたないエッセイ。",
+    description: "役にたつドキュメントや、役にたたないエッセイ。",
   });
 
 /**
@@ -133,7 +130,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
     <main className="bg-white dark:bg-gray-900 min-h-screen flex flex-col justify-start items-center p-8 pt-10 md:pt-16 mb-32 transition-colors duration-300 font-sg">
       <ThemeToggle />
       <div className="max-w-2xl w-full">
-        <div className="my-20">
+        <div className="my-8">
           <h1 className="text-2xl py-2 font-medium text-center text-gray-800 dark:text-gray-300">
             Docs
           </h1>
@@ -157,11 +154,21 @@ export default function Show({ loaderData }: Route.ComponentProps) {
           {docs.map((doc: DocInfo) => (
             <li className="m-1 text-gray-700 dark:text-gray-300" key={doc.id}>
               <Link
-                className="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300"
+                className="text-blue-600 dark:text-cyan-400 hover:underline hover:text-blue-700 dark:hover:text-cyan-300 inline-flex items-center gap-1"
                 to={`/docs/${doc.slug}`}
               >
                 {doc.title}
-                {doc.status === "private" && " 🔒"}
+                {doc.status === "private" && (
+                  <svg
+                    className="w-3.5 h-3.5 inline-block"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <title>非公開</title>
+                    <path d="M8 1C6.067 1 4.5 2.567 4.5 4.5V6H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1h-.5V4.5C10.5 2.567 8.933 1 8 1zm0 1.5c1.117 0 2 .883 2 2V6H6V4.5c0-1.117.883-2 2-2zM8 9c.552 0 1 .448 1 1v2c0 .552-.448 1-1 1s-1-.448-1-1v-2c0-.552.448-1 1-1z" />
+                  </svg>
+                )}
               </Link>
             </li>
           ))}

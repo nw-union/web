@@ -19,10 +19,10 @@
 
 ## 🌏 URL
 
-| Name       | URL                       |
-| :--------- | :------------------------ |
-| Production | https://nw-union.net/     |
-| Local (Dev)| http://localhost:5173/    |
+| Name             | URL                    |
+| :--------------- | :--------------------- |
+| Production       | https://nw-union.net/  |
+| Local (Dev)      | http://localhost:5173/ |
 | Local (Wrangler) | http://localhost:8787/ |
 
 <br/>
@@ -37,28 +37,31 @@
 
 0. 最新バージョンの [Bun](https://bun.com/) が動く環境であること
 1. 依存パッケージ取得
+
 ```bash
 bun install --frozen-lockfile
 ```
+
 2. 開発サーバー起動
+
 ```
 bun run dev
 ```
+
 🏃 http://localhost:5173
 
 またはWranglerローカル環境で起動する場合:
+
 ```
 bun run start
 ```
+
 🏃 http://localhost:8787
 
 <br/>
 
-### ドキュメント管理
+### データベース操作コマンド
 
-ドキュメントはCloudflare D1データベースで管理されています。TipTapエディタを使用してWebインターフェースから作成・編集できます。
-
-データベース操作コマンド:
 ```bash
 # マイグレーション生成
 bun run db:generate

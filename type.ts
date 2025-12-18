@@ -5,7 +5,6 @@ import z from "zod";
 
 export type Doc = {
   type: "Doc";
-
   id: string;
   title: string;
   description: string;

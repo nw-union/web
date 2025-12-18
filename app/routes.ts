@@ -15,6 +15,8 @@ export default [
   route("signin", "routes/signin.ts"),
   route("signout", "routes/signout.ts"),
 
-  // discord
+  // SNS リダイレクト
   route("discord", "routes/discord.ts"),
+  route("youtube", "routes/youtube.ts"),
+  route("github", "routes/github.ts"),
 ] satisfies RouteConfig;
