@@ -155,17 +155,17 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               className="text-green-600 dark:text-green-400 opacity-0"
               id="terminal-links"
             >
-              <div className="flex flex-wrap gap-6 md:gap-8">
+              <div className="flex flex-wrap gap-4 md:gap-8">
                 <a
                   href="/docs"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
                 >
                   <DocumentIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
                   <span className="text-lg md:text-xl">Docs</span>
                 </a>
                 <a
                   href="/apps"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
                 >
                   <AppsIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
                   <span className="text-lg md:text-xl">Apps</span>
@@ -174,7 +174,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   href="/discord"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
                 >
                   <DiscordIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
                   <span className="text-lg md:text-xl">Discord</span>
@@ -183,7 +183,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   href="/youtube"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
                 >
                   <YouTubeIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
                   <span className="text-lg md:text-xl">YouTube</span>
@@ -192,7 +192,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   href="/github"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
                 >
                   <GitHubIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
                   <span className="text-lg md:text-xl">GitHub</span>
