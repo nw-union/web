@@ -4,6 +4,7 @@ import type { ResultAsync } from "neverthrow";
 import z from "zod";
 
 export type Doc = {
+  type: "Doc";
   id: string;
   title: string;
   description: string;
@@ -30,6 +31,7 @@ export type SearchDocQuery = {
 const docStatus = z.enum([
   "public", // 公開
   "private", // メンバー限定
+  "draft", // 下書き
 ]);
 export type DocStatus = z.infer<typeof docStatus>;
 export const allDocStatus = docStatus.options;

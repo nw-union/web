@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
-import type { Route } from "./+types/signout";
 import { match } from "ts-pattern";
+import type { Route } from "./+types/signout";
 
 export async function loader({ context }: Route.LoaderArgs) {
   // CF_Authorization クッキーを削除するレスポンスヘッダーを設定

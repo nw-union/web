@@ -42,7 +42,6 @@ const homeTerminalSequence: TerminalSequence = {
     { type: "element", elementId: "terminal-output-3" },
     { type: "element", elementId: "terminal-links" },
     { type: "element", delay: 800 }, // MEDIUM_DELAY
-
   ],
 };
 

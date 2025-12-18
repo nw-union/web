@@ -1,5 +1,6 @@
-import { z } from "zod";
 import { newType } from "@nw-union/nw-utils/lib/zod";
+import { z } from "zod";
+
 // import { uuidv4 } from "@nw-union/nw-utils/lib/uuid";
 
 /**

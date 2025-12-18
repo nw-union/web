@@ -1,6 +1,5 @@
-import { match } from "ts-pattern";
-import type { Route } from "./+types/signin";
 import { redirect } from "react-router";
+import type { Route } from "./+types/signin";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -8,7 +7,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const headers = new Headers();
 
-  if (context.cloudflare.env.AUTH_ADAPTER == "mock") {
+  if (context.cloudflare.env.AUTH_ADAPTER === "mock") {
     // モックアダプターの場合はデバッグ用にログイン用クッキーをセット
     headers.append(
       "Set-Cookie",
