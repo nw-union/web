@@ -173,7 +173,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               id="terminal-name"
             ></div>
             <div
-              className="text-green-600 dark:text-green-400 opacity-0 mt-4"
+              className="text-green-600 dark:text-green-400 opacity-0 mt-4 overflow-hidden whitespace-nowrap"
               id="terminal-about"
               ref={aboutTextRef}
             ></div>
