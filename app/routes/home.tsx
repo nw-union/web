@@ -156,47 +156,47 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               className="text-green-600 dark:text-green-400 opacity-0"
               id="terminal-links"
             >
-              <div className="flex flex-col gap-0.5">
+              <div className="flex flex-wrap gap-6 md:gap-8">
                 <a
                   href="/docs"
-                  className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
                 >
-                  <DocumentIcon className="w-5 h-5 md:w-6 md:h-6 stroke-current" />
-                  <span>Docs</span>
+                  <DocumentIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
+                  <span className="text-lg md:text-xl">Docs</span>
                 </a>
                 <a
                   href="/apps"
-                  className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
                 >
-                  <AppsIcon className="w-5 h-5 md:w-6 md:h-6 stroke-current" />
-                  <span>Apps</span>
+                  <AppsIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
+                  <span className="text-lg md:text-xl">Apps</span>
                 </a>
                 <a
                   href="/discord"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
                 >
-                  <DiscordIcon className="w-5 h-5 md:w-6 md:h-6 fill-current" />
-                  <span>Discord</span>
+                  <DiscordIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
+                  <span className="text-lg md:text-xl">Discord</span>
                 </a>
                 <a
                   href="/youtube"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
                 >
-                  <YouTubeIcon className="w-5 h-5 md:w-6 md:h-6 fill-current" />
-                  <span>YouTube</span>
+                  <YouTubeIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
+                  <span className="text-lg md:text-xl">YouTube</span>
                 </a>
                 <a
                   href="/github"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-green-600 dark:text-green-400 no-underline flex items-center gap-2 py-1 transition-colors duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1.5 p-2 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-20 md:w-24"
                 >
-                  <GitHubIcon className="w-5 h-5 md:w-6 md:h-6 fill-current" />
-                  <span>GitHub</span>
+                  <GitHubIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
+                  <span className="text-lg md:text-xl">GitHub</span>
                 </a>
               </div>
             </div>
