@@ -181,6 +181,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               <div className="opacity-0 mt-6" id="terminal-signup">
                 <Link
                   to="/signin"
+                  reloadDocument
                   className="inline-block px-6 py-1 border-2 border-green-600 dark:border-green-400 text-green-600 dark:text-green-400 bg-transparent hover:border-cyan-600 hover:dark:border-cyan-400 hover:text-cyan-600 hover:dark:text-cyan-400 transition-colors duration-300 font-vt323 text-xl"
                 >
                   JOIN US
