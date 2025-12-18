@@ -8,10 +8,6 @@ import {
   GitHubIcon,
   YouTubeIcon,
 } from "../components/Icons";
-import {
-  type TerminalSequence,
-  TerminalTyper,
-} from "../components/TerminalTyper";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/home";
@@ -23,27 +19,7 @@ const ASCII_ART = ` ███╗   ██╗ ██╗    ██╗ ██╗   
  ██║ ╚████║ ╚███╔███╔╝ ╚██████╔╝
  ╚═╝  ╚═══╝  ╚══╝╚══╝   ╚═════╝`;
 
-const homeTerminalSequence: TerminalSequence = {
-  steps: [
-    // Step 1: Show first section
-    { type: "element", elementId: "terminal-output-1" },
-    { type: "ascii-art", elementId: "terminal-name", text: ASCII_ART },
-    { type: "element", delay: 400 }, // SHORT_DELAY
-    {
-      type: "text",
-      elementId: "terminal-about",
-      text: "Hangout crew. Lovers of Culture, Art and Tech!",
-    },
-    { type: "element", delay: 400 }, // SHORT_DELAY
-    { type: "element", elementId: "terminal-signup" },
-    { type: "element", delay: 800 }, // MEDIUM_DELAY
-
-    // Step 2: Show links
-    { type: "element", elementId: "terminal-output-3" },
-    { type: "element", elementId: "terminal-links" },
-    { type: "element", delay: 800 }, // MEDIUM_DELAY
-  ],
-};
+const ABOUT_TEXT = "Hangout crew. Lovers of Culture, Art and Tech!";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { log, auth } = context;
@@ -95,30 +71,93 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       if (name) {
         name.textContent = ASCII_ART;
       }
-      if (about)
-        about.textContent = "Hangout crew. Lovers of Culture, Art and Tech!";
+      if (about) {
+        about.textContent = ABOUT_TEXT;
+      }
 
       return; // クリーンアップ不要
     }
 
-    const typer = new TerminalTyper(homeTerminalSequence);
-    typer.init();
+    // コンテナ要素を即座に表示
+    const containerIds = ["terminal-output-1", "terminal-output-3"];
 
-    // 各テキスト要素に文字化けアニメーションを適用
-    const glitchAbout = new GlitchText(
-      "Hangout crew. Lovers of Culture, Art and Tech!",
-    );
+    containerIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.opacity = "1";
+      }
+    });
 
-    // タイピング完了後に文字化けを開始
-    const glitchTimeout1 = setTimeout(() => {
-      glitchAbout.init(aboutTextRef.current);
+    let shouldStop = false;
+    const timeouts: number[] = [];
+
+    // 全ての要素にフェードインアニメーションを適用
+    const fadeElements = ["terminal-name", "terminal-signup", "terminal-links"];
+
+    fadeElements.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.transition = "opacity 1.0s ease-in-out";
+        element.style.opacity = "0";
+
+        const timeout = window.setTimeout(() => {
+          if (!shouldStop && element) {
+            element.style.opacity = "1";
+          }
+        }, 50);
+        timeouts.push(timeout);
+      }
+    });
+
+    // ASCIIアートのテキストを設定
+    const nameElement = document.getElementById("terminal-name");
+    if (nameElement) {
+      nameElement.textContent = ASCII_ART;
+    }
+
+    // テキストのタイプライティングアニメーション
+    const aboutElement = document.getElementById("terminal-about");
+    if (aboutElement) {
+      aboutElement.style.opacity = "1";
+      aboutElement.textContent = "";
+
+      let charIndex = 0;
+      const typeSpeed = 50;
+
+      const typeInterval = window.setInterval(() => {
+        if (shouldStop) {
+          clearInterval(typeInterval);
+          return;
+        }
+
+        if (charIndex < ABOUT_TEXT.length) {
+          aboutElement.textContent = ABOUT_TEXT.substring(0, charIndex + 1);
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+        }
+      }, typeSpeed);
+
+      timeouts.push(typeInterval);
+    }
+
+    // 文字化けアニメーション
+    const glitchAbout = new GlitchText(ABOUT_TEXT);
+    const glitchTimeout = window.setTimeout(() => {
+      if (!shouldStop) {
+        glitchAbout.init(aboutTextRef.current);
+      }
     }, 3000);
+    timeouts.push(glitchTimeout);
 
     // クリーンアップ関数
     return () => {
-      typer.destroy();
+      shouldStop = true;
       glitchAbout.destroy();
-      clearTimeout(glitchTimeout1);
+      for (const id of timeouts) {
+        clearTimeout(id);
+        clearInterval(id);
+      }
     };
   }, []);
 
