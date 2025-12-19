@@ -21,11 +21,11 @@ export function FooterNav() {
       }`}
     >
       <div className="max-w-screen-xl mx-auto px-4">
-        <div className="flex justify-around items-center h-16">
+        <div className="flex justify-around items-center h-15">
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors ${
+              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
@@ -37,7 +37,7 @@ export function FooterNav() {
                 <HomeIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[11px] font-medium">Home</span>
+                <span className="text-[10px] font-medium">Home</span>
               </>
             )}
           </NavLink>
@@ -45,7 +45,7 @@ export function FooterNav() {
           <NavLink
             to="/docs"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors ${
+              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
@@ -57,7 +57,7 @@ export function FooterNav() {
                 <DocumentIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[11px] font-medium">Docs</span>
+                <span className="text-[10px] font-medium">Docs</span>
               </>
             )}
           </NavLink>
@@ -65,7 +65,7 @@ export function FooterNav() {
           <NavLink
             to="/movies"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors ${
+              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
@@ -77,7 +77,7 @@ export function FooterNav() {
                 <MoviesIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[11px] font-medium">Movies</span>
+                <span className="text-[10px] font-medium">Movies</span>
               </>
             )}
           </NavLink>
@@ -85,7 +85,7 @@ export function FooterNav() {
           <NavLink
             to="/you"
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors ${
+              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
@@ -97,7 +97,7 @@ export function FooterNav() {
                 <UserIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[11px] font-medium">You</span>
+                <span className="text-[10px] font-medium">You</span>
               </>
             )}
           </NavLink>
