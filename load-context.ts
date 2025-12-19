@@ -6,7 +6,8 @@ import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
 import { newDocRepository } from "./adapter/drizzle/doc";
-import type { DocRepositoryPort } from "./type";
+import { newVideoRepository } from "./adapter/drizzle/movie";
+import type { DocRepositoryPort, VideoRepositoryPort } from "./type";
 
 declare global {
   interface CloudflareEnvironment extends Env {}
@@ -21,6 +22,7 @@ declare module "react-router" {
     log: Logger;
     auth: Auth;
     repo: DocRepositoryPort;
+    videoRepo: VideoRepositoryPort;
   }
 }
 
@@ -38,6 +40,7 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
     log,
     auth: createAuth(cloudflare.env),
     repo: newDocRepository(cloudflare.env.DB, log),
+    videoRepo: newVideoRepository(cloudflare.env.DB, log),
   };
 }
 

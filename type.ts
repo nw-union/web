@@ -10,6 +10,7 @@ export type Doc = {
   description: string;
   status: DocStatus;
   body: string;
+  thumbnailUrl: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -20,6 +21,7 @@ export type DocInfo = {
   title: string;
   description: string;
   status: DocStatus;
+  thumbnailUrl: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -39,9 +41,27 @@ export const newDocStatus = newType(docStatus, "DocStatus");
 
 // ---------------------------
 
+export type Video = {
+  type: "Video";
+
+  id: string;
+  title: string;
+  channelName: string;
+  duration: string;
+  uploadedAt: string;
+  isPublic: boolean;
+};
+
+// ---------------------------
+
 // Doc Repository Port
 export interface DocRepositoryPort {
   upsertDoc(d: Doc | Doc[]): ResultAsync<undefined, AppError>;
   readDoc(id: string): ResultAsync<Doc, AppError>;
   searchDoc(q: SearchDocQuery): ResultAsync<DocInfo[], AppError>;
+}
+
+// Video Repository Port
+export interface VideoRepositoryPort {
+  searchVideo(): ResultAsync<Video[], AppError>;
 }

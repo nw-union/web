@@ -31,7 +31,7 @@
 /* ------------------------------------------------------- */
 /* Headers */
 .md-body h1 {
-  @apply text-2xl mt-20 py-2 mb-14 text-center text-gray-800 dark:text-gray-300;
+  @apply text-2xl my-14 py-2 text-center text-gray-800 dark:text-gray-300;
 }
 .md-body h2 {
   @apply text-xl mt-14 py-2 mb-4 border-b border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300;

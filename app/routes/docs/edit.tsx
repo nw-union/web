@@ -5,7 +5,6 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useId, useState } from "react";
 import { Form, useNavigation } from "react-router";
-import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import type { Route } from "./+types/edit.ts";
 import { validateDocUpdate } from "./validation.ts";
@@ -164,7 +163,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <Breadcrumb currentTitle={doc.title} />
         {editor && (
           <>
             <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 -mx-4 px-4">

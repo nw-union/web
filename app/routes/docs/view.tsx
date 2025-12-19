@@ -5,7 +5,6 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
 import { Link } from "react-router";
-import { Breadcrumb } from "../../components/Breadcrumb.tsx";
 import { createMetaTags } from "../../util";
 import type { Route } from "./+types/view.ts";
 
@@ -111,7 +110,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       </header>
 
       <main className="w-full md:w-[700px] mx-auto px-6 py-8">
-        <Breadcrumb currentTitle={doc.title} />
         <div className="md-body">
           <EditorContent editor={editor} />
         </div>
