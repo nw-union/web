@@ -17,7 +17,7 @@ export function FooterNav() {
   return (
     <nav
       className={`fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-50 ${
-        isStandalone ? "pb-4" : ""
+        isStandalone ? "pb-6" : ""
       }`}
     >
       <div className="max-w-screen-xl mx-auto px-4">
@@ -35,9 +35,9 @@ export function FooterNav() {
             {({ isActive }) => (
               <>
                 <HomeIcon
-                  className={`w-6 h-6 ${isActive ? "stroke-2" : "stroke-1.5"}`}
+                  className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-xs font-medium">Home</span>
+                <span className="text-[11px] font-medium">Home</span>
               </>
             )}
           </NavLink>
@@ -55,9 +55,9 @@ export function FooterNav() {
             {({ isActive }) => (
               <>
                 <DocumentIcon
-                  className={`w-6 h-6 ${isActive ? "stroke-2" : "stroke-1.5"}`}
+                  className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-xs font-medium">Docs</span>
+                <span className="text-[11px] font-medium">Docs</span>
               </>
             )}
           </NavLink>
@@ -75,9 +75,9 @@ export function FooterNav() {
             {({ isActive }) => (
               <>
                 <MoviesIcon
-                  className={`w-6 h-6 ${isActive ? "stroke-2" : "stroke-1.5"}`}
+                  className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-xs font-medium">Movies</span>
+                <span className="text-[11px] font-medium">Movies</span>
               </>
             )}
           </NavLink>
@@ -95,9 +95,9 @@ export function FooterNav() {
             {({ isActive }) => (
               <>
                 <UserIcon
-                  className={`w-6 h-6 ${isActive ? "stroke-2" : "stroke-1.5"}`}
+                  className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-xs font-medium">You</span>
+                <span className="text-[11px] font-medium">You</span>
               </>
             )}
           </NavLink>
