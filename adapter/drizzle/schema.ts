@@ -17,7 +17,7 @@ const zEnum = <T extends z.ZodEnum>(src: string, schema: T) =>
 const docStatusDbEnum = z.enum(["public", "private", "draft"]);
 export type DocStatusDbEnum = z.infer<typeof docStatusDbEnum>;
 
-// Entry テーブルのスキーマ
+// Doc テーブルのスキーマ
 export const docTable = sqliteTable(
   "doc",
   {
@@ -26,11 +26,34 @@ export const docTable = sqliteTable(
     description: text("description").notNull(),
     status: zEnum("status", docStatusDbEnum).notNull(),
     body: text("body").notNull(),
+    thumbnailUrl: text("thumbnail_url").notNull().default(""),
     createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   },
   (table) => [
     // インデックス設定
     index("idx_created_at").on(table.createdAt),
+  ],
+);
+
+// ----------------------------------------------------------------------------
+// Video Table
+// ----------------------------------------------------------------------------
+// Video テーブルのスキーマ
+export const videoTable = sqliteTable(
+  "video",
+  {
+    id: text("video_id").primaryKey().notNull(),
+    title: text("title").notNull(),
+    channelName: text("channel_name").notNull(),
+    duration: text("duration").notNull(),
+    isPublic: integer("is_public").notNull(), // boolean を整数で保存 (0 or 1)
+    uploadedAt: text("uploaded_at").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => [
+    // インデックス設定
+    index("idx_video_created_at").on(table.createdAt),
   ],
 );

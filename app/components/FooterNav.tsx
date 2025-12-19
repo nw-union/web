@@ -63,7 +63,7 @@ export function FooterNav() {
           </NavLink>
 
           <NavLink
-            to="/movies"
+            to="/videos"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
@@ -77,7 +77,7 @@ export function FooterNav() {
                 <MoviesIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[10px] font-medium">Movies</span>
+                <span className="text-[10px] font-medium">Videos</span>
               </>
             )}
           </NavLink>

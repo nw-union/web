@@ -70,7 +70,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
   }, [editor]);
 
   return (
-    <div className="pt-6">
+    <div className="pt-1">
       <div className="flex flex-wrap gap-2">
         <EditorButton
           onClick={() => editor.chain().focus().toggleBold().run()}

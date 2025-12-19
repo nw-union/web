@@ -46,6 +46,7 @@ const convToDocInsertModel = (doc: Doc): DocInsertModel => ({
     .with("public", (): DocStatusDbEnum => "public")
     .exhaustive(),
   body: doc.body,
+  thumbnailUrl: doc.thumbnailUrl,
   createdAt: doc.createdAt,
   updatedAt: doc.updatedAt,
 });
@@ -77,6 +78,7 @@ const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
       .with("public", (): "public" => "public")
       .exhaustive(),
     body: d.body,
+    thumbnailUrl: d.thumbnailUrl,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   });
@@ -92,6 +94,7 @@ const validateDocInfo = (d: DocSelectModel): Result<DocInfo, AppError> =>
       .with("private", (): "private" => "private")
       .with("public", (): "public" => "public")
       .exhaustive(),
+    thumbnailUrl: d.thumbnailUrl,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   });
@@ -165,33 +168,32 @@ const readDoc =
       dbErrorHandling,
     );
 
-const searchContents =
-  (db: AnyD1Database, log: Logger) => (q: SearchDocQuery) =>
-    fromPromise(
-      (async () => {
-        log.info("💽 searchContents 開始");
+const searchDocs = (db: AnyD1Database, log: Logger) => (q: SearchDocQuery) =>
+  fromPromise(
+    (async () => {
+      log.info("💽 searchDocs 開始");
 
-        // クエリ作成
-        const query = drizzle(db)
-          .select()
-          .from(docTable)
-          .orderBy(desc(docTable.createdAt)); // createdAt でソート
+      // クエリ作成
+      const query = drizzle(db)
+        .select()
+        .from(docTable)
+        .orderBy(desc(docTable.createdAt)); // createdAt でソート
 
-        // クエリに条件を追加
-        if (q.statuses) {
-          query.where(inArray(docTable.status, q.statuses));
-        }
+      // クエリに条件を追加
+      if (q.statuses) {
+        query.where(inArray(docTable.status, q.statuses));
+      }
 
-        log.debug(`SQL: ${query.toSQL().sql}`);
-        log.debug(`PARAMS: ${query.toSQL().params}`);
+      log.debug(`SQL: ${query.toSQL().sql}`);
+      log.debug(`PARAMS: ${query.toSQL().params}`);
 
-        // 実行
-        const docs = await query.all();
+      // 実行
+      const docs = await query.all();
 
-        return docs;
-      })(),
-      dbErrorHandling,
-    );
+      return docs;
+    })(),
+    dbErrorHandling,
+  );
 
 // ----------------------------------------------------------------------------
 // Port 実装
@@ -209,5 +211,5 @@ export const newDocRepository = (
     okAsync(id.toString()).andThen(readDoc(db, log)).andThen(validateDoc),
 
   searchDoc: (q) =>
-    okAsync(q).andThen(searchContents(db, log)).andThen(validateDocInfoList),
+    okAsync(q).andThen(searchDocs(db, log)).andThen(validateDocInfoList),
 });

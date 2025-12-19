@@ -11,8 +11,8 @@ export default [
   route("docs/:slug", "routes/docs/view.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
 
-  // movies
-  route("movies", "routes/movies.tsx"),
+  // videos
+  route("videos", "routes/videos.tsx"),
 
   // you
   route("you", "routes/you.tsx"),
