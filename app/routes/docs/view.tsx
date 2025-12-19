@@ -6,7 +6,6 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
 import { Link } from "react-router";
 import { Breadcrumb } from "../../components/Breadcrumb.tsx";
-import { ThemeToggle } from "../../components/ThemeToggle.tsx";
 import { createMetaTags } from "../../util";
 import type { Route } from "./+types/view.ts";
 
@@ -84,9 +83,8 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   }, [editor, doc.body]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
       <header className="border-b border-gray-200 dark:border-gray-700">
-        <ThemeToggle />
         {isLogin && (
           <Link
             to={`/docs/${slug}/edit`}

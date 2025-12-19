@@ -8,7 +8,8 @@
       "**/*.tsx",
       "**/*.json",
       "**/*.jsonc"
-    ]
+    ],
+    "maxSize": 10485760
   },
   "linter": {
     "enabled": true,

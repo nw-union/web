@@ -11,6 +11,12 @@ export default [
   route("docs/:slug", "routes/docs/view.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
 
+  // movies
+  route("movies", "routes/movies.tsx"),
+
+  // you
+  route("you", "routes/you.tsx"),
+
   // auth
   route("signin", "routes/signin.ts"),
   route("signout", "routes/signout.ts"),
@@ -19,4 +25,5 @@ export default [
   route("discord", "routes/discord.ts"),
   route("youtube", "routes/youtube.ts"),
   route("github", "routes/github.ts"),
+  route("shop", "routes/shop.ts"),
 ] satisfies RouteConfig;

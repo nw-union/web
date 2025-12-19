@@ -1,4 +1,3 @@
-import { ThemeToggle } from "../components/ThemeToggle";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/apps";
 import { AppCard } from "./apps/AppCard";
@@ -12,8 +11,7 @@ export const meta = (_: Route.MetaArgs) =>
 
 export default function Apps() {
   return (
-    <main className="bg-white dark:bg-gray-900 min-h-screen flex flex-col justify-start items-center p-8 pt-12 md:pt-16 mb-32 transition-colors duration-300 font-sg">
-      <ThemeToggle />
+    <main className="bg-white dark:bg-gray-900 min-h-screen pb-20 flex flex-col justify-start items-center p-8 pt-12 md:pt-16 transition-colors duration-300 font-sg">
       <div className="max-w-2xl w-full">
         <div className="my-8">
           <h1 className="text-2xl py-2 font-medium text-center text-gray-800 dark:text-gray-300">
