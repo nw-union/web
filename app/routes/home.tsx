@@ -2,13 +2,11 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { GlitchText } from "../components/GlitchText";
 import {
-  AppsIcon,
   DiscordIcon,
-  DocumentIcon,
   GitHubIcon,
+  ShopIcon,
   YouTubeIcon,
 } from "../components/Icons";
-import { ThemeToggle } from "../components/ThemeToggle";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/home";
 
@@ -162,9 +160,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      <ThemeToggle />
-
+    <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
       <main className="font-vt323 text-xl md:text-2xl md:w-[700px] w-full p-8 mx-auto leading-relaxed">
         <div>
           <div className="mt-10 mb-6 opacity-0" id="terminal-output-1">
@@ -197,20 +193,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             >
               <div className="flex flex-wrap gap-4 md:gap-8">
                 <a
-                  href="/docs"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
-                >
-                  <DocumentIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
-                  <span className="text-lg md:text-xl">Docs</span>
-                </a>
-                <a
-                  href="/apps"
-                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
-                >
-                  <AppsIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
-                  <span className="text-lg md:text-xl">Apps</span>
-                </a>
-                <a
                   href="/discord"
                   target="_blank"
                   rel="noreferrer"
@@ -227,6 +209,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 >
                   <YouTubeIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
                   <span className="text-lg md:text-xl">YouTube</span>
+                </a>
+                <a
+                  href="/shop"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
+                >
+                  <ShopIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
+                  <span className="text-lg md:text-xl">Shop</span>
                 </a>
                 <a
                   href="/github"

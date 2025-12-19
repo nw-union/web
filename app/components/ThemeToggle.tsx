@@ -1,59 +1,25 @@
-import { useEffect, useState } from "react";
+import { useFetcher, useRouteLoaderData } from "react-router";
+import type { loader } from "../root";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const [mounted, setMounted] = useState(false);
-
-  // 初期化: ローカルストレージまたはシステム設定からテーマを読み込む
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as
-      | "light"
-      | "dark"
-      | null;
-
-    if (storedTheme) {
-      setTheme(storedTheme);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    } else {
-      setTheme("dark");
-    }
-
-    setMounted(true);
-  }, []);
-
-  // テーマ適用: テーマ変更時にDOM classを更新してローカルストレージに保存
-  useEffect(() => {
-    if (!mounted) return;
-
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
+  const data = useRouteLoaderData<typeof loader>("root");
+  const fetcher = useFetcher();
+  const theme = data?.theme ?? "dark";
 
   const handleToggleClick = () => {
-    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+    const newTheme = theme === "dark" ? "light" : "dark";
+    fetcher.submit({ theme: newTheme }, { method: "post", action: "/" });
   };
-
-  // SSR時はハイドレーションミスマッチを防ぐため何も表示しない
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <button
       type="button"
       onClick={handleToggleClick}
-      className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-400 dark:border-gray-600"
+      className="w-full flex items-center justify-center px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 font-medium"
       aria-label="テーマを切り替える"
     >
       <svg
-        className={`w-6 h-6 text-yellow-400 ${theme === "dark" ? "hidden" : "block"}`}
+        className={`w-6 h-6 text-yellow-500 dark:text-yellow-400 ${theme === "dark" ? "hidden" : "block"}`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >

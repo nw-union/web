@@ -7,8 +7,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "react-router";
 import type { Route } from "./+types/root.ts";
+import { FooterNav } from "./components/FooterNav";
+import { createThemeCookie, getThemeFromCookie, type Theme } from "./util";
 
 import "./app.css";
 
@@ -29,6 +32,30 @@ export const links: Route.LinksFunction = () => [
   { rel: "apple-touch-icon", sizes: "180x180", href: "/icon-180.png" },
 ];
 
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { auth } = context;
+  const isAuthenticated = (await auth.auth(request)).isOk();
+  const cookieHeader = request.headers.get("Cookie");
+  const theme = getThemeFromCookie(cookieHeader) ?? "dark";
+  return { isAuthenticated, theme };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const theme = formData.get("theme") as Theme;
+
+  if (theme !== "light" && theme !== "dark") {
+    return new Response("Invalid theme", { status: 400 });
+  }
+
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Set-Cookie": createThemeCookie(theme),
+    },
+  });
+}
+
 export const meta: MetaFunction = () => {
   return [
     { charset: "utf-8" },
@@ -37,21 +64,25 @@ export const meta: MetaFunction = () => {
       name: "viewport",
       content: "width=device-width,initial-scale=1",
     },
+
     // iPhoneホーム画面追加時の全画面表示設定
-    // {
-    //   name: "apple-mobile-web-app-capable",
-    //   content: "yes",
-    // },
-    // {
-    //   name: "apple-mobile-web-app-status-bar-style",
-    //   content: "black-translucent",
-    // },
+    {
+      name: "apple-mobile-web-app-capable",
+      content: "yes",
+    },
+    {
+      name: "apple-mobile-web-app-status-bar-style",
+      content: "black-translucent",
+    },
   ];
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useRouteLoaderData<typeof loader>("root");
+  const theme = data?.theme ?? "dark";
+
   return (
-    <html lang="ja" className="bg-white dark:bg-gray-900">
+    <html lang="ja" className={theme === "dark" ? "dark" : ""}>
       <head>
         <Meta />
         <Links />
@@ -66,7 +97,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const data = useRouteLoaderData<typeof loader>("root");
+  const isAuthenticated = data?.isAuthenticated ?? false;
+
+  return (
+    <>
+      <Outlet />
+      {isAuthenticated && <FooterNav />}
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
