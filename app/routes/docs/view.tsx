@@ -3,7 +3,7 @@ import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { createMetaTags } from "../../util";
 import type { Route } from "./+types/view.ts";
@@ -53,6 +53,7 @@ export const meta = ({ loaderData }: Route.MetaArgs) => {
  */
 export default function Show({ loaderData }: Route.ComponentProps) {
   const { doc, isLogin, slug } = loaderData;
+  const [isStandalone, setIsStandalone] = useState(false);
 
   // tiptap エディタの初期化
   const editor = useEditor({
@@ -68,6 +69,15 @@ export default function Show({ loaderData }: Route.ComponentProps) {
     editable: false, // 閲覧モードのため編集不可
     immediatelyRender: false, // SSR環境での水和ミスマッチを回避
   });
+
+  // PWAのスタンドアローンモードを検出
+  useEffect(() => {
+    const isStandaloneMode =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      ("standalone" in window.navigator &&
+        (window.navigator as { standalone: boolean }).standalone === true);
+    setIsStandalone(isStandaloneMode);
+  }, []);
 
   // ドキュメントの body を JSON としてパースしてエディタに設定
   useEffect(() => {
@@ -95,7 +105,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       {isLogin && (
         <Link
           to={`/docs/${slug}/edit`}
-          className="fixed bottom-20 right-6 w-12 h-12 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 border border-gray-400 dark:border-gray-600 z-40 hover:scale-110"
+          className={`fixed ${isStandalone ? "bottom-26" : "bottom-20"} right-6 w-12 h-12 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 border border-gray-400 dark:border-gray-600 z-40 hover:scale-110`}
           aria-label="ドキュメントを編集"
         >
           <svg

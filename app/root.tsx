@@ -7,6 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigation,
   useRouteLoaderData,
 } from "react-router";
 import type { Route } from "./+types/root.ts";
@@ -99,10 +100,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
   const isAuthenticated = data?.isAuthenticated ?? false;
+  const navigation = useNavigation();
+  const isNavigating = navigation.state === "loading";
 
   return (
     <>
+      {/* ローディングバー */}
+      {isNavigating && (
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <div className="h-1 bg-blue-500 animate-progress-bar shadow-lg shadow-blue-500/50" />
+        </div>
+      )}
+
       <Outlet />
+
+      {/* フッターナビゲーション (ログイン時のみ) */}
       {isAuthenticated && <FooterNav />}
     </>
   );
