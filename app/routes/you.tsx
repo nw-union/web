@@ -60,7 +60,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               reloadDocument
               className="w-full px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-colors duration-200 text-center border border-gray-300 dark:border-gray-600"
             >
-              ログアウト
+              Sign Out
             </Link>
           </div>
         </div>

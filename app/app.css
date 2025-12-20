@@ -7,6 +7,7 @@
   /* フォントファミリーの追加 */
   --font-sg: "Sawarabi Gothic", "Inter", sans-serif;
   --font-vt323: "VT323", "Inter", monospace;
+  --font-dot-gothic: "DotGothic16", sans-serif;
 }
 
 /* HTMLクラスベースのダークモード */

@@ -25,7 +25,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sawarabi+Gothic&family=VT323&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sawarabi+Gothic&family=VT323&family=DotGothic16&display=swap",
   },
   { rel: "manifest", href: "/manifest.json" },
   // iOS用のアイコン設定
@@ -108,7 +108,7 @@ export default function App() {
       {/* ローディングバー */}
       {isNavigating && (
         <div className="fixed top-0 left-0 right-0 z-50">
-          <div className="h-1 bg-blue-500 animate-progress-bar shadow-lg shadow-blue-500/50" />
+          <div className="h-px bg-blue-500 animate-progress-bar shadow-lg shadow-blue-500/50" />
         </div>
       )}
 
