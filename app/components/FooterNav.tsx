@@ -24,6 +24,7 @@ export function FooterNav() {
         <div className="flex justify-around items-center h-15">
           <NavLink
             to="/"
+            prefetch="intent"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
@@ -44,6 +45,7 @@ export function FooterNav() {
 
           <NavLink
             to="/docs"
+            prefetch="intent"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
@@ -64,6 +66,7 @@ export function FooterNav() {
 
           <NavLink
             to="/videos"
+            prefetch="intent"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
@@ -84,6 +87,7 @@ export function FooterNav() {
 
           <NavLink
             to="/you"
+            prefetch="intent"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
                 isActive
