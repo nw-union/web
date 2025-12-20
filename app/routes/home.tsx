@@ -5,6 +5,7 @@ import {
   DiscordIcon,
   GitHubIcon,
   ShopIcon,
+  SignInIcon,
   YouTubeIcon,
 } from "../components/Icons";
 import { createMetaTags } from "../util";
@@ -18,6 +19,8 @@ const ASCII_ART = ` ███╗   ██╗ ██╗    ██╗ ██╗   
  ╚═╝  ╚═══╝  ╚══╝╚══╝   ╚═════╝`;
 
 const ABOUT_TEXT = "Hangout crew. Lovers of Culture, Art and Tech!";
+const SIGNIN_NOTE_TEXT =
+  "※ NWUメンバーは、ここからサインインできます\n※ メンバーでない方は、まずは気軽に Discord に入ってください。一緒に遊びましょう!";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { log, auth } = context;
@@ -37,6 +40,7 @@ export const meta = (_: Route.MetaArgs) =>
 export default function Home({ loaderData }: Route.ComponentProps) {
   const isLogin = loaderData;
   const aboutTextRef = useRef<HTMLDivElement>(null);
+  const signinNoteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // prefers-reduced-motionをチェック
@@ -50,9 +54,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         "terminal-output-1",
         "terminal-name",
         "terminal-about",
-        "terminal-signup",
         "terminal-output-3",
         "terminal-links",
+        "terminal-signin-note",
       ];
 
       elementIds.forEach((id) => {
@@ -65,12 +69,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       // テキストコンテンツも即座に設定
       const name = document.getElementById("terminal-name");
       const about = document.getElementById("terminal-about");
+      const signinNote = document.getElementById("terminal-signin-note");
 
       if (name) {
         name.textContent = ASCII_ART;
       }
       if (about) {
         about.textContent = ABOUT_TEXT;
+      }
+      if (signinNote) {
+        signinNote.textContent = SIGNIN_NOTE_TEXT;
       }
 
       return; // クリーンアップ不要
@@ -88,9 +96,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
     let shouldStop = false;
     const timeouts: number[] = [];
+    let glitchSigninNote: GlitchText | null = null;
 
     // 全ての要素にフェードインアニメーションを適用
-    const fadeElements = ["terminal-name", "terminal-signup", "terminal-links"];
+    const fadeElements = ["terminal-name", "terminal-links"];
 
     fadeElements.forEach((id) => {
       const element = document.getElementById(id);
@@ -148,16 +157,67 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     }, 3000);
     timeouts.push(glitchTimeout);
 
+    // 注意書きのタイプライティングアニメーション（ログインしていない場合のみ）
+    if (!isLogin) {
+      const signinNoteElement = document.getElementById("terminal-signin-note");
+      if (signinNoteElement) {
+        signinNoteElement.style.opacity = "1";
+        signinNoteElement.textContent = "";
+
+        let charIndex = 0;
+        const typeSpeed = 50;
+        const startDelay = 1000; // ABOUT_TEXTの後に開始
+
+        const typeTimeout = window.setTimeout(() => {
+          const typeInterval = window.setInterval(() => {
+            if (shouldStop) {
+              clearInterval(typeInterval);
+              return;
+            }
+
+            if (charIndex < SIGNIN_NOTE_TEXT.length) {
+              signinNoteElement.textContent = SIGNIN_NOTE_TEXT.substring(
+                0,
+                charIndex + 1,
+              );
+              charIndex++;
+            } else {
+              clearInterval(typeInterval);
+            }
+          }, typeSpeed);
+
+          timeouts.push(typeInterval);
+        }, startDelay);
+
+        timeouts.push(typeTimeout);
+
+        // 注意書きの文字化けアニメーション
+        glitchSigninNote = new GlitchText(SIGNIN_NOTE_TEXT);
+        const glitchSigninTimeout = window.setTimeout(
+          () => {
+            if (!shouldStop && glitchSigninNote) {
+              glitchSigninNote.init(signinNoteRef.current);
+            }
+          },
+          startDelay + SIGNIN_NOTE_TEXT.length * 50 + 3000,
+        );
+        timeouts.push(glitchSigninTimeout);
+      }
+    }
+
     // クリーンアップ関数
     return () => {
       shouldStop = true;
       glitchAbout.destroy();
+      if (glitchSigninNote) {
+        glitchSigninNote.destroy();
+      }
       for (const id of timeouts) {
         clearTimeout(id);
         clearInterval(id);
       }
     };
-  }, []);
+  }, [isLogin]);
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
@@ -173,17 +233,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               id="terminal-about"
               ref={aboutTextRef}
             ></div>
-            {!isLogin && (
-              <div className="opacity-0 mt-6" id="terminal-signup">
-                <Link
-                  to="/signin"
-                  reloadDocument
-                  className="inline-block px-6 py-1 border-2 border-green-600 dark:border-green-400 text-green-600 dark:text-green-400 bg-transparent hover:border-cyan-600 hover:dark:border-cyan-400 hover:text-cyan-600 hover:dark:text-cyan-400 transition-colors duration-300 font-vt323 text-xl"
-                >
-                  JOIN US
-                </Link>
-              </div>
-            )}
           </div>
 
           <div className="my-4 mb-6 opacity-0" id="terminal-output-3">
@@ -227,6 +276,23 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   <span className="text-lg md:text-xl">GitHub</span>
                 </a>
               </div>
+              {!isLogin && (
+                <>
+                  <Link
+                    to="/signin"
+                    reloadDocument
+                    className="mt-12 text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
+                  >
+                    <SignInIcon className="w-8 h-8 md:w-10 md:h-10 stroke-current" />
+                    <span className="text-lg md:text-xl">SignIn</span>
+                  </Link>
+                  <div
+                    className="text-green-600 dark:text-green-400 font-dot-gothic text-xs whitespace-pre-line opacity-0 overflow-hidden"
+                    id="terminal-signin-note"
+                    ref={signinNoteRef}
+                  ></div>
+                </>
+              )}
             </div>
           </div>
         </div>
