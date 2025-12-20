@@ -193,10 +193,20 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const { docs, isAuthenticated } = loaderData;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [isStandalone, setIsStandalone] = useState(false);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const titleId = useId();
   const titleInputRef = useRef<HTMLInputElement>(null);
+
+  // PWAのスタンドアローンモードを検出
+  useEffect(() => {
+    const isStandaloneMode =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      ("standalone" in window.navigator &&
+        (window.navigator as { standalone: boolean }).standalone === true);
+    setIsStandalone(isStandaloneMode);
+  }, []);
 
   // モーダルが開いたときにタイトル入力欄にフォーカス
   useEffect(() => {
@@ -229,7 +239,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-20 right-6 w-12 h-12 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 border border-gray-400 dark:border-gray-600 z-40 hover:scale-110"
+          className={`fixed ${isStandalone ? "bottom-26" : "bottom-20"} right-6 w-12 h-12 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 border border-gray-400 dark:border-gray-600 z-40 hover:scale-110`}
           aria-label="新規ドキュメント作成"
         >
           <svg
