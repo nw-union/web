@@ -13,7 +13,7 @@ import type { Route } from "./+types/view.ts";
  *
  */
 export async function loader({ context, params, request }: Route.LoaderArgs) {
-  const { log, repo, auth } = context;
+  const { log, wf, auth } = context;
 
   log.info(`🔄 ドキュメント詳細 Loader. slug: ${params.slug}`);
   const isLogin = (await auth.auth(request)).isOk();
@@ -25,12 +25,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   }
   const id = idRes.value;
 
-  const docRes = await repo.readDoc(id);
+  const docRes = await wf.doc.get({ id });
   if (docRes.isErr()) {
     log.error(`ドキュメントの取得に失敗しました: ${params.slug}`, docRes.error);
     return new Response("Not Found", { status: 404 });
   }
-  const doc = docRes.value;
+  const { doc } = docRes.value;
 
   if (!isLogin && doc.status !== "public") {
     log.warn(`Unauthorized access to private document: ${params.slug}`);

@@ -20,6 +20,7 @@ export default [
   // auth
   route("signin", "routes/signin.ts"),
   route("signout", "routes/signout.ts"),
+  route("fileupload", "routes/fileupload.ts"),
 
   // SNS リダイレクト
   route("discord", "routes/discord.ts"),

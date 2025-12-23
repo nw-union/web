@@ -29,10 +29,6 @@
 
 ## 🔰 Getting Started
 
-### Codespaces
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=nw-union/web)
-
 ### ローカルサーバー起動方法
 
 0. 最新バージョンの [Bun](https://bun.com/) が動く環境であること

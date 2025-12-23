@@ -9,14 +9,17 @@ import {
   inArray,
 } from "drizzle-orm";
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
-import { fromPromise, ok, okAsync, Result, type ResultAsync } from "neverthrow";
+import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
 import { match } from "ts-pattern";
-import type {
-  Doc,
-  DocInfo,
-  DocRepositoryPort,
-  SearchDocQuery,
-} from "../../type";
+import type { DocRepositoryPort } from "../../domain/Doc/port";
+import type { Doc } from "../../domain/Doc/type";
+import {
+  newDocId,
+  newString1To100,
+  newString1To100OrNone,
+  newUrlOrNone,
+} from "../../domain/vo";
+import type { Doc as DocDto, DocInfo, SearchDocQuery } from "../../type";
 import { type DocStatusDbEnum, docTable } from "./schema";
 import { dbErrorHandling } from "./util";
 
@@ -39,14 +42,18 @@ type DocInsertModel = InferInsertModel<typeof docTable>;
 const convToDocInsertModel = (doc: Doc): DocInsertModel => ({
   id: doc.id,
   title: doc.title,
-  description: doc.description,
+  description: match(doc.description)
+    .with(null, () => "")
+    .otherwise((d) => d),
   status: match(doc.status)
-    .with("draft", (): DocStatusDbEnum => "draft")
+    // .with("draft", (): DocStatusDbEnum => "draft")
     .with("private", (): DocStatusDbEnum => "private")
     .with("public", (): DocStatusDbEnum => "public")
     .exhaustive(),
   body: doc.body,
-  thumbnailUrl: doc.thumbnailUrl,
+  thumbnailUrl: match(doc.thumbnailUrl)
+    .with(null, () => "")
+    .otherwise((u) => u),
   createdAt: doc.createdAt,
   updatedAt: doc.updatedAt,
 });
@@ -67,40 +74,59 @@ const convToDocInsertModelList = (doc: Doc | Doc[]): DocInsertModel[] =>
  *
  */
 const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
-  ok({
+  Result.combine([
+    newDocId(d.id, "Doc.id"),
+    newString1To100(d.title, "Doc.title"),
+    newString1To100OrNone(d.description, "Doc.description"),
+    newUrlOrNone(d.thumbnailUrl, "Doc.thumbnailUrl"),
+  ]).map(([id, title, description, thumbnailUrl]) => ({
     type: "Doc",
-    id: d.id,
-    title: d.title,
-    description: d.description,
+    id: id,
+    title: title,
+    description: description,
     status: match(d.status)
-      .with("draft", (): "draft" => "draft")
-      .with("private", (): "private" => "private")
-      .with("public", (): "public" => "public")
+      .with("draft", () => "private" as const)
+      .with("private", () => "private" as const)
+      .with("public", () => "public" as const)
       .exhaustive(),
     body: d.body,
-    thumbnailUrl: d.thumbnailUrl,
+    thumbnailUrl: thumbnailUrl,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
-  });
+  }));
 
-const validateDocInfo = (d: DocSelectModel): Result<DocInfo, AppError> =>
-  ok({
-    id: d.id,
-    slug: toShortUuid(d.id).unwrapOr(d.id), // 変換に失敗したら id をそのまま使う
-    title: d.title,
-    description: d.description,
-    status: match(d.status)
-      .with("draft", (): "draft" => "draft")
-      .with("private", (): "private" => "private")
-      .with("public", (): "public" => "public")
-      .exhaustive(),
-    thumbnailUrl: d.thumbnailUrl,
-    createdAt: d.createdAt,
-    updatedAt: d.updatedAt,
-  });
-const validateDocInfoList = (
-  ds: DocSelectModel[],
-): Result<DocInfo[], AppError> => Result.combine(ds.map(validateDocInfo));
+const validateDocInfo = (d: DocSelectModel): DocInfo => ({
+  id: d.id,
+  slug: toShortUuid(d.id).unwrapOr(d.id), // 変換に失敗したら id をそのまま使う
+  title: d.title,
+  description: d.description,
+  status: match(d.status)
+    .with("draft", () => "private" as const)
+    .with("private", () => "private" as const)
+    .with("public", () => "public" as const)
+    .exhaustive(),
+  thumbnailUrl: d.thumbnailUrl,
+  createdAt: d.createdAt,
+  updatedAt: d.updatedAt,
+});
+
+const validateDocInfoList = (ds: DocSelectModel[]): DocInfo[] =>
+  ds.map(validateDocInfo);
+
+const validateDocDto = (d: DocSelectModel): DocDto => ({
+  id: d.id,
+  title: d.title,
+  description: d.description,
+  status: match(d.status)
+    .with("draft", () => "private" as const)
+    .with("private", () => "private" as const)
+    .with("public", () => "public" as const)
+    .exhaustive(),
+  body: d.body,
+  thumbnailUrl: d.thumbnailUrl,
+  createdAt: d.createdAt,
+  updatedAt: d.updatedAt,
+});
 
 // ----------------------------------------------------------------------------
 // Adapter Logic [外部接続]
@@ -202,14 +228,16 @@ export const newDocRepository = (
   db: AnyD1Database,
   log: Logger,
 ): DocRepositoryPort => ({
-  upsertDoc: (doc) =>
+  upsert: (doc) =>
     okAsync(doc)
       .map(convToDocInsertModelList)
       .andThen(upsertDocInsertModel(db, log)),
 
-  readDoc: (id) =>
+  read: (id) =>
     okAsync(id.toString()).andThen(readDoc(db, log)).andThen(validateDoc),
 
-  searchDoc: (q) =>
-    okAsync(q).andThen(searchDocs(db, log)).andThen(validateDocInfoList),
+  get: ({ id }) => okAsync(id).andThen(readDoc(db, log)).map(validateDocDto),
+
+  search: (q) =>
+    okAsync(q).andThen(searchDocs(db, log)).map(validateDocInfoList),
 });
