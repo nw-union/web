@@ -17,6 +17,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
+    "@mjackson/form-data-parser": "^0.9.1",
     "@nw-union/nw-utils": "^0.0.6",
     "@react-router/cloudflare": "^7.11.0",
     "@tiptap/extension-dropcursor": "^3.13.0",

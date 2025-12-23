@@ -21,7 +21,7 @@ export const validateDocUpdate = (
     return err(new ValidationError("タイトルが空です"));
   }
 
-  const validStatuses: DocStatus[] = ["public", "private", "draft"];
+  const validStatuses: DocStatus[] = ["public", "private"];
   if (!status || !validStatuses.includes(status as DocStatus)) {
     return err(new ValidationError("無効なステータスです"));
   }

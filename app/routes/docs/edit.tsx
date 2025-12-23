@@ -5,16 +5,16 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useId, useState } from "react";
 import { Form, useNavigation } from "react-router";
+import type { UpdateDocCmd } from "../../../type.ts";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import type { Route } from "./+types/edit.ts";
-import { validateDocUpdate } from "./validation.ts";
 
 /**
  * ドキュメント編集 Loader
  *
  */
 export async function loader({ context, params, request }: Route.LoaderArgs) {
-  const { log, repo, auth } = context;
+  const { log, wf, auth } = context;
 
   log.info(`🔄 ドキュメント編集 Loader. slug: ${params.slug}`);
 
@@ -25,6 +25,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  // URLパラメータから ドキュメントの ID を取得
   const idRes = fromShortUuid(params.slug);
   if (idRes.isErr()) {
     log.error(`Invalid slug: ${params.slug}`);
@@ -32,8 +33,9 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   }
   const id = idRes.value;
 
-  return await repo.readDoc(id).match(
-    (doc) => doc,
+  // ドキュメントを取得
+  return await wf.doc.get({ id }).match(
+    (evt) => ({ doc: evt.doc }),
     (e) => {
       log.error("ドキュメントの取得に失敗しました", e);
       return new Response("Not Found", { status: 404 });
@@ -46,7 +48,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  *
  */
 export async function action({ context, params, request }: Route.ActionArgs) {
-  const { log, repo } = context;
+  const { log, wf } = context;
 
   log.info(`🔄 ドキュメント編集 Action. slug: ${params.slug}`);
   const idRes = fromShortUuid(params.slug);
@@ -56,14 +58,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   }
   const id = idRes.value;
 
-  // ドキュメントを取得
-  const docRes = await repo.readDoc(id);
-  if (docRes.isErr()) {
-    log.error("ドキュメントの取得に失敗しました", docRes.error);
-    return new Response("Not Found", { status: 404 });
-  }
-  const doc = docRes.value;
-
   // フォームデータを取得
   const formData = await request.formData();
   const body = formData.get("body") as string;
@@ -71,35 +65,25 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const description = formData.get("description") as string;
   const status = formData.get("status") as string;
 
-  // バリデーション
-  const validationResult = validateDocUpdate(body, title, status);
-  if (validationResult.isErr()) {
-    log.error(validationResult.error.message);
-    return new Response("Bad Request", { status: 400 });
-  }
+  // コマンド作成
+  const cmd: UpdateDocCmd = {
+    id,
+    title,
+    body,
+    description: description || "",
+    status: status as "public" | "private",
+    thumbnailUrl: "", // FIXME
+    userId: "", // FIXME
+  };
 
-  const {
-    body: validBody,
-    title: validTitle,
-    status: validStatus,
-  } = validationResult.value;
-
-  // ドキュメントを更新
-  const updatedDocRes = await repo.upsertDoc({
-    ...doc,
-    title: validTitle,
-    description,
-    status: validStatus,
-    body: validBody,
-    updatedAt: new Date(),
-  });
-  if (updatedDocRes.isErr()) {
-    log.error("ドキュメントの更新に失敗しました", updatedDocRes.error);
-    return new Response("Internal Server Error", { status: 500 });
-  }
-
-  log.info("ドキュメントを更新しました");
-  return { success: true };
+  // ドキュメントを編集
+  return await wf.doc.update(cmd).match(
+    () => ({ success: true }),
+    (e) => {
+      log.error("ドキュメントの更新に失敗しました", e);
+      return new Response("Internal Server Error", { status: 500 });
+    },
+  );
 }
 
 /**
@@ -107,7 +91,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
  *
  */
 export default function Show({ loaderData }: Route.ComponentProps) {
-  const doc = loaderData;
+  const { doc } = loaderData;
   const [editorContent, setEditorContent] = useState<object | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState(doc.title);

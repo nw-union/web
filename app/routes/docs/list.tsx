@@ -1,7 +1,7 @@
 import { toShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import { useEffect, useId, useRef, useState } from "react";
 import { Form, Link, redirect, useNavigation } from "react-router";
-import type { Doc, DocInfo, SearchDocQuery } from "../../../type";
+import type { DocInfo, SearchDocQuery } from "../../../type";
 import { createMetaTags } from "../../util";
 import type { Route } from "./+types/list";
 
@@ -10,7 +10,7 @@ import type { Route } from "./+types/list";
  *
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
-  const { log, repo, auth } = context;
+  const { log, auth, wf } = context;
 
   log.info("🔄 ドキュメント一覧 Loader");
 
@@ -21,8 +21,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const q: SearchDocQuery = userRes.isOk() ? {} : { statuses: ["public"] };
 
   // ドキュメント一覧を取得
-  const docs = await repo.searchDoc(q).match(
-    (docs) => docs,
+  const docs = await wf.doc.search(q).match(
+    (evt) => evt.docs,
     (e) => {
       log.error("ドキュメント一覧の取得に失敗しました", e);
       return [] as DocInfo[]; // エラー時は空の配列を返す
@@ -37,7 +37,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
  * 新規ドキュメント作成
  */
 export async function action({ context, request }: Route.ActionArgs) {
-  const { log, repo, auth } = context;
+  const { log, wf, auth } = context;
 
   log.info("🔄 ドキュメント作成 Action");
 
@@ -58,46 +58,25 @@ export async function action({ context, request }: Route.ActionArgs) {
   }
 
   // 新規ドキュメントを作成
-  const id = crypto.randomUUID();
-  const now = new Date();
-  const newDoc: Doc = {
-    type: "Doc",
-    id,
-    title: title.trim(),
-    description: "",
-    status: "private",
-    body: JSON.stringify({
-      type: "doc",
-      content: [
-        {
-          type: "heading",
-          attrs: { level: 1 },
-          content: [{ type: "text", text: title.trim() }],
-        },
-        { type: "paragraph" },
-      ],
-    }),
-    thumbnailUrl: "",
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  // DBに保存
-  const result = await repo.upsertDoc(newDoc);
-  if (result.isErr()) {
-    log.error("ドキュメントの作成に失敗しました", result.error);
-    return new Response("Internal Server Error", { status: 500 });
-  }
-
-  // ShortUUIDに変換して編集ページにリダイレクト
-  const slugRes = toShortUuid(id);
-  if (slugRes.isErr()) {
-    log.error("SlugへのUUID変換に失敗しました");
-    return new Response("Internal Server Error", { status: 500 });
-  }
-
-  log.info(`ドキュメントを作成しました: ${id}`);
-  return redirect(`/docs/${slugRes.value}/edit`);
+  return (
+    await wf.doc.create({
+      title: title,
+      userId: userRes.value,
+    })
+  ).match(
+    ({ id }) => {
+      const slugRes = toShortUuid(id);
+      if (slugRes.isErr()) {
+        log.error("SlugへのUUID変換に失敗しました");
+        return new Response("Internal Server Error", { status: 500 });
+      }
+      return redirect(`/docs/${slugRes.value}/edit`);
+    },
+    (e) => {
+      log.error("ドキュメントの作成に失敗しました", e);
+      return new Response("Internal Server Error", { status: 500 });
+    },
+  );
 }
 
 export const meta = (_: Route.MetaArgs) =>

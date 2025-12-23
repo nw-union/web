@@ -6,8 +6,13 @@ import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
 import { newDocRepository } from "./adapter/drizzle/doc";
-import { newVideoRepository } from "./adapter/drizzle/movie";
-import type { DocRepositoryPort, VideoRepositoryPort } from "./type";
+import { newVideoRepository } from "./adapter/drizzle/video";
+import { newStorage } from "./adapter/r2/putBucket";
+import { newTime } from "./adapter/time/now";
+import { newDocWorkFlows } from "./domain/Doc/workflow";
+import { newSystemWorkFlows } from "./domain/System/workflow";
+import { newVideoWorkFlows } from "./domain/Video/workflow";
+import type { DocWorkFlows, SystemWorkFlows, VideoWorkFlows } from "./type";
 
 declare global {
   interface CloudflareEnvironment extends Env {}
@@ -21,8 +26,11 @@ declare module "react-router" {
     };
     log: Logger;
     auth: Auth;
-    repo: DocRepositoryPort;
-    videoRepo: VideoRepositoryPort;
+    wf: {
+      doc: DocWorkFlows;
+      video: VideoWorkFlows;
+      sys: SystemWorkFlows;
+    };
   }
 }
 
@@ -34,13 +42,19 @@ type GetLoadContextArgs = {
 export function getLoadContext({ context }: GetLoadContextArgs) {
   const { cloudflare } = context;
   const log = createLog(cloudflare.env);
+  const db = cloudflare.env.DB;
 
   return {
     cloudflare,
     log,
     auth: createAuth(cloudflare.env),
-    repo: newDocRepository(cloudflare.env.DB, log),
-    videoRepo: newVideoRepository(cloudflare.env.DB, log),
+    wf: {
+      doc: newDocWorkFlows(newDocRepository(db, log), newTime()),
+      video: newVideoWorkFlows(newVideoRepository(db, log)),
+      sys: newSystemWorkFlows(
+        newStorage(cloudflare.env.BUCKET, cloudflare.env.STORAGE_DOMAIN, log),
+      ),
+    },
   };
 }
 

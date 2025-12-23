@@ -8,7 +8,7 @@ import type { Route } from "./+types/videos";
  *
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
-  const { log, videoRepo, auth } = context;
+  const { log, wf, auth } = context;
 
   log.info("🔄 ビデオ一覧 Loader");
 
@@ -20,15 +20,13 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   }
 
   // ドキュメント一覧を取得
-  const videos = await videoRepo.searchVideo().match(
-    (v) => v,
+  return await wf.video.search({}).match(
+    (v) => ({ videos: v.videos }),
     (e) => {
       log.error("ビデオ一覧の取得に失敗しました", e);
-      return [] as Video[]; // エラー時は空の配列を返す
+      return { videos: [] as Video[] }; // エラー時は空の配列を返す
     },
   );
-
-  return { videos };
 }
 
 export const meta = (_: Route.MetaArgs) =>

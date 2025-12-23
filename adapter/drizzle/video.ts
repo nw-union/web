@@ -2,7 +2,8 @@ import type { AppError, Logger } from "@nw-union/nw-utils";
 import { desc, type InferSelectModel } from "drizzle-orm";
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, ok, Result } from "neverthrow";
-import type { Video, VideoRepositoryPort } from "../../type";
+import type { VideoRepositoryPort } from "../../domain/Video/port";
+import type { Video as VideoDto } from "../../type";
 import { videoTable } from "./schema";
 import { dbErrorHandling } from "./util";
 
@@ -15,10 +16,8 @@ type VideoSelectModel = InferSelectModel<typeof videoTable>;
 // ----------------------------------------------------------------------------
 // Converter (Domain Type -> DTO)
 // ----------------------------------------------------------------------------
-const validateVideoInfo = (d: VideoSelectModel): Result<Video, AppError> =>
+const validateVideoInfo = (d: VideoSelectModel): Result<VideoDto, AppError> =>
   ok({
-    type: "Video",
-
     id: d.id,
     title: d.title,
     channelName: d.channelName,
@@ -26,8 +25,9 @@ const validateVideoInfo = (d: VideoSelectModel): Result<Video, AppError> =>
     uploadedAt: d.uploadedAt,
     isPublic: d.isPublic === 1, // FIXME
   });
-const validateVideoList = (ds: VideoSelectModel[]): Result<Video[], AppError> =>
-  Result.combine(ds.map(validateVideoInfo));
+const validateVideoList = (
+  ds: VideoSelectModel[],
+): Result<VideoDto[], AppError> => Result.combine(ds.map(validateVideoInfo));
 
 // ----------------------------------------------------------------------------
 // Adapter Logic [外部接続]
@@ -66,5 +66,5 @@ export const newVideoRepository = (
   db: AnyD1Database,
   log: Logger,
 ): VideoRepositoryPort => ({
-  searchVideo: () => searchVideos(db, log)().andThen(validateVideoList),
+  search: () => searchVideos(db, log)().andThen(validateVideoList),
 });

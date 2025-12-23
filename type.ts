@@ -3,8 +3,9 @@ import { newType } from "@nw-union/nw-utils/lib/zod";
 import type { ResultAsync } from "neverthrow";
 import z from "zod";
 
+// ---------------------------
+
 export type Doc = {
-  type: "Doc";
   id: string;
   title: string;
   description: string;
@@ -26,14 +27,9 @@ export type DocInfo = {
   updatedAt: Date;
 };
 
-export type SearchDocQuery = {
-  statuses?: DocStatus[];
-};
-
 const docStatus = z.enum([
   "public", // 公開
   "private", // メンバー限定
-  "draft", // 下書き
 ]);
 export type DocStatus = z.infer<typeof docStatus>;
 export const allDocStatus = docStatus.options;
@@ -41,9 +37,66 @@ export const newDocStatus = newType(docStatus, "DocStatus");
 
 // ---------------------------
 
-export type Video = {
-  type: "Video";
+export interface DocWorkFlows {
+  // ドキュメント作成
+  create(cmd: CreateDocCmd): ResultAsync<CreateDocEvt, AppError>;
+  // ドキュメントを編集する
+  update(cmd: UpdateDocCmd): ResultAsync<UpdateDocEvt, AppError>;
 
+  // ドキュメントを見る
+  get(q: GetDocQuery): ResultAsync<GetDocEvt, AppError>;
+  // ドキュメントを探す
+  search(q: SearchDocQuery): ResultAsync<SearchDocEvt, AppError>;
+}
+
+// CreateDoc コマンド
+export type CreateDocCmd = {
+  title: string;
+  userId: string; // 作成者ID
+};
+
+// CreateDoc イベント
+export type CreateDocEvt = {
+  id: string;
+};
+
+// UpdateDoc コマンド
+export type UpdateDocCmd = {
+  id: string; // 編集するドキュメントのID
+  title: string;
+  description: string;
+  status: DocStatus;
+  body: string;
+  thumbnailUrl: string;
+  userId: string; // 編集者ID
+};
+
+// UpdateDoc イベント
+export type UpdateDocEvt = undefined;
+
+// GetDoc クエリ
+export type GetDocQuery = {
+  id: string;
+};
+
+// GetDoc イベント
+export type GetDocEvt = {
+  doc: Doc;
+};
+
+// SearchDoc クエリ
+export type SearchDocQuery = {
+  statuses?: DocStatus[];
+};
+
+// SearchDoc イベント
+export type SearchDocEvt = {
+  docs: DocInfo[];
+};
+
+// ---------------------------
+
+export type Video = {
   id: string;
   title: string;
   channelName: string;
@@ -52,16 +105,32 @@ export type Video = {
   isPublic: boolean;
 };
 
-// ---------------------------
-
-// Doc Repository Port
-export interface DocRepositoryPort {
-  upsertDoc(d: Doc | Doc[]): ResultAsync<undefined, AppError>;
-  readDoc(id: string): ResultAsync<Doc, AppError>;
-  searchDoc(q: SearchDocQuery): ResultAsync<DocInfo[], AppError>;
+export interface VideoWorkFlows {
+  // エントリを探す
+  search(q: SearchVideoQuery): ResultAsync<SearchVideoEvt, AppError>;
 }
 
-// Video Repository Port
-export interface VideoRepositoryPort {
-  searchVideo(): ResultAsync<Video[], AppError>;
+// SearchVideo クエリ
+export type SearchVideoQuery = Record<string, never>;
+
+// SearchVideo イベント
+export type SearchVideoEvt = {
+  videos: Video[];
+};
+
+// ---------------------------
+
+export interface SystemWorkFlows {
+  // ファイルをアップロードする
+  uploadFile(cmd: UploadFileCmd): ResultAsync<UploadFileEvt, AppError>;
+}
+
+// UploadFile コマンド
+export interface UploadFileCmd {
+  file: Blob;
+}
+
+// UploadFile イベント
+export interface UploadFileEvt {
+  url: string;
 }
