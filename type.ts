@@ -145,14 +145,14 @@ export type User = {
 };
 
 export interface UserWorkFlows {
-  // ファイルをアップロードする
+  // ユーザーを取得する
   get(q: GetUserQuery): ResultAsync<GetUserEvt, AppError>;
 }
 
 // GetUser クエリ
 export interface GetUserQuery {
   id: string;
-  mail: string;
+  email: string;
 }
 
 // GetUser イベント

@@ -26,7 +26,7 @@ export const createUser = ([id, email, now]: [string, Email, Date]): User => ({
 /**
  * User を更新
  */
-export const updatedDoc = ([user, name, imgUrl, now]: [
+export const updateUser = ([user, name, imgUrl, now]: [
   User,
   string,
   Url | null,

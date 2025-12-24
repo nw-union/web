@@ -19,14 +19,14 @@ export const newUserWorkFlows = (
       // Email 検証
       .andThen(newEmail)
       // ユーザー取得する. 存在しなければ作成する
-      .andThen(getUser(r, t)(q.id))
+      .andThen(getOrCreateUser(r, t)(q.id))
       // DTO 変換
       .map(convToUserDto)
       // イベント生成
       .map((user) => ({ user })),
 });
 
-const getUser = // FIXME: 関数名変更
+const getOrCreateUser = // FIXME: 関数名変更
     (r: UserRepositoryPort, t: TimePort) =>
     (id: string) =>
     (email: Email): ResultAsync<User, AppError> =>
