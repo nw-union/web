@@ -30,12 +30,6 @@ bun run start
 
 ### Code Quality
 ```bash
-# Format code with Biome
-bun run fmt
-
-# Lint code with Biome
-bun run lint
-
 # Type check with TypeScript
 bun run typecheck
 
@@ -63,9 +57,6 @@ bun run db:generate
 # Apply migrations to local D1 database
 bun run db:migrate:local
 
-# Apply migrations to development environment
-bun run db:migrate:development
-
 # Apply migrations to production environment
 bun run db:migrate:production
 
@@ -82,11 +73,13 @@ bun run typegen
 
 The codebase follows hexagonal architecture principles with clear separation between domain, ports, and adapters:
 
-**Domain Layer** (`domain/`): Each domain (Doc, User, Video, System) has a consistent structure:
+**Domain Layer** (`domain/`): Most domains (Doc, User, Video) follow a consistent structure:
 - **type.ts**: Core business types and value objects
 - **port.ts**: Port interfaces defining contracts for external adapters
 - **logic.ts**: Pure business logic functions
 - **workflow.ts**: Orchestrates business operations using ports and logic
+
+Note: The System domain only contains workflow.ts as it primarily orchestrates storage operations without complex business logic.
 
 **Adapter Layer** (`adapter/`): External integrations implementing port interfaces:
 - **drizzle/**: Database adapters (doc.ts, user.ts, video.ts) implementing repository ports
@@ -206,4 +199,4 @@ Configured in `wrangler.jsonc` and accessed via `context.cloudflare.env`:
 ## Production URLs
 
 - **Production**: https://nw-union.net/
-- **Local Development**: http://localhost:4321/ (documented) or http://localhost:5173/ (actual dev server) or http://localhost:8787/ (Wrangler)
+- **Local Development**: http://localhost:5173/ (React Router dev server) or http://localhost:8787/ (Wrangler dev server)
