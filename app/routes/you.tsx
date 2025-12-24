@@ -9,18 +9,29 @@ import type { Route } from "./+types/you";
  *
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
-  const { log, auth } = context;
+  const { log, auth, wf } = context;
 
   log.info("🔄 個人ページ Loader");
 
   // ログイン状態の確認
   const userRes = await auth.auth(request);
   if (userRes.isErr()) {
-    return redirect("/signin");
+    log.error("認証に失敗しました", userRes.error);
+    // signin して, videos に戻ってくる
+    return redirect("/signin?redirectUrl=/you");
   }
-  const mail = userRes.value;
 
-  return { mail };
+  const user = await wf.user.get(userRes.value).match(
+    (evt) => evt.user,
+    (err) => {
+      log.error("ユーザ情報の取得に失敗しました", err);
+      throw err;
+    },
+  );
+
+  log.info(`👤 ユーザ情報を取得しました: ${user.name}/${user.email}`);
+
+  return { mail: userRes.value.mail };
 }
 export const meta = (_: Route.MetaArgs) =>
   createMetaTags({

@@ -16,7 +16,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const userRes = await auth.auth(request);
   if (userRes.isErr()) {
     log.error("認証に失敗しました", userRes.error);
-    return redirect("/signin?redirectTo=/movies");
+    // signin して, videos に戻ってくる
+    return redirect("/signin?redirectUrl=/videos");
   }
 
   // ドキュメント一覧を取得
@@ -112,7 +113,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {videos.map((video) => (
             <VideoCard key={video.id} video={video} />
           ))}

@@ -16,6 +16,12 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   // ログイン状態の確認
   const userRes = await auth.auth(request);
+  if (userRes.isErr()) {
+    log.error("認証に失敗しました", userRes.error);
+    // signin して, docs に戻ってくる
+    return redirect("/signin?redirectUrl=/docs");
+  }
+
   const isAuthenticated = userRes.isOk();
 
   const q: SearchDocQuery = userRes.isOk() ? {} : { statuses: ["public"] };
@@ -61,7 +67,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   return (
     await wf.doc.create({
       title: title,
-      userId: userRes.value,
+      userId: userRes.value.id,
     })
   ).match(
     ({ id }) => {
@@ -206,7 +212,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {docs.map((doc) => (
             <DocCard key={doc.id} doc={doc} />
           ))}

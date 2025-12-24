@@ -22,6 +22,6 @@ export async function loader({ context }: Route.LoaderArgs) {
       );
     });
 
-  // ログアウト後はホームページにリダイレクト
+  // サインアウト後はホームにリダイレクト
   return redirect("/", { headers });
 }

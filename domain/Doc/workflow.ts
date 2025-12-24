@@ -33,17 +33,20 @@ export const newDocWorkFlows = (
   /*
    * ドキュメントを編集する
    */
-  update: ({ id, title, description, status, body }) =>
+  update: (cmd) =>
     ResultAsync.combine([
-      okAsync(id).andThen(newDocId).andThen(r.read),
+      // 既存のドキュメントを取得
+      okAsync(cmd.id)
+        .andThen(newDocId)
+        .andThen(r.read),
       // タイトル検証
-      okAsync(title).andThen(newString1To100),
+      okAsync(cmd.title).andThen(newString1To100),
       // Description検証
-      okAsync(description).andThen(newString1To100OrNone),
+      okAsync(cmd.description).andThen(newString1To100OrNone),
       // ステータス
-      okAsync(status),
+      okAsync(cmd.status),
       // 本文
-      okAsync(body),
+      okAsync(cmd.body),
       // 現在日時取得
       t.getNow(),
     ])

@@ -6,13 +6,20 @@ import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
 import { newDocRepository } from "./adapter/drizzle/doc";
+import { newUserRepository } from "./adapter/drizzle/user";
 import { newVideoRepository } from "./adapter/drizzle/video";
 import { newStorage } from "./adapter/r2/putBucket";
 import { newTime } from "./adapter/time/now";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newSystemWorkFlows } from "./domain/System/workflow";
+import { newUserWorkFlows } from "./domain/User/workflow";
 import { newVideoWorkFlows } from "./domain/Video/workflow";
-import type { DocWorkFlows, SystemWorkFlows, VideoWorkFlows } from "./type";
+import type {
+  DocWorkFlows,
+  SystemWorkFlows,
+  UserWorkFlows,
+  VideoWorkFlows,
+} from "./type";
 
 declare global {
   interface CloudflareEnvironment extends Env {}
@@ -29,6 +36,7 @@ declare module "react-router" {
     wf: {
       doc: DocWorkFlows;
       video: VideoWorkFlows;
+      user: UserWorkFlows;
       sys: SystemWorkFlows;
     };
   }
@@ -43,14 +51,16 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
   const { cloudflare } = context;
   const log = createLog(cloudflare.env);
   const db = cloudflare.env.DB;
+  const time = newTime();
 
   return {
     cloudflare,
     log,
     auth: createAuth(cloudflare.env),
     wf: {
-      doc: newDocWorkFlows(newDocRepository(db, log), newTime()),
+      doc: newDocWorkFlows(newDocRepository(db, log), time),
       video: newVideoWorkFlows(newVideoRepository(db, log)),
+      user: newUserWorkFlows(newUserRepository(db, log), time),
       sys: newSystemWorkFlows(
         newStorage(cloudflare.env.BUCKET, cloudflare.env.STORAGE_DOMAIN, log),
       ),
@@ -59,7 +69,7 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
 }
 
 // Dependency Injection --------------------------------------------------------
-//
+
 const createAuth = (env: CloudflareEnvironment): Auth =>
   match(env.AUTH_ADAPTER)
     .with("mock", () => newAuthMock())

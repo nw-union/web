@@ -131,7 +131,7 @@ const validateDocDto = (d: DocSelectModel): DocDto => ({
 // ----------------------------------------------------------------------------
 // Adapter Logic [外部接続]
 // ----------------------------------------------------------------------------
-// upsertDocInsertModel を DB に保存する
+// DocInsertModel を DB に保存する
 const upsertDocInsertModel =
   (db: AnyD1Database, log: Logger) =>
   (docs: DocInsertModel[]): ResultAsync<undefined, AppError> =>
@@ -164,13 +164,13 @@ const upsertDocInsertModel =
       dbErrorHandling,
     );
 
-// ID でコンテンツを取得する
+// ID でドキュメントを取得する
 const readDoc =
   (db: AnyD1Database, log: Logger) =>
   (id: string): ResultAsync<DocSelectModel, AppError> =>
     fromPromise(
       (async () => {
-        log.info("💽 readContent 開始");
+        log.info("💽 readDoc 開始");
 
         // クエリ発行
         const query = drizzle(db)
