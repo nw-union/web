@@ -15,7 +15,7 @@ export const newUserWorkFlows = (
    * ユーザーを取得する
    */
   get: (q) =>
-    okAsync(q.mail)
+    okAsync(q.email)
       // Email 検証
       .andThen(newEmail)
       // ユーザー取得する. 存在しなければ作成する
@@ -26,22 +26,22 @@ export const newUserWorkFlows = (
       .map((user) => ({ user })),
 });
 
-const getOrCreateUser = // FIXME: 関数名変更
-    (r: UserRepositoryPort, t: TimePort) =>
-    (id: string) =>
-    (email: Email): ResultAsync<User, AppError> =>
-      r.read(id).orElse((err) =>
-        match(err)
-          // ユーザーが存在しない場合は新規作成
-          .with({ name: "NotFoundError" }, () =>
-            // 現在時刻取得
-            t
-              .getNow()
-              // ユーザー作成
-              .map((now) => createUser([id, email, now]))
-              // DB保存
-              .andThrough(r.upsert),
-          )
-          // その他のエラーはそのまま返す
-          .otherwise(() => errAsync(err)),
-      );
+const getOrCreateUser =
+  (r: UserRepositoryPort, t: TimePort) =>
+  (id: string) =>
+  (email: Email): ResultAsync<User, AppError> =>
+    r.read(id).orElse((err) =>
+      match(err)
+        // ユーザーが存在しない場合は新規作成
+        .with({ name: "NotFoundError" }, () =>
+          // 現在時刻取得
+          t
+            .getNow()
+            // ユーザー作成
+            .map((now) => createUser([id, email, now]))
+            // DB保存
+            .andThrough(r.upsert),
+        )
+        // その他のエラーはそのまま返す
+        .otherwise(() => errAsync(err)),
+    );

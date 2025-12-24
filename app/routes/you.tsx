@@ -21,13 +21,15 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     return redirect("/signin?redirectUrl=/you");
   }
 
-  const user = await wf.user.get(userRes.value).match(
-    (evt) => evt.user,
-    (err) => {
-      log.error("ユーザ情報の取得に失敗しました", err);
-      throw err;
-    },
-  );
+  const user = await wf.user
+    .get({ id: userRes.value.id, email: userRes.value.mail })
+    .match(
+      (evt) => evt.user,
+      (err) => {
+        log.error("ユーザ情報の取得に失敗しました", err);
+        throw err;
+      },
+    );
 
   log.info(`👤 ユーザ情報を取得しました: ${user.name}/${user.email}`);
 

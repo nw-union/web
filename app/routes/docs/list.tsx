@@ -63,11 +63,13 @@ export async function action({ context, request }: Route.ActionArgs) {
     return new Response("Bad Request", { status: 400 });
   }
 
+  // FIXME: ユーザを取得
+
   // 新規ドキュメントを作成
   return (
     await wf.doc.create({
       title: title,
-      userId: userRes.value.id,
+      userId: userRes.value.id, // FIXME: ユーザを取得したら、そのIDを使う
     })
   ).match(
     ({ id }) => {
