@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React Router v7 application deployed on Cloudflare Workers, with Drizzle ORM managing a Cloudflare D1 (SQLite) database. The application is a documentation platform for nw-union.net.
+This is a React Router v7 application deployed on Cloudflare Workers, with Drizzle ORM managing a Cloudflare D1 (SQLite) database. The application is a comprehensive platform for nw-union.net featuring:
+
+- **Document Management**: Create, edit, and publish documentation with TipTap rich text editor
+- **Video Gallery**: Browse and showcase YouTube videos
+- **User Management**: User profiles and authentication via Cloudflare Access
+- **File Storage**: Image and file uploads using Cloudflare R2 Object Storage
+- **External Links**: Quick access to Discord, YouTube, GitHub, and shop
 
 ## Development Commands
 
@@ -76,9 +82,18 @@ bun run typegen
 
 The codebase follows hexagonal architecture principles with clear separation between domain, ports, and adapters:
 
-- **Domain Types** (`type.ts`): Core business types (Doc, DocInfo, DocStatus) and port interfaces (DocRepositoryPort)
-- **Adapters** (`adapter/drizzle/`): External integrations, specifically Drizzle ORM adapter implementing DocRepositoryPort
-- **Load Context** (`load-context.ts`): Dependency injection container that wires up adapters based on environment configuration
+**Domain Layer** (`domain/`): Each domain (Doc, User, Video, System) has a consistent structure:
+- **type.ts**: Core business types and value objects
+- **port.ts**: Port interfaces defining contracts for external adapters
+- **logic.ts**: Pure business logic functions
+- **workflow.ts**: Orchestrates business operations using ports and logic
+
+**Adapter Layer** (`adapter/`): External integrations implementing port interfaces:
+- **drizzle/**: Database adapters (doc.ts, user.ts, video.ts) implementing repository ports
+- **r2/**: Cloudflare R2 Object Storage adapter for file operations
+- **time/**: Time provider adapter for consistent timestamp handling
+
+**Dependency Injection** (`load-context.ts`): Wires up adapters based on environment configuration and injects workflows into routes
 
 ### Dependency Injection Pattern
 
@@ -86,13 +101,20 @@ Dependencies are injected through React Router's `AppLoadContext` (configured in
 
 - **Logger**: Adapts to `console` (local) or `json` (production) based on `LOG_ADAPTER` env var
 - **Auth**: Uses `mock` (local) or `cloudflare` (production) based on `AUTH_ADAPTER` env var
-- **Repository**: Initialized with D1 database binding and logger
+- **Workflows**: Domain workflows (doc, video, user, sys) initialized with appropriate adapters
 
 Access injected dependencies in route loaders/actions via `context` parameter:
 ```typescript
 export async function loader({ context }: Route.LoaderArgs) {
-  const { log, auth, repo } = context;
-  // Use injected dependencies
+  const { log, auth, wf } = context;
+
+  // Access domain workflows
+  const result = await wf.doc.getDoc(slug);
+  const videos = await wf.video.listVideos();
+  const user = await wf.user.getUser(userId);
+
+  // Use storage workflow for file operations
+  const uploadUrl = await wf.sys.generateUploadUrl(filename);
 }
 ```
 
@@ -100,14 +122,22 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 Database access follows this pattern:
 
-1. **Schema Definition** (`adapter/drizzle/schema.ts`): Drizzle table definitions with SQLite-specific types
-2. **DTO Converters** (`adapter/drizzle/doc.ts`):
-   - `convToDocInsertModel`: Domain → DTO (for writes)
-   - `validateDoc`: DTO → Domain (for reads)
+1. **Schema Definition** (`adapter/drizzle/schema.ts`): Drizzle table definitions with SQLite-specific types for all domains (docs, users, videos)
+2. **DTO Converters** (e.g., `adapter/drizzle/doc.ts`):
+   - `convTo*InsertModel`: Domain → DTO (for writes)
+   - `validate*`: DTO → Domain (for reads)
 3. **Adapter Functions**: Pure functions that perform database operations, returning `ResultAsync<T, AppError>`
-4. **Port Implementation**: `newDocRepository` function returns object implementing `DocRepositoryPort`
+4. **Port Implementation**: Factory functions (e.g., `newDocRepository`, `newUserRepository`) return objects implementing repository ports
 
 **Important**: Drizzle requires the schema file to be named `schema.ts` for code generation to work correctly.
+
+### Storage Layer
+
+File storage uses Cloudflare R2 Object Storage:
+
+1. **R2 Adapter** (`adapter/r2/putBucket.ts`): Implements file upload operations
+2. **Storage Workflow** (`domain/System/workflow.ts`): Orchestrates storage operations through the R2 adapter
+3. **Access Pattern**: Use `wf.sys` workflows in routes for file operations
 
 ### Error Handling
 
@@ -128,9 +158,12 @@ The codebase uses `neverthrow` for functional error handling:
 
 ### Cloudflare Workers Configuration
 
-- **Main Config** (`wrangler.jsonc`): Defines Workers configuration, D1 bindings, and environment variables
-- **Environments**: Development and production environments with separate D1 databases
+- **Main Config** (`wrangler.jsonc`): Defines Workers configuration, D1 bindings, R2 bindings, and environment variables
+- **Environments**: Production environment with separate D1 database and R2 bucket (local development uses local bindings)
 - **Build Output**: React Router builds to `build/` directory, with server bundle at `build/server/index.js`
+- **Bindings**:
+  - **D1**: SQLite database for structured data (docs, users, videos)
+  - **R2**: Object storage for file uploads (images, documents)
 
 ## Key Technologies
 
@@ -156,6 +189,7 @@ Configured in `wrangler.jsonc` and accessed via `context.cloudflare.env`:
 - `LOG_LEVEL`: "debug" (local) or "info" (production)
 - `AUTH_ADAPTER`: "mock" (local) or "cloudflare" (production)
 - `AUTH_TEAM_DOMAIN`: Cloudflare Access team domain for authentication
+- `STORAGE_DOMAIN`: "local" (for both development and production R2 storage)
 
 ## Testing
 
