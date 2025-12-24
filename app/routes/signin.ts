@@ -6,7 +6,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const redirectUrl = url.searchParams.get("redirectUrl");
 
   const headers = new Headers();
-
   if (context.cloudflare.env.AUTH_ADAPTER === "mock") {
     // モックアダプターの場合はデバッグ用にログイン用クッキーをセット
     headers.append(

@@ -40,10 +40,10 @@ const getFilePath = (file: Blob): Result<string, AppError> =>
     .with("image/png", () => ok(`image/${uuidv4()}.png`))
     .with("image/jpeg", () => ok(`image/${uuidv4()}.jpg`))
     .with("image/jpg", () => ok(`image/${uuidv4()}.jpg`))
-    // .with("audio/mpeg", () => ok(`audio/${uuidv4()}.mp3`))
-    // .with("audio/x-m4a", () => ok(`audio/${uuidv4()}.m4a`))
-    // .with("video/mp4", () => ok(`video/${uuidv4()}.mp4`))
-    // ....
+    .with("audio/mpeg", () => ok(`audio/${uuidv4()}.mp3`))
+    .with("audio/x-m4a", () => ok(`audio/${uuidv4()}.m4a`))
+    .with("video/mp4", () => ok(`video/${uuidv4()}.mp4`))
+    // .... FIXME: 必要に応じて追加
     .otherwise(() =>
       // FIXME
       err(
@@ -65,6 +65,5 @@ export const newStorage = (
     okAsync(data)
       .andThen(getFilePath)
       .andThrough(uploadFile(bucket, log, data))
-      .map((path) => `${domain}/${path}`)
-      .andTee((url) => log.debug(`url: ${url}`)),
+      .map((path) => `${domain}/${path}`),
 });

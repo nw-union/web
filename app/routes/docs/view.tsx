@@ -93,8 +93,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
-      <header className="border-b border-gray-200 dark:border-gray-700"></header>
-
       <main className="w-full md:w-[700px] mx-auto px-6 py-8">
         <div className="md-body">
           <EditorContent editor={editor} />

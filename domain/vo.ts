@@ -19,7 +19,7 @@ const newVoOrNone =
 // -------
 
 /**
- * DocId ドキュメント ID 型
+ * DocId
  *
  * UUID `z.uuidv4()`
  */
@@ -29,7 +29,7 @@ export const newDocId = newType(docId, "DocId");
 export const createDocId = () => newDocId(uuidv4())._unsafeUnwrap();
 
 /**
- * VideoId VideoID 型
+ * VideoId
  *
  * UUID `z.uuidv4()`
  */
@@ -49,14 +49,23 @@ export const newString1To100 = newType(string1To100, "String1To100");
 export const newString1To100OrNone = newVoOrNone(string1To100, "String1To100");
 
 /**
- * Url URL
+ * Url
  *
- * `z.string().url()`
+ * `z.url()`
  */
-const url = z.string().url().brand("Url");
+const url = z.url().brand("Url");
 export type Url = z.infer<typeof url>;
 export const newUrl = newType(url, "Url");
 export const newUrlOrNone = newVoOrNone(url, "Url");
+
+/**
+ * Email
+ *
+ * `z.string().email()`
+ */
+const email = z.string().email().brand("Email");
+export type Email = z.infer<typeof email>;
+export const newEmail = newType(email, "Email");
 
 /**
  * 時間関連ポート

@@ -134,3 +134,28 @@ export interface UploadFileCmd {
 export interface UploadFileEvt {
   url: string;
 }
+
+// ---------------------------
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  imgUrl: string;
+};
+
+export interface UserWorkFlows {
+  // ユーザーを取得する
+  get(q: GetUserQuery): ResultAsync<GetUserEvt, AppError>;
+}
+
+// GetUser クエリ
+export interface GetUserQuery {
+  id: string;
+  email: string;
+}
+
+// GetUser イベント
+export interface GetUserEvt {
+  user: User;
+}

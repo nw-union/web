@@ -57,3 +57,18 @@ export const videoTable = sqliteTable(
     index("idx_video_created_at").on(table.createdAt),
   ],
 );
+
+// ----------------------------------------------------------------------------
+// User table
+// ----------------------------------------------------------------------------
+// User テーブルのスキーマ
+export const userTable = sqliteTable("user", {
+  id: text("user_id").primaryKey().notNull(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  github: text("github").notNull(),
+  discord: text("discord").notNull(),
+  imgUrl: text("img_url").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
