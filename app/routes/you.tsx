@@ -17,23 +17,19 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const userRes = await auth.auth(request);
   if (userRes.isErr()) {
     log.error("認証に失敗しました", userRes.error);
-    // signin して, videos に戻ってくる
+    // signin して, you に戻ってくる
     return redirect("/signin?redirectUrl=/you");
   }
 
-  const user = await wf.user
+  return await wf.user
     .get({ id: userRes.value.id, email: userRes.value.mail })
     .match(
       (evt) => evt.user,
       (err) => {
         log.error("ユーザ情報の取得に失敗しました", err);
-        throw err;
+        return redirect("/");
       },
     );
-
-  log.info(`👤 ユーザ情報を取得しました: ${user.name}/${user.email}`);
-
-  return { mail: userRes.value.mail };
 }
 export const meta = (_: Route.MetaArgs) =>
   createMetaTags({
@@ -41,7 +37,7 @@ export const meta = (_: Route.MetaArgs) =>
   });
 
 export default function Show({ loaderData }: Route.ComponentProps) {
-  const { mail } = loaderData;
+  const user = loaderData;
   return (
     <main className="bg-white dark:bg-gray-900 min-h-screen pb-20 flex flex-col justify-start items-center p-8 pt-10 md:pt-16 transition-colors duration-300 font-sg">
       <div className="max-w-md w-full">
@@ -52,13 +48,13 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               <UserIcon className="w-14 h-14 text-white stroke-[1.5]" />
             </div>
 
-            {/* Email Address */}
+            {/* User Info */}
             <div className="text-center mb-8">
               <h1 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
-                {mail}
+                {user.name}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                NWU Member
+                {user.email}
               </p>
             </div>
 
