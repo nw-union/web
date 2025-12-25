@@ -8,6 +8,7 @@ export default [
 
   // docs
   route("docs", "routes/docs/list.tsx"),
+  route("docs/create", "routes/docs/create.tsx"),
   route("docs/:slug", "routes/docs/view.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
 
