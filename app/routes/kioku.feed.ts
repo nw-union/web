@@ -39,17 +39,17 @@ function generateRssFeed(kiokus: Kioku[]): string {
   const buildDate = new Date().toUTCString();
 
   // 最新の記事の日付を取得
-  const latestDate = kiokus.length > 0
-    ? kiokus[0].createdAt.toUTCString()
-    : buildDate;
+  const latestDate =
+    kiokus.length > 0 ? kiokus[0].createdAt.toUTCString() : buildDate;
 
-  const items = kiokus.map((kioku) => {
-    const categoryLabel = getCategoryLabel(kioku.category);
-    const description = escapeXml(
-      `${categoryLabel} by ${kioku.name}${kioku.duration ? ` (${kioku.duration})` : ""}`
-    );
+  const items = kiokus
+    .map((kioku) => {
+      const categoryLabel = getCategoryLabel(kioku.category);
+      const description = escapeXml(
+        `${categoryLabel} by ${kioku.name}${kioku.duration ? ` (${kioku.duration})` : ""}`,
+      );
 
-    return `    <item>
+      return `    <item>
       <title>${escapeXml(kioku.title)}</title>
       <link>${escapeXml(kioku.url)}</link>
       <guid isPermaLink="${kioku.category === "doc"}">${escapeXml(kioku.url)}</guid>
@@ -58,7 +58,8 @@ function generateRssFeed(kiokus: Kioku[]): string {
       <category>${escapeXml(categoryLabel)}</category>
       ${kioku.thumbnailUrl ? `<enclosure url="${escapeXml(kioku.thumbnailUrl)}" type="image/jpeg" />` : ""}
     </item>`;
-  }).join("\n");
+    })
+    .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
