@@ -97,7 +97,7 @@ export function FooterNav() {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="flex flex-col items-center justify-center px-3 py-1"
+              className="flex flex-col items-center justify-center px-3 py-1 -mt-3"
             >
               <div className="rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-1.5 transition-colors hover:border-green-600 dark:hover:border-green-400">
                 <PlusIcon className="w-5 h-5 stroke-2 text-gray-600 dark:text-gray-400" />
