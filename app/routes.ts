@@ -20,6 +20,8 @@ export default [
   // you
   route("you", "routes/you.tsx"),
 
+  route("todo", "routes/todo.tsx"),
+
   // auth
   route("signin", "routes/signin.ts"),
   route("signout", "routes/signout.ts"),

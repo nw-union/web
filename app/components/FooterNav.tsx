@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router";
-import { DocumentIcon, HomeIcon, MoviesIcon, UserIcon } from "./Icons";
+import { NavLink, useLocation } from "react-router";
+import { HomeIcon, MoviesIcon, PlusIcon, TodoIcon, UserIcon } from "./Icons";
 
 export function FooterNav() {
+  const location = useLocation();
   const [isStandalone, setIsStandalone] = useState(false);
+
+  // /kioku と /docs の両方で Kioku タブをアクティブにする
+  const isKiokuActive =
+    location.pathname === "/kioku" || location.pathname.startsWith("/docs");
 
   useEffect(() => {
     // PWAのスタンドアローンモードを検出
@@ -44,32 +49,11 @@ export function FooterNav() {
           </NavLink>
 
           <NavLink
-            to="/docs"
+            to="/kioku"
             prefetch="render"
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
-                isActive
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <DocumentIcon
-                  className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
-                />
-                <span className="text-[10px] font-medium">Docs</span>
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/videos"
-            prefetch="render"
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
-                isActive
+                isActive || isKiokuActive
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
               }`
@@ -78,9 +62,39 @@ export function FooterNav() {
             {({ isActive }) => (
               <>
                 <MoviesIcon
+                  className={`w-5 h-5 ${isActive || isKiokuActive ? "stroke-2" : "stroke-1.5"}`}
+                />
+                <span className="text-[10px] font-medium">Kioku</span>
+              </>
+            )}
+          </NavLink>
+
+          <button
+            type="button"
+            className="flex flex-col items-center justify-center px-3 py-1"
+          >
+            <div className="rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-1.5 transition-colors hover:border-green-600 dark:hover:border-green-400">
+              <PlusIcon className="w-5 h-5 stroke-2 text-gray-600 dark:text-gray-400" />
+            </div>
+          </button>
+
+          <NavLink
+            to="/todo"
+            prefetch="render"
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 px-3 py-1 transition-colors ${
+                isActive
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <TodoIcon
                   className={`w-5 h-5 ${isActive ? "stroke-2" : "stroke-1.5"}`}
                 />
-                <span className="text-[10px] font-medium">Videos</span>
+                <span className="text-[10px] font-medium">Todo</span>
               </>
             )}
           </NavLink>

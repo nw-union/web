@@ -106,8 +106,10 @@ function KiokuCard({ kioku }: { kioku: Kioku }) {
   return (
     <a
       href={kioku.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      {...(kioku.category !== "doc" && {
+        target: "_blank",
+        rel: "noopener noreferrer",
+      })}
       className="flex gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
     >
       <div className="relative flex-shrink-0">
