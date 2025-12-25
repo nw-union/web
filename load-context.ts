@@ -5,17 +5,21 @@ import { newLogConsole } from "@nw-union/nw-utils/adapter/log-console";
 import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
-import { newDocRepository } from "./adapter/drizzle/doc";
+import { newDocKiokuRepository, newDocRepository } from "./adapter/drizzle/doc";
+import { newNoteKiokuRepository } from "./adapter/drizzle/note";
 import { newUserRepository } from "./adapter/drizzle/user";
 import { newVideoRepository } from "./adapter/drizzle/video";
+import { newYoutubeKiokuRepository } from "./adapter/drizzle/youtube";
 import { newStorage } from "./adapter/r2/putBucket";
 import { newTime } from "./adapter/time/now";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
+import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
 import { newSystemWorkFlows } from "./domain/System/workflow";
 import { newUserWorkFlows } from "./domain/User/workflow";
 import { newVideoWorkFlows } from "./domain/Video/workflow";
 import type {
   DocWorkFlows,
+  KiokuWorkFlows,
   SystemWorkFlows,
   UserWorkFlows,
   VideoWorkFlows,
@@ -38,6 +42,7 @@ declare module "react-router" {
       video: VideoWorkFlows;
       user: UserWorkFlows;
       sys: SystemWorkFlows;
+      kioku: KiokuWorkFlows;
     };
   }
 }
@@ -63,6 +68,11 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
       user: newUserWorkFlows(newUserRepository(db, log), time),
       sys: newSystemWorkFlows(
         newStorage(cloudflare.env.BUCKET, cloudflare.env.STORAGE_DOMAIN, log),
+      ),
+      kioku: newKiokuWorkFlows(
+        newDocKiokuRepository(db, log),
+        newYoutubeKiokuRepository(db, log),
+        newNoteKiokuRepository(db, log),
       ),
     },
   };

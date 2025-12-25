@@ -16,13 +16,16 @@ export const newUserWorkFlows = (
    */
   get: (q) =>
     okAsync(q.email)
-      // Email 検証
+      // Step.1 Email 検証
+      // string -> Email
       .andThen(newEmail)
-      // ユーザー取得する. 存在しなければ作成する
+      // Step.2 ユーザー取得する. 存在しなければ作成する
+      // Email -> User
       .andThen(getOrCreateUser(r, t)(q.id))
-      // DTO 変換
+      // Step.3 DTO 変換
+      // User -> UserDto
       .map(convToUserDto)
-      // イベント生成
+      // Step.4 イベント生成
       .map((user) => ({ user })),
 });
 

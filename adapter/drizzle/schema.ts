@@ -36,9 +36,9 @@ export const docTable = sqliteTable(
   ],
 );
 
-// ----------------------------------------------------------------------------
+// -----------------------------------------
 // Video Table
-// ----------------------------------------------------------------------------
+// -----------------------------------------
 // Video テーブルのスキーマ
 export const videoTable = sqliteTable(
   "video",
@@ -58,10 +58,9 @@ export const videoTable = sqliteTable(
   ],
 );
 
-// ----------------------------------------------------------------------------
+// -----------------------------------------
 // User table
-// ----------------------------------------------------------------------------
-// User テーブルのスキーマ
+// -----------------------------------------
 export const userTable = sqliteTable("user", {
   id: text("user_id").primaryKey().notNull(),
   name: text("name").notNull(),
@@ -69,6 +68,32 @@ export const userTable = sqliteTable("user", {
   github: text("github").notNull(),
   discord: text("discord").notNull(),
   imgUrl: text("img_url").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+// -----------------------------------------
+// Note table
+// -----------------------------------------
+export const noteTable = sqliteTable("note", {
+  id: text("note_id").primaryKey().notNull(),
+  title: text("title").notNull(),
+  noteUserName: text("note_user_name").notNull(),
+  url: text("url").notNull(),
+  thumbnailUrl: text("thumbnail_url").notNull().default(""),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+// -----------------------------------------
+// YouTube table
+// -----------------------------------------
+export const youtubeTable = sqliteTable("youtube", {
+  id: text("youtube_id").primaryKey().notNull(),
+  title: text("title").notNull(),
+  channelName: text("channel_name").notNull(),
+  duration: text("duration").notNull(),
+  isPublic: integer("is_public").notNull(), // boolean を整数で保存 (0 or 1)
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

@@ -13,25 +13,30 @@ export const newDocWorkFlows = (
   r: DocRepositoryPort,
   t: TimePort,
 ): DocWorkFlows => ({
-  /*
+  /**
    * ドキュメント作成
-   **/
+   */
   create: ({ title }) =>
+    // Step.1 検証 & 現在日時取得
+    //   string -> [String1To100, Date]
     ResultAsync.combine([
-      // タイトル検証
+      // SubStep.1 タイトル検証
+      //   string -> String1To100
       okAsync(title).andThen(newString1To100),
-      // 現在日時取得
+      // SubStep.2 現在日時取得
+      //   -> Date
       t.getNow(),
     ])
-      // ドキュメント作成
+      // Step.2 ドキュメント作成
+      //   [String1To100, Date] -> Doc
       .map(createDoc)
-      // ドキュメント保存
+      // Step.3 ドキュメント保存
       .andThrough(r.upsert)
-      // イベント生成
+      // Step.4 イベント生成
       .map((doc) => ({ id: doc.id })),
 
-  /*
-   * ドキュメントを編集する
+  /**
+   * ドキュメント編集
    */
   update: (cmd) =>
     ResultAsync.combine([

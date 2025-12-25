@@ -4,13 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React Router v7 application deployed on Cloudflare Workers, with Drizzle ORM managing a Cloudflare D1 (SQLite) database. The application is a comprehensive platform for nw-union.net featuring:
+これは Cloudflare Workers にデプロイされた React Router v7 アプリケーションで、Drizzle ORM が Cloudflare D1 (SQLite) データベースを管理しています。このアプリケーションは nw-union.net の包括的なプラットフォームであり、以下の機能を備えています:
 
-- **Document Management**: Create, edit, and publish documentation with TipTap rich text editor
-- **Video Gallery**: Browse and showcase YouTube videos
-- **User Management**: User profiles and authentication via Cloudflare Access
-- **File Storage**: Image and file uploads using Cloudflare R2 Object Storage
-- **External Links**: Quick access to Discord, YouTube, GitHub, and shop
+- **ドキュメント管理**: TipTap リッチテキストエディタでドキュメントを作成、編集、公開
+- **ビデオギャラリー**: YouTube 動画の閲覧と紹介
+- **ユーザー管理**: Cloudflare Access によるユーザープロフィールと認証
+- **ファイルストレージ**: Cloudflare R2 Object Storage を使用した画像とファイルのアップロード
+- **外部リンク**: Discord、YouTube、GitHub、ショップへの素早いアクセス
+
+## Development Tools
+
+- **Runtime**: Bun (パッケージマネージャー兼開発ランタイム)
+- **Framework**: SSR 対応の React Router v7
+- **Deployment**: Cloudflare Workers
+- **Database**: Drizzle ORM を使用した Cloudflare D1 (SQLite)
+- **Styling**: Tailwind CSS v4 (Vite プラグイン経由)
+- **Code Quality**: Biome (フォーマット & リント)
+- **TypeScript**: verbatim モジュール構文で strict モードを有効化
+- **Rich Text**: ドキュメント編集用の TipTap エディタ
+- **Utilities**:
+  - `neverthrow`: Result 型とエラーハンドリング
+  - `ts-pattern`: 網羅的パターンマッチング
+  - `zod`: ランタイムバリデーション
+  - `@nw-union/nw-utils`: 共有ユーティリティ (logging, auth, UUID)
 
 ## Development Commands
 
@@ -42,9 +58,6 @@ bun run check
 # Build for production
 bun run build
 
-# Deploy to development environment
-bun run deploy:development
-
 # Deploy to production environment
 bun run deploy:production
 ```
@@ -71,132 +84,91 @@ bun run typegen
 
 ### Hexagonal Architecture (Ports & Adapters)
 
-The codebase follows hexagonal architecture principles with clear separation between domain, ports, and adapters:
+コードベースはヘキサゴナルアーキテクチャの原則に従い、ドメイン、ポート、アダプター間の明確な分離を実現しています:
 
-**Domain Layer** (`domain/`): Most domains (Doc, User, Video) follow a consistent structure:
-- **type.ts**: Core business types and value objects
-- **port.ts**: Port interfaces defining contracts for external adapters
-- **logic.ts**: Pure business logic functions
-- **workflow.ts**: Orchestrates business operations using ports and logic
+**ドメイン層** (`domain/`): ほとんどのドメイン (Doc, User, Video) は一貫した構造に従っています:
+- **type.ts**: コアビジネス型と値オブジェクト
+- **port.ts**: 外部アダプターとの契約を定義するポートインターフェース
+- **logic.ts**: 純粋なビジネスロジック関数
+- **workflow.ts**: ポートとロジックを使用してビジネス操作を調整
 
-Note: The System domain only contains workflow.ts as it primarily orchestrates storage operations without complex business logic.
+注: System ドメインは workflow.ts のみを含み、複雑なビジネスロジックを持たない主にストレージ操作を調整するためのものです。
 
-**Adapter Layer** (`adapter/`): External integrations implementing port interfaces:
-- **drizzle/**: Database adapters (doc.ts, user.ts, video.ts) implementing repository ports
-- **r2/**: Cloudflare R2 Object Storage adapter for file operations
-- **time/**: Time provider adapter for consistent timestamp handling
+**アダプター層** (`adapter/`): ポートインターフェースを実装する外部統合:
+- **drizzle/**: リポジトリポートを実装するデータベースアダプター (doc.ts, user.ts, video.ts)
+- **r2/**: ファイル操作用の Cloudflare R2 Object Storage アダプター
+- **time/**: 一貫したタイムスタンプ処理のための時刻プロバイダーアダプター
 
-**Dependency Injection** (`load-context.ts`): Wires up adapters based on environment configuration and injects workflows into routes
+**依存性注入** (`load-context.ts`): 環境設定に基づいてアダプターを接続し、ワークフローをルートに注入します
 
 ### Dependency Injection Pattern
 
-Dependencies are injected through React Router's `AppLoadContext` (configured in `load-context.ts`):
+依存関係は React Router の `AppLoadContext` を通じて注入されます (`load-context.ts` で設定):
 
-- **Logger**: Adapts to `console` (local) or `json` (production) based on `LOG_ADAPTER` env var
-- **Auth**: Uses `mock` (local) or `cloudflare` (production) based on `AUTH_ADAPTER` env var
-- **Workflows**: Domain workflows (doc, video, user, sys) initialized with appropriate adapters
-
-Access injected dependencies in route loaders/actions via `context` parameter:
-```typescript
-export async function loader({ context }: Route.LoaderArgs) {
-  const { log, auth, wf } = context;
-
-  // Access domain workflows
-  const result = await wf.doc.getDoc(slug);
-  const videos = await wf.video.listVideos();
-  const user = await wf.user.getUser(userId);
-
-  // Use storage workflow for file operations
-  const uploadUrl = await wf.sys.generateUploadUrl(filename);
-}
-```
+- **Logger**: `LOG_ADAPTER` 環境変数に基づいて `console` (ローカル) または `json` (本番) に適応
+- **Auth**: `AUTH_ADAPTER` 環境変数に基づいて `mock` (ローカル) または `cloudflare` (本番) を使用
+- **Workflows**: 適切なアダプターで初期化されたドメインワークフロー (doc, video, user, sys)
 
 ### Database Layer
 
-Database access follows this pattern:
+データベースアクセスは以下のパターンに従います:
 
-1. **Schema Definition** (`adapter/drizzle/schema.ts`): Drizzle table definitions with SQLite-specific types for all domains (docs, users, videos)
-2. **DTO Converters** (e.g., `adapter/drizzle/doc.ts`):
-   - `convTo*InsertModel`: Domain → DTO (for writes)
-   - `validate*`: DTO → Domain (for reads)
-3. **Adapter Functions**: Pure functions that perform database operations, returning `ResultAsync<T, AppError>`
-4. **Port Implementation**: Factory functions (e.g., `newDocRepository`, `newUserRepository`) return objects implementing repository ports
+1. **Schema Definition** (`adapter/drizzle/schema.ts`): すべてのドメイン (docs, users, videos) に対する SQLite 固有の型を持つ Drizzle テーブル定義
+2. **DTO Converters** (例: `adapter/drizzle/doc.ts`):
+   - `convTo*InsertModel`: Domain → DTO (書き込み用)
+   - `validate*`: DTO → Domain (読み取り用)
+3. **Adapter Functions**: データベース操作を実行する純粋関数で、`ResultAsync<T, AppError>` を返す
+4. **Port Implementation**: ファクトリー関数 (例: `newDocRepository`, `newUserRepository`) はリポジトリポートを実装するオブジェクトを返す
 
-**Important**: Drizzle requires the schema file to be named `schema.ts` for code generation to work correctly.
+**重要**: Drizzle はコード生成が正しく動作するために、スキーマファイルが `schema.ts` という名前である必要があります。
 
 ### Storage Layer
 
-File storage uses Cloudflare R2 Object Storage:
+ファイルストレージは Cloudflare R2 Object Storage を使用します:
 
-1. **R2 Adapter** (`adapter/r2/putBucket.ts`): Implements file upload operations
-2. **Storage Workflow** (`domain/System/workflow.ts`): Orchestrates storage operations through the R2 adapter
-3. **Access Pattern**: Use `wf.sys` workflows in routes for file operations
+1. **R2 Adapter** (`adapter/r2/putBucket.ts`): ファイルアップロード操作を実装
+2. **Storage Workflow** (`domain/System/workflow.ts`): R2 アダプターを通じてストレージ操作を調整
+3. **Access Pattern**: ファイル操作にはルート内で `wf.sys` ワークフローを使用
 
 ### Error Handling
 
-The codebase uses `neverthrow` for functional error handling:
+コードベースは関数型エラーハンドリングに `neverthrow` を使用します:
 
-- All repository methods return `ResultAsync<T, AppError>` from neverthrow
-- Use `.andThen()` for chaining operations that can fail
-- Use `.map()` for transformations that cannot fail
-- Errors are typed as `AppError` (from `@nw-union/nw-utils`)
+- すべてのリポジトリメソッドは neverthrow の `ResultAsync<T, AppError>` を返す
+- 失敗する可能性のある操作をチェーンするには `.andThen()` を使用
+- 失敗しない変換には `.map()` を使用
+- エラーは `AppError` として型付けされる (`@nw-union/nw-utils` から)
 
 ### React Router Structure
 
-- **Routes Configuration** (`app/routes.ts`): Centralized route definitions using React Router v7's file-based routing
+- **Routes Configuration** (`app/routes.ts`): React Router v7 のファイルベースルーティングを使用した集中型ルート定義
 - **Entry Points**:
-  - `app/entry.server.tsx`: Server-side rendering entry
-  - `workers/app.ts`: Cloudflare Workers entry point that creates request handler with load context
-- **Root Layout** (`app/root.tsx`): Shared layout with meta tags, links, and error boundary
+  - `app/entry.server.tsx`: サーバーサイドレンダリングのエントリーポイント
+  - `workers/app.ts`: ロードコンテキストを使用してリクエストハンドラーを作成する Cloudflare Workers のエントリーポイント
+- **Root Layout** (`app/root.tsx`): メタタグ、リンク、エラーバウンダリーを含む共有レイアウト
 
 ### Cloudflare Workers Configuration
 
-- **Main Config** (`wrangler.jsonc`): Defines Workers configuration, D1 bindings, R2 bindings, and environment variables
-- **Environments**: Production environment with separate D1 database and R2 bucket (local development uses local bindings)
-- **Build Output**: React Router builds to `build/` directory, with server bundle at `build/server/index.js`
+- **Main Config** (`wrangler.jsonc`): Workers 設定、D1 バインディング、R2 バインディング、環境変数を定義
+- **Environments**: 本番環境は独立した D1 データベースと R2 バケットを使用 (ローカル開発はローカルバインディングを使用)
+- **Build Output**: React Router は `build/` ディレクトリにビルドし、サーバーバンドルは `build/server/index.js` に配置
 - **Bindings**:
-  - **D1**: SQLite database for structured data (docs, users, videos)
-  - **R2**: Object storage for file uploads (images, documents)
-
-## Key Technologies
-
-- **Runtime**: Bun (package manager and development runtime)
-- **Framework**: React Router v7 with SSR enabled
-- **Deployment**: Cloudflare Workers
-- **Database**: Cloudflare D1 (SQLite) with Drizzle ORM
-- **Styling**: Tailwind CSS v4 (via Vite plugin)
-- **Code Quality**: Biome (formatting & linting)
-- **TypeScript**: Strict mode enabled with verbatim module syntax
-- **Rich Text**: TipTap editor for document editing
-- **Utilities**:
-  - `neverthrow` for Result types and error handling
-  - `ts-pattern` for exhaustive pattern matching
-  - `zod` for runtime validation
-  - `@nw-union/nw-utils` for shared utilities (logging, auth, UUID)
+  - **D1**: 構造化データ (docs, users, videos) 用の SQLite データベース
+  - **R2**: ファイルアップロード (images, documents) 用のオブジェクトストレージ
 
 ## Environment Variables
 
-Configured in `wrangler.jsonc` and accessed via `context.cloudflare.env`:
+`wrangler.jsonc` で設定され、`context.cloudflare.env` を介してアクセス:
 
-- `LOG_ADAPTER`: "console" (local) or "json" (production)
-- `LOG_LEVEL`: "debug" (local) or "info" (production)
-- `AUTH_ADAPTER`: "mock" (local) or "cloudflare" (production)
-- `AUTH_TEAM_DOMAIN`: Cloudflare Access team domain for authentication
-- `STORAGE_DOMAIN`: "local" (for both development and production R2 storage)
-
-## Testing
-
-- Test files use `.test.ts` extension
-- Drizzle adapter has tests at `adapter/drizzle/doc.test.ts` (currently empty)
+- `LOG_ADAPTER`: "console" (ローカル) または "json" (本番)
+- `LOG_LEVEL`: "debug" (ローカル) または "info" (本番)
+- `AUTH_ADAPTER`: "mock" (ローカル) または "cloudflare" (本番)
+- `AUTH_TEAM_DOMAIN`: 認証用の Cloudflare Access チームドメイン
+- `STORAGE_DOMAIN`: "local" (開発環境と本番環境の両方で R2 ストレージ用)
 
 ## Type Safety
 
-- **Strict TypeScript**: All compiler strict flags enabled
-- **Type Generation**: Run `bun run typegen` to generate Wrangler types after modifying `wrangler.jsonc`
-- **Exhaustive Matching**: Use `ts-pattern` with `.exhaustive()` to ensure all cases are handled
-- **Route Types**: React Router generates types in `.react-router/types/` directory
-
-## Production URLs
-
-- **Production**: https://nw-union.net/
-- **Local Development**: http://localhost:5173/ (React Router dev server) or http://localhost:8787/ (Wrangler dev server)
+- **Strict TypeScript**: すべてのコンパイラ strict フラグを有効化
+- **Type Generation**: `wrangler.jsonc` を変更した後、`bun run typegen` を実行して Wrangler の型を生成
+- **Exhaustive Matching**: すべてのケースが処理されることを保証するために `ts-pattern` の `.exhaustive()` を使用
+- **Route Types**: React Router は `.react-router/types/` ディレクトリに型を生成

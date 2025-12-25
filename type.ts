@@ -1,6 +1,6 @@
 import type { AppError } from "@nw-union/nw-utils";
 import { newType } from "@nw-union/nw-utils/lib/zod";
-import type { ResultAsync } from "neverthrow";
+import { okAsync, type ResultAsync } from "neverthrow";
 import z from "zod";
 
 // ---------------------------
@@ -159,3 +159,48 @@ export interface GetUserQuery {
 export interface GetUserEvt {
   user: User;
 }
+
+// ---------------------------
+
+export type Kioku = {
+  id: string;
+  title: string;
+  name: string;
+  category: "doc" | "note" | "youtube" | "privateYoutube";
+  thumbnailUrl: string;
+  duration?: string;
+  url: string;
+  createdAt: Date;
+};
+
+export interface KiokuWorkFlows {
+  // キオクを探す
+  get(): ResultAsync<Kioku[], AppError>;
+}
+
+export const newMockKiokuWorkFlows = (): KiokuWorkFlows => ({
+  get: () =>
+    okAsync([
+      {
+        id: "1",
+        title: "画像について",
+        name: "grandcolline",
+        category: "doc",
+        thumbnailUrl: "https://nw-union.net/img/logo card.png",
+        url: "https://example.com/doc/1",
+        createdAt: new Date(),
+      },
+      {
+        id: "2",
+        title:
+          "【日記】2025.10.26 OASIS を観た！【hidelberq / 抑止力 / hisanori ito / 🐙】",
+        name: "NWU",
+        category: "privateYoutube",
+        thumbnailUrl:
+          "https://img.youtube.com/vi/3dplZ0KaxdE/maxresdefault.jpg",
+        duration: "10:00",
+        url: "https://youtube.com/watch?v=sample",
+        createdAt: new Date(),
+      },
+    ]),
+});
