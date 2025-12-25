@@ -1,7 +1,17 @@
 export default function Show() {
   return (
-    <main className="bg-white dark:bg-gray-900 min-h-screen pb-20 flex flex-col justify-start items-center p-8 pt-10 md:pt-16 transition-colors duration-300 font-sg">
-      <h1>TODO</h1>
+    <main className="container mx-auto max-w-7xl px-4 py-4">
+      <div className="my-8">
+        <h1 className="text-2xl py-2 font-medium text-center text-gray-800 dark:text-gray-300">
+          TODO
+        </h1>
+        <div className="text-xs text-center text-gray-800 dark:text-gray-300">
+          このページはまだ実装されていません
+        </div>
+        <div className="text-xs text-center text-gray-800 dark:text-gray-300 mt-1">
+          何か思いついたら、教えてください！
+        </div>
+      </div>
     </main>
   );
 }
