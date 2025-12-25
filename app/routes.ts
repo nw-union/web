@@ -30,4 +30,5 @@ export default [
   route("youtube", "routes/youtube.ts"),
   route("github", "routes/github.ts"),
   route("shop", "routes/shop.ts"),
+  route("note", "routes/note.ts"),
 ] satisfies RouteConfig;
