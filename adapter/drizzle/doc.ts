@@ -1,5 +1,4 @@
 import { type AppError, type Logger, NotFoundError } from "@nw-union/nw-utils";
-import { toShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import {
   asc,
   desc,
@@ -21,24 +20,24 @@ import {
   newString1To100OrNone,
   newUrlOrNone,
 } from "../../domain/vo";
-import type { Doc as DocDto, DocInfo, SearchDocQuery } from "../../type";
+import type { Doc as DocDto } from "../../type";
 import { type DocStatusDbEnum, docTable } from "./schema";
 import { dbErrorHandling } from "./util";
 
 // ----------------------------------------------------------------------------
-// DTO
+// DbModel
 // ----------------------------------------------------------------------------
 type DocSelectModel = InferSelectModel<typeof docTable>;
 type DocInsertModel = InferInsertModel<typeof docTable>;
 
 // ----------------------------------------------------------------------------
-// Converter (Domain Type -> DTO)
+// Converter (DomainType -> DbModel)
 // ----------------------------------------------------------------------------
 /**
  * Doc を DocInsertModel に変換
  *
  * @param doc - Doc (Domain)
- * @return DocInsertModel (DTO)
+ * @return DocInsertModel
  *
  */
 const convToDocInsertModel = (doc: Doc): DocInsertModel => ({
@@ -62,17 +61,17 @@ const convToDocInsertModel = (doc: Doc): DocInsertModel => ({
 
 const convToDocInsertModelList = (doc: Doc | Doc[]): DocInsertModel[] =>
   Array.isArray(doc)
-    ? doc.map((d) => convToDocInsertModel(d))
+    ? doc.map(convToDocInsertModel)
     : [convToDocInsertModel(doc)];
 
 // ----------------------------------------------------------------------------
-// Validator (DTO -> Domain Type / DTO -> DTO)
+// Validator (DbModel -> DomainType / DbModel -> DTO)
 // ----------------------------------------------------------------------------
 /**
- * ElementSelectModel を Element (Domain) に変換
+ * DocSelectModel を Doc (Domain) に変換
  *
- * @param d - ElementSelectModel
- * @return Result<Element, AppError> - Element (Domain) or AppError
+ * @param d - DocSelectModel
+ * @return Result<Doc, AppError> - Doc (Domain) or AppError
  *
  */
 const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
@@ -97,24 +96,33 @@ const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
     updatedAt: d.updatedAt,
   }));
 
-const validateDocInfo = (d: DocSelectModel): DocInfo => ({
-  id: d.id,
-  slug: toShortUuid(d.id).unwrapOr(d.id), // 変換に失敗したら id をそのまま使う
-  title: d.title,
-  description: d.description,
-  status: match(d.status)
-    .with("draft", () => "private" as const)
-    .with("private", () => "private" as const)
-    .with("public", () => "public" as const)
-    .exhaustive(),
-  thumbnailUrl: d.thumbnailUrl,
-  createdAt: d.createdAt,
-  updatedAt: d.updatedAt,
-});
+/**
+ * DocSelectModel を DocKioku (Domain) に変換
+ *
+ * @param d - DocSelectModel
+ * @return Result<DocKioku, AppError> - DocKioku (Domain) or AppError
+ *
+ */
+const validateDocKioku = (d: DocSelectModel): Result<DocKioku, AppError> =>
+  Result.combine([newDocId(d.id, "DocKioku.id")]).map(([id]) => ({
+    type: "DocKioku",
+    id: id,
+    title: d.title,
+    thumbnailUrl: d.thumbnailUrl,
+    createdAt: d.createdAt,
+  }));
 
-const validateDocInfoList = (ds: DocSelectModel[]): DocInfo[] =>
-  ds.map(validateDocInfo);
+const validateDocKiokuList = (
+  ds: DocSelectModel[],
+): Result<DocKioku[], AppError> => Result.combine(ds.map(validateDocKioku));
 
+/**
+ * DocSelectModel を DocDto に変換
+ *
+ * @param d - DocSelectModel
+ * @return DocDto
+ *
+ */
 const validateDocDto = (d: DocSelectModel): DocDto => ({
   id: d.id,
   title: d.title,
@@ -129,21 +137,6 @@ const validateDocDto = (d: DocSelectModel): DocDto => ({
   createdAt: d.createdAt,
   updatedAt: d.updatedAt,
 });
-
-const validateKiokuDto = (d: DocSelectModel): Result<DocKioku, AppError> =>
-  Result.combine([newDocId(d.id, "DocKioku.id")]).map(([id]) => ({
-    type: "DocKioku",
-    id: id,
-    title: d.title,
-    thumbnailUrl: d.thumbnailUrl,
-    createdAt: d.createdAt,
-  }));
-
-const validateKiokuDtoList = (ds: DocSelectModel[]): DocKioku[] =>
-  ds
-    .map((d) => validateKiokuDto(d))
-    .filter((r) => r.isOk())
-    .map((r) => r._unsafeUnwrap());
 
 // ----------------------------------------------------------------------------
 // Adapter Logic [外部接続]
@@ -182,7 +175,7 @@ const upsertDocInsertModel =
     );
 
 // ID でドキュメントを取得する
-const readDoc =
+const readDocSelectModel =
   (db: AnyD1Database, log: Logger) =>
   (id: string): ResultAsync<DocSelectModel, AppError> =>
     fromPromise(
@@ -211,7 +204,7 @@ const readDoc =
       dbErrorHandling,
     );
 
-const searchDocs = (db: AnyD1Database, log: Logger) => (q: SearchDocQuery) =>
+const getAllDocSelectModel = (db: AnyD1Database, log: Logger) => () =>
   fromPromise(
     (async () => {
       log.info("💽 searchDocs 開始");
@@ -221,11 +214,6 @@ const searchDocs = (db: AnyD1Database, log: Logger) => (q: SearchDocQuery) =>
         .select()
         .from(docTable)
         .orderBy(desc(docTable.createdAt)); // createdAt でソート
-
-      // クエリに条件を追加
-      if (q.statuses) {
-        query.where(inArray(docTable.status, q.statuses));
-      }
 
       log.debug(`SQL: ${query.toSQL().sql}`);
       log.debug(`PARAMS: ${query.toSQL().params}`);
@@ -238,6 +226,33 @@ const searchDocs = (db: AnyD1Database, log: Logger) => (q: SearchDocQuery) =>
     dbErrorHandling,
   );
 
+const deleteDocInsertModel =
+  (db: AnyD1Database, log: Logger) =>
+  (docs: DocInsertModel[]): ResultAsync<undefined, AppError> =>
+    fromPromise(
+      (async () => {
+        log.info("💽 deleteDocInsertModel 開始");
+
+        // 削除クエリ発行
+        const delQuery = drizzle(db)
+          .delete(docTable)
+          .where(
+            inArray(
+              docTable.id,
+              docs.map((d) => d.id),
+            ),
+          );
+        log.debug(`SQL: ${delQuery.toSQL().sql}`);
+        log.debug(`PARAMS: ${delQuery.toSQL().params}`);
+
+        // クエリ実行
+        await delQuery;
+
+        return undefined;
+      })(),
+      dbErrorHandling,
+    );
+
 // ----------------------------------------------------------------------------
 // Port 実装
 // ----------------------------------------------------------------------------
@@ -247,16 +262,31 @@ export const newDocRepository = (
 ): DocRepositoryPort => ({
   upsert: (doc) =>
     okAsync(doc)
+      // Doc -> DocInsertModel
       .map(convToDocInsertModelList)
+      // 保存処理実行 (DB)
       .andThen(upsertDocInsertModel(db, log)),
 
   read: (id) =>
-    okAsync(id.toString()).andThen(readDoc(db, log)).andThen(validateDoc),
+    okAsync(id.toString())
+      // ID でドキュメント取得処理実行 (DB)
+      .andThen(readDocSelectModel(db, log))
+      // DocSelectModel -> Doc
+      .andThen(validateDoc),
 
-  get: ({ id }) => okAsync(id).andThen(readDoc(db, log)).map(validateDocDto),
+  delete: (doc) =>
+    okAsync(doc)
+      // Doc -> DocInsertModel
+      .map(convToDocInsertModelList)
+      // 削除処理実行 (DB)
+      .andThen(deleteDocInsertModel(db, log)),
 
-  search: (q) =>
-    okAsync(q).andThen(searchDocs(db, log)).map(validateDocInfoList),
+  get: (q) =>
+    okAsync(q.id)
+      // ID でドキュメント取得処理実行 (DB)
+      .andThen(readDocSelectModel(db, log))
+      // DocSelectModel -> DocDto
+      .map(validateDocDto),
 });
 
 export const newDocKiokuRepository = (
@@ -264,5 +294,9 @@ export const newDocKiokuRepository = (
   log: Logger,
 ): DocKiokuRepositoryPort => ({
   getAll: () =>
-    okAsync({}).andThen(searchDocs(db, log)).map(validateKiokuDtoList),
+    okAsync({})
+      // 全件取得処理実行 (DB)
+      .andThen(getAllDocSelectModel(db, log))
+      // DocSelectModel[] -> DocKioku[]
+      .andThen(validateDocKiokuList),
 });

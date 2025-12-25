@@ -1,3 +1,6 @@
+import type { YoutubeId } from "../vo";
+import type { Youtube } from "./type";
+
 // ----------------------------------------------------------------------------
 // Validator (DTO -> Domain Type)
 // ----------------------------------------------------------------------------
@@ -6,7 +9,30 @@
 // ----------------------------------------------------------------------------
 // Domain Logic (Domain Type -> Domain Type)
 // ----------------------------------------------------------------------------
-// なし
+/**
+ * Youtube を新規作成
+ *
+ * Logic Rules:
+ *   - id, title, channelName, duration, isPublic は入力値をそのまま使用
+ *   - createdAt, updatedAt は引数 now となる
+ */
+export const createYoutube = ([
+  id,
+  title,
+  channelName,
+  duration,
+  isPublic,
+  now,
+]: [YoutubeId, string, string, string, boolean, Date]): Youtube => ({
+  type: "Youtube",
+  id,
+  title,
+  channelName,
+  duration,
+  isPublic,
+  createdAt: now,
+  updatedAt: now,
+});
 
 // ----------------------------------------------------------------------------
 // Converter (Domain Type -> DTO)

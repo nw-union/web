@@ -2,15 +2,19 @@ import { createDocId, type String1To100 } from "../vo";
 import type { Doc } from "./type";
 
 // ----------------------------------------------------------------------------
-// Validator (DTO -> Domain Type)
+// Validator (DTO -> DomainType)
 // ----------------------------------------------------------------------------
 // なし
 
 // ----------------------------------------------------------------------------
-// Domain Logic (Domain Type -> Domain Type)
+// Domain Logic (DomainType -> DomainType)
 // ----------------------------------------------------------------------------
 /**
  * Doc を新規作成
+ *
+ * @param title - Doc のタイトル
+ * @param now - 現在日時
+ * @return Doc - 作成された Doc
  *
  * Logic Rules:
  *   - title は 入力値の値となる
@@ -42,7 +46,16 @@ export const createDoc = ([title, now]: [String1To100, Date]): Doc => ({
 });
 
 /**
- * Docs を更新
+ * Doc を更新
+ *
+ * @param doc - 更新対象の Doc
+ * @param title - Doc のタイトル
+ * @param description - Doc の説明文
+ * @param status - Doc の公開ステータス
+ * @param body - Doc の本文
+ * @param now - 現在日時
+ *
+ * @return Doc - 更新された Doc
  *
  * Logic Rules:
  *  - title, description, status, body を 引数の値で更新する

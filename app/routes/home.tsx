@@ -4,6 +4,7 @@ import { GlitchText } from "../components/GlitchText";
 import {
   DiscordIcon,
   GitHubIcon,
+  NoteIcon,
   ShopIcon,
   SignInIcon,
   YouTubeIcon,
@@ -258,6 +259,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 >
                   <YouTubeIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
                   <span className="text-lg md:text-xl">YouTube</span>
+                </a>
+                <a
+                  href="/note"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-green-600 dark:text-green-400 no-underline flex flex-col items-center gap-1 p-1 md:p-3 transition-all duration-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 w-18 md:w-24"
+                >
+                  <NoteIcon className="w-8 h-8 md:w-10 md:h-10 fill-current" />
+                  <span className="text-lg md:text-xl">note</span>
                 </a>
                 <a
                   href="/shop"

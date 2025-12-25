@@ -16,17 +16,6 @@ export type Doc = {
   updatedAt: Date;
 };
 
-export type DocInfo = {
-  id: string;
-  slug: string;
-  title: string;
-  description: string;
-  status: DocStatus;
-  thumbnailUrl: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 const docStatus = z.enum([
   "public", // 公開
   "private", // メンバー限定
@@ -45,8 +34,6 @@ export interface DocWorkFlows {
 
   // ドキュメントを見る
   get(q: GetDocQuery): ResultAsync<GetDocEvt, AppError>;
-  // ドキュメントを探す
-  search(q: SearchDocQuery): ResultAsync<SearchDocEvt, AppError>;
 }
 
 // CreateDoc コマンド
@@ -82,40 +69,6 @@ export type GetDocQuery = {
 // GetDoc イベント
 export type GetDocEvt = {
   doc: Doc;
-};
-
-// SearchDoc クエリ
-export type SearchDocQuery = {
-  statuses?: DocStatus[];
-};
-
-// SearchDoc イベント
-export type SearchDocEvt = {
-  docs: DocInfo[];
-};
-
-// ---------------------------
-
-export type Video = {
-  id: string;
-  title: string;
-  channelName: string;
-  duration: string;
-  uploadedAt: string;
-  isPublic: boolean;
-};
-
-export interface VideoWorkFlows {
-  // エントリを探す
-  search(q: SearchVideoQuery): ResultAsync<SearchVideoEvt, AppError>;
-}
-
-// SearchVideo クエリ
-export type SearchVideoQuery = Record<string, never>;
-
-// SearchVideo イベント
-export type SearchVideoEvt = {
-  videos: Video[];
 };
 
 // ---------------------------
@@ -204,3 +157,39 @@ export const newMockKiokuWorkFlows = (): KiokuWorkFlows => ({
       },
     ]),
 });
+
+// ---------------------------
+
+export interface YoutubeWorkFlows {
+  create(cmd: CreateYoutubeCmd): ResultAsync<CreateYoutubeEvt, AppError>;
+}
+
+export type CreateYoutubeCmd = {
+  id: string;
+  title: string;
+  channelName: string;
+  duration: string;
+  isPublic: boolean;
+};
+
+export type CreateYoutubeEvt = {
+  id: string;
+};
+
+// ---------------------------
+
+export interface NoteWorkFlows {
+  create(cmd: CreateNoteCmd): ResultAsync<CreateNoteEvt, AppError>;
+}
+
+export type CreateNoteCmd = {
+  id: string;
+  title: string;
+  noteUserName: string;
+  url: string;
+  thumbnailUrl: string;
+};
+
+export type CreateNoteEvt = {
+  id: string;
+};

@@ -1,4 +1,4 @@
-import type { DocId } from "../vo";
+import type { DocId, NoteId, YoutubeId } from "../vo";
 
 export type DocKioku = {
   type: "DocKioku";
@@ -12,7 +12,7 @@ export type DocKioku = {
 export type NoteKioku = {
   type: "NoteKioku";
 
-  id: string;
+  id: NoteId;
   title: string;
   noteUserName: string;
   url: string;
@@ -23,7 +23,7 @@ export type NoteKioku = {
 export type YoutubeKioku = {
   type: "YoutubeKioku";
 
-  id: string;
+  id: YoutubeId;
   title: string;
   channelName: string;
   isPublic: boolean;

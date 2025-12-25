@@ -1,7 +1,7 @@
-import type { AppError, ValidationError } from "@nw-union/nw-utils";
+import type { ValidationError } from "@nw-union/nw-utils";
 import { toShortUuid, uuidv4 } from "@nw-union/nw-utils/lib/uuid";
 import { newType } from "@nw-union/nw-utils/lib/zod";
-import { ok, type Result, type ResultAsync } from "neverthrow";
+import { ok, type Result } from "neverthrow";
 import { z } from "zod";
 
 /**
@@ -32,14 +32,32 @@ export const toShortDocId = (id: DocId): string =>
   toShortUuid(id)._unsafeUnwrap();
 
 /**
- * VideoId
+ * UserId
+ *
+ */
+const userId = z.string().brand("UserId");
+export type UserId = z.infer<typeof userId>;
+export const newUserId = newType(userId, "UserId");
+
+/**
+ * YoutubeId
+ *
+ * youtube の Video ID と一致する文字列
+ * `z.string().min(11).max(11)`
+ */
+const youtubeId = z.string().min(11).max(11).brand("YoutubeId");
+export type YoutubeId = z.infer<typeof youtubeId>;
+export const newYoutubeId = newType(youtubeId, "YoutubeId");
+
+/**
+ * NoteId
  *
  * UUID `z.uuidv4()`
  */
-const videoId = z.uuidv4().brand("VideoId"); // UUID
-export type VideoId = z.infer<typeof videoId>;
-export const newVideoId = newType(docId, "VideoId");
-export const createVideoId = () => newDocId(uuidv4())._unsafeUnwrap();
+const noteId = z.uuidv4().brand("NoteId"); // UUID
+export type NoteId = z.infer<typeof noteId>;
+export const newNoteId = newType(noteId, "NoteId");
+export const createNoteId = () => newNoteId(uuidv4())._unsafeUnwrap();
 
 /**
  * String1To100 1文字以上100文字以下の文字列が入る型
@@ -62,6 +80,15 @@ export const newUrl = newType(url, "Url");
 export const newUrlOrNone = newVoOrNone(url, "Url");
 
 /**
+ * パス
+ *
+ * `z.string().min(1)`
+ */
+const path = z.string().min(1).brand("Path");
+export type Path = z.infer<typeof path>;
+export const newPath = newType(path, "Path");
+
+/**
  * Email
  *
  * `z.string().email()`
@@ -69,11 +96,3 @@ export const newUrlOrNone = newVoOrNone(url, "Url");
 const email = z.string().email().brand("Email");
 export type Email = z.infer<typeof email>;
 export const newEmail = newType(email, "Email");
-
-/**
- * 時間関連ポート
- */
-export interface TimePort {
-  // 現在日時取得
-  getNow(): ResultAsync<Date, AppError>;
-}
