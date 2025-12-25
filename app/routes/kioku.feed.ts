@@ -1,3 +1,4 @@
+import type { Kioku } from "../../type";
 import type { Route } from "./+types/kioku.feed";
 
 /**
@@ -30,17 +31,6 @@ export async function loader({ context }: Route.LoaderArgs) {
     },
   });
 }
-
-type Kioku = {
-  id: string;
-  title: string;
-  name: string;
-  category: "doc" | "note" | "youtube" | "privateYoutube";
-  thumbnailUrl: string;
-  duration?: string;
-  url: string;
-  createdAt: Date;
-};
 
 function generateRssFeed(kiokus: Kioku[]): string {
   const siteUrl = "https://nw-union.net";
@@ -95,8 +85,6 @@ function getCategoryLabel(category: Kioku["category"]): string {
       return "YouTube";
     case "privateYoutube":
       return "Private YouTube";
-    default:
-      return category;
   }
 }
 
