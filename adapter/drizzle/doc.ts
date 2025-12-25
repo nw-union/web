@@ -13,6 +13,8 @@ import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
 import { match } from "ts-pattern";
 import type { DocRepositoryPort } from "../../domain/Doc/port";
 import type { Doc } from "../../domain/Doc/type";
+import type { DocKiokuRepositoryPort } from "../../domain/Kioku/port";
+import type { DocKioku } from "../../domain/Kioku/type";
 import {
   newDocId,
   newString1To100,
@@ -128,6 +130,21 @@ const validateDocDto = (d: DocSelectModel): DocDto => ({
   updatedAt: d.updatedAt,
 });
 
+const validateKiokuDto = (d: DocSelectModel): Result<DocKioku, AppError> =>
+  Result.combine([newDocId(d.id, "DocKioku.id")]).map(([id]) => ({
+    type: "DocKioku",
+    id: id,
+    title: d.title,
+    thumbnailUrl: d.thumbnailUrl,
+    createdAt: d.createdAt,
+  }));
+
+const validateKiokuDtoList = (ds: DocSelectModel[]): DocKioku[] =>
+  ds
+    .map((d) => validateKiokuDto(d))
+    .filter((r) => r.isOk())
+    .map((r) => r._unsafeUnwrap());
+
 // ----------------------------------------------------------------------------
 // Adapter Logic [外部接続]
 // ----------------------------------------------------------------------------
@@ -240,4 +257,12 @@ export const newDocRepository = (
 
   search: (q) =>
     okAsync(q).andThen(searchDocs(db, log)).map(validateDocInfoList),
+});
+
+export const newDocKiokuRepository = (
+  db: AnyD1Database,
+  log: Logger,
+): DocKiokuRepositoryPort => ({
+  getAll: () =>
+    okAsync({}).andThen(searchDocs(db, log)).map(validateKiokuDtoList),
 });

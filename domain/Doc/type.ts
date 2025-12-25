@@ -1,9 +1,9 @@
-import type { String1To100, Url } from "../vo";
+import type { DocId, String1To100, Url } from "../vo";
 
 export type Doc = {
   type: "Doc";
 
-  id: string;
+  id: DocId;
   title: String1To100;
   description: String1To100 | null;
   status: "public" | "private";

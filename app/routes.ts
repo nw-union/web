@@ -14,6 +14,9 @@ export default [
   // videos
   route("videos", "routes/videos.tsx"),
 
+  // kioku
+  route("kioku", "routes/kioku.tsx"),
+
   // you
   route("you", "routes/you.tsx"),
 

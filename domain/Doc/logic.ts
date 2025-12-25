@@ -11,6 +11,13 @@ import type { Doc } from "./type";
 // ----------------------------------------------------------------------------
 /**
  * Doc を新規作成
+ *
+ * Logic Rules:
+ *   - title は 入力値の値となる
+ *   - title を見出し1として body にセット
+ *   - description, thumbnailUrl は null にセット
+ *   - status は "private" にセット
+ *   - createdAt, updatedAt は 引数 now となる
  */
 export const createDoc = ([title, now]: [String1To100, Date]): Doc => ({
   type: "Doc",
@@ -36,6 +43,10 @@ export const createDoc = ([title, now]: [String1To100, Date]): Doc => ({
 
 /**
  * Docs を更新
+ *
+ * Logic Rules:
+ *  - title, description, status, body を 引数の値で更新する
+ *  - updatedAt は 引数 now となる
  */
 export const updatedDoc = ([doc, title, description, status, body, now]: [
   Doc,
@@ -56,3 +67,4 @@ export const updatedDoc = ([doc, title, description, status, body, now]: [
 // ----------------------------------------------------------------------------
 // Converter (Domain Type -> DTO)
 // ----------------------------------------------------------------------------
+// なし

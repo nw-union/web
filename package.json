@@ -10,7 +10,6 @@
     "db:sampledata:local": "wrangler d1 execute web-local --file ./adapter/drizzle/sampledata/data.sql --local",
     "dev": "react-router dev",
     "start": "wrangler dev",
-    "deploy:development": "wrangler deploy --env development",
     "deploy:production": "wrangler deploy --env production",
     "typecheck": "wrangler types && react-router typegen && tsc -b",
     "check": "biome check --write . && bun run typecheck",
