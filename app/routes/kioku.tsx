@@ -184,15 +184,15 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const categories: Array<{ value: Kioku["category"] | "all"; label: string }> =
     [
       { value: "all", label: "All" },
-      { value: "doc", label: "Doc" },
-      { value: "note", label: "Note" },
       { value: "youtube", label: "YouTube" },
+      { value: "note", label: "Note" },
+      { value: "doc", label: "Doc" },
     ];
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
       <main className="container mx-auto max-w-7xl px-4 py-4">
-        <div className="mt-16 mb-8">
+        <div className="my-8">
           <h1 className="text-2xl py-2 font-medium text-center text-gray-800 dark:text-gray-300">
             Kioku
           </h1>
