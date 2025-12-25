@@ -1,11 +1,7 @@
 import { okAsync, ResultAsync } from "neverthrow";
 import type { DocWorkFlows } from "../../type";
-import {
-  newDocId,
-  newString1To100,
-  newString1To100OrNone,
-  type TimePort,
-} from "../vo";
+import type { TimePort } from "../port";
+import { newDocId, newString1To100, newString1To100OrNone } from "../vo";
 import { createDoc, updatedDoc } from "./logic";
 import type { DocRepositoryPort } from "./port";
 
@@ -67,12 +63,4 @@ export const newDocWorkFlows = (
     okAsync(q)
       .andThen(r.get)
       .map((doc) => ({ doc })),
-
-  /*
-   * ドキュメントを探す
-   */
-  search: (q) =>
-    okAsync(q)
-      .andThen(r.search)
-      .map((docs) => ({ docs })),
 });

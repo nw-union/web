@@ -6,23 +6,30 @@ import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
 import { newDocKiokuRepository, newDocRepository } from "./adapter/drizzle/doc";
-import { newNoteKiokuRepository } from "./adapter/drizzle/note";
+import {
+  newNoteKiokuRepository,
+  newNoteRepository,
+} from "./adapter/drizzle/note";
 import { newUserRepository } from "./adapter/drizzle/user";
-import { newVideoRepository } from "./adapter/drizzle/video";
-import { newYoutubeKiokuRepository } from "./adapter/drizzle/youtube";
+import {
+  newYoutubeKiokuRepository,
+  newYoutubeRepository,
+} from "./adapter/drizzle/youtube";
 import { newStorage } from "./adapter/r2/putBucket";
 import { newTime } from "./adapter/time/now";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
+import { newNoteWorkFlows } from "./domain/Note/workflow";
 import { newSystemWorkFlows } from "./domain/System/workflow";
 import { newUserWorkFlows } from "./domain/User/workflow";
-import { newVideoWorkFlows } from "./domain/Video/workflow";
+import { newYoutubeWorkFlows } from "./domain/Youtube/workflow";
 import type {
   DocWorkFlows,
   KiokuWorkFlows,
+  NoteWorkFlows,
   SystemWorkFlows,
   UserWorkFlows,
-  VideoWorkFlows,
+  YoutubeWorkFlows,
 } from "./type";
 
 declare global {
@@ -39,10 +46,11 @@ declare module "react-router" {
     auth: Auth;
     wf: {
       doc: DocWorkFlows;
-      video: VideoWorkFlows;
       user: UserWorkFlows;
       sys: SystemWorkFlows;
       kioku: KiokuWorkFlows;
+      youtube: YoutubeWorkFlows;
+      note: NoteWorkFlows;
     };
   }
 }
@@ -64,7 +72,6 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
     auth: createAuth(cloudflare.env),
     wf: {
       doc: newDocWorkFlows(newDocRepository(db, log), time),
-      video: newVideoWorkFlows(newVideoRepository(db, log)),
       user: newUserWorkFlows(newUserRepository(db, log), time),
       sys: newSystemWorkFlows(
         newStorage(cloudflare.env.BUCKET, cloudflare.env.STORAGE_DOMAIN, log),
@@ -74,6 +81,8 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
         newYoutubeKiokuRepository(db, log),
         newNoteKiokuRepository(db, log),
       ),
+      youtube: newYoutubeWorkFlows(newYoutubeRepository(db, log), time),
+      note: newNoteWorkFlows(newNoteRepository(db, log), time),
     },
   };
 }
