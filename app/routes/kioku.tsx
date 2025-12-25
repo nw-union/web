@@ -5,7 +5,6 @@ import { DocumentIcon, NoteIcon } from "../components/Icons";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/kioku";
 
-
 /**
  * キオク一覧 Loader
  *
