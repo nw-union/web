@@ -5,7 +5,7 @@ import { createMetaTags } from "../util";
 import type { Route } from "./+types/you";
 
 /**
- * You Loader
+ * 個人ページ Loader
  *
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -43,12 +43,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       <div className="max-w-md w-full">
         <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-300">
           <div className="flex flex-col items-center">
-            {/* Profile Icon */}
+            {/* ---------------- Profile Icon ---------------- */}
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-cyan-500 dark:from-green-500 dark:to-cyan-600 flex items-center justify-center mb-6 shadow-md">
               <UserIcon className="w-14 h-14 text-white stroke-[1.5]" />
             </div>
 
-            {/* User Info */}
+            {/* ---------------- User Info ---------------- */}
             <div className="text-center mb-8">
               <h1 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">
                 {user.name}
@@ -58,12 +58,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               </p>
             </div>
 
-            {/* Theme Toggle */}
+            {/* ---------------- Theme Toggle ---------------- */}
             <div className="w-full mb-4">
               <ThemeToggle />
             </div>
 
-            {/* Logout Button */}
+            {/* ---------------- Logout Button ---------------- */}
             <Link
               to="/signout"
               reloadDocument
