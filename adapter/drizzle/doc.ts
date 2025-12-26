@@ -21,7 +21,7 @@ import {
   newUrlOrNone,
 } from "../../domain/vo";
 import type { Doc as DocDto } from "../../type";
-import { type DocStatusDbEnum, docTable } from "./schema";
+import { type DocStatusDbEnum, docTable, userTable } from "./schema";
 import { dbErrorHandling } from "./util";
 
 // ----------------------------------------------------------------------------
@@ -29,6 +29,12 @@ import { dbErrorHandling } from "./util";
 // ----------------------------------------------------------------------------
 type DocSelectModel = InferSelectModel<typeof docTable>;
 type DocInsertModel = InferInsertModel<typeof docTable>;
+type UserSelectModel = InferSelectModel<typeof userTable>;
+
+type DocJoinUserSelectModel = {
+  doc: DocSelectModel;
+  user: UserSelectModel;
+};
 
 // ----------------------------------------------------------------------------
 // Converter (DomainType -> DbModel)
@@ -99,21 +105,24 @@ const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
 /**
  * DocSelectModel を DocKioku (Domain) に変換
  *
- * @param d - DocSelectModel
+ * @param d - DocJoinSelectModel
  * @return Result<DocKioku, AppError> - DocKioku (Domain) or AppError
  *
  */
-const validateDocKioku = (d: DocSelectModel): Result<DocKioku, AppError> =>
-  Result.combine([newDocId(d.id, "DocKioku.id")]).map(([id]) => ({
+const validateDocKioku = (
+  m: DocJoinUserSelectModel,
+): Result<DocKioku, AppError> =>
+  Result.combine([newDocId(m.doc.id, "DocKioku.id")]).map(([id]) => ({
     type: "DocKioku",
     id: id,
-    title: d.title,
-    thumbnailUrl: d.thumbnailUrl,
-    createdAt: d.createdAt,
+    title: m.doc.title,
+    userName: m.user.name,
+    thumbnailUrl: m.doc.thumbnailUrl,
+    createdAt: m.doc.createdAt,
   }));
 
 const validateDocKiokuList = (
-  ds: DocSelectModel[],
+  ds: DocJoinUserSelectModel[],
 ): Result<DocKioku[], AppError> => Result.combine(ds.map(validateDocKioku));
 
 /**
@@ -204,28 +213,50 @@ const readDocSelectModel =
       dbErrorHandling,
     );
 
-const getAllDocSelectModel = (db: AnyD1Database, log: Logger) => () =>
-  fromPromise(
-    (async () => {
-      log.info("💽 searchDocs 開始");
+const getAllDocSelectModel =
+  (db: AnyD1Database, log: Logger) =>
+  (): ResultAsync<DocJoinUserSelectModel[], AppError> =>
+    fromPromise(
+      (async () => {
+        log.info("💽 searchDocs 開始");
 
-      // クエリ作成
-      const query = drizzle(db)
-        .select()
-        .from(docTable)
-        .orderBy(desc(docTable.createdAt)); // createdAt でソート
+        // クエリ作成
+        const query = drizzle(db)
+          .select()
+          .from(docTable)
+          .innerJoin(userTable, eq(docTable.postedUserId, userTable.id)) // user と結合
+          .orderBy(desc(docTable.createdAt)); // createdAt でソート
 
-      log.debug(`SQL: ${query.toSQL().sql}`);
-      log.debug(`PARAMS: ${query.toSQL().params}`);
+        log.debug(`SQL: ${query.toSQL().sql}`);
+        log.debug(`PARAMS: ${query.toSQL().params}`);
 
-      // 実行
-      const docs = await query.all();
+        // 実行
+        const rows = await query.all();
 
-      return docs;
-    })(),
-    dbErrorHandling,
-  );
+        // 結果を DocJoinUserSelectModel に詰める
+        const docs: DocJoinUserSelectModel[] = rows
+          .map((r) => ({
+            doc: r.doc,
+            user: r.user,
+          }))
+          // null チェック
+          .filter((d) => d.doc && d.user)
+          // 重複削除
+          .reduce<DocJoinUserSelectModel[]>((acc, current) => {
+            if (!acc.find((d) => d.doc.id === current.doc.id)) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
 
+        // TODO: NotFound をエラーハンドリング
+
+        return docs;
+      })(),
+      dbErrorHandling,
+    );
+
+// DocInsertModel を DB から削除する
 const deleteDocInsertModel =
   (db: AnyD1Database, log: Logger) =>
   (docs: DocInsertModel[]): ResultAsync<undefined, AppError> =>

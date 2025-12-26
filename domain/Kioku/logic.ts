@@ -14,7 +14,7 @@ export const convertToKiokuDto = (k: Kioku): KiokuDto =>
     .with({ type: "DocKioku" }, (docKioku) => ({
       id: docKioku.id,
       title: docKioku.title,
-      name: "grandcolline", // FIXME
+      name: docKioku.userName,
       category: "doc" as const,
       thumbnailUrl: docKioku.thumbnailUrl,
       url: `/docs/${toShortDocId(docKioku.id)}`,

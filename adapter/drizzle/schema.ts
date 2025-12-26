@@ -27,6 +27,7 @@ export const docTable = sqliteTable(
     status: zEnum("status", docStatusDbEnum).notNull(),
     body: text("body").notNull(),
     thumbnailUrl: text("thumbnail_url").notNull().default(""),
+    postedUserId: text("posted_user_id").notNull().default("mock-user-id"),
     createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   },
@@ -81,6 +82,7 @@ export const noteTable = sqliteTable("note", {
   noteUserName: text("note_user_name").notNull(),
   url: text("url").notNull(),
   thumbnailUrl: text("thumbnail_url").notNull().default(""),
+  postedUserId: text("posted_user_id").notNull().default("mock-user-id"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
@@ -94,6 +96,7 @@ export const youtubeTable = sqliteTable("youtube", {
   channelName: text("channel_name").notNull(),
   duration: text("duration").notNull(),
   isPublic: integer("is_public").notNull(), // boolean を整数で保存 (0 or 1)
+  postedUserId: text("posted_user_id").notNull().default("mock-user-id"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

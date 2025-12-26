@@ -5,6 +5,7 @@ export type DocKioku = {
 
   id: DocId;
   title: string;
+  userName: string;
   thumbnailUrl: string;
   createdAt: Date;
 };

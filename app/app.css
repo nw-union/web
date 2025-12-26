@@ -46,14 +46,14 @@
 /* ------------------------------------------------------- */
 /* Headers */
 .md-body h1 {
-  @apply text-2xl my-14 py-2 text-center text-gray-800 dark:text-gray-300;
+  @apply text-2xl py-14 my-2 text-center text-gray-800 dark:text-gray-300;
 }
 .md-body h2 {
-  @apply text-xl mt-14 py-2 mb-4 border-b border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300;
+  @apply text-xl pt-10 pb-2 my-4 border-b border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300;
 }
 .md-body h3,
 .md-body h4 {
-  @apply text-lg mt-12 mb-2 text-gray-800 dark:text-gray-300;
+  @apply text-lg pt-8 pb-2 text-gray-800 dark:text-gray-300;
 }
 
 /* Links */
@@ -66,7 +66,7 @@
 
 /* Paragraph */
 .md-body p {
-  @apply mb-8 text-justify hyphens-auto text-gray-700 dark:text-gray-300;
+  @apply mb-6 text-justify hyphens-auto text-gray-700 dark:text-gray-300;
 }
 
 /* Lists */
