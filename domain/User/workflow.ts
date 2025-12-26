@@ -1,10 +1,10 @@
 import type { AppError } from "@nw-union/nw-utils";
-import { errAsync, okAsync, type ResultAsync } from "neverthrow";
+import { errAsync, okAsync, ResultAsync, type ResultAsync } from "neverthrow";
 import { match } from "ts-pattern";
 import type { UserWorkFlows } from "../../type";
 import type { TimePort } from "../port";
-import { type Email, newEmail } from "../vo";
-import { convToUserDto, createUser } from "./logic";
+import { type Email, newEmail, newUrlOrNone } from "../vo";
+import { convToUserDto, createUser, updateUser } from "./logic";
 import type { UserRepositoryPort } from "./port";
 import type { User } from "./type";
 
@@ -28,6 +28,29 @@ export const newUserWorkFlows = (
       .map(convToUserDto)
       // Step.4 イベント生成
       .map((user) => ({ user })),
+
+  /*
+   * ユーザーを更新する
+   */
+  update: (cmd) =>
+    ResultAsync.combine([
+      // 既存のユーザーを取得
+      okAsync(cmd.id).andThen(r.read),
+      // name
+      okAsync(cmd.name),
+      // imgUrl 検証
+      okAsync(cmd.imgUrl).andThen((url) => newUrlOrNone(url, "User.imgUrl")),
+      // discord
+      okAsync(cmd.discord),
+      // github
+      okAsync(cmd.github),
+      // 現在日時取得
+      t.getNow(),
+    ])
+      // ユーザー更新
+      .map(updateUser)
+      // ユーザー保存
+      .andThen(r.upsert),
 });
 
 const getOrCreateUser =

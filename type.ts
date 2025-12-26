@@ -95,11 +95,15 @@ export type User = {
   name: string;
   email: string;
   imgUrl: string;
+  discord: string;
+  github: string;
 };
 
 export interface UserWorkFlows {
   // ユーザーを取得する
   get(q: GetUserQuery): ResultAsync<GetUserEvt, AppError>;
+  // ユーザーを更新する
+  update(cmd: UpdateUserCmd): ResultAsync<UpdateUserEvt, AppError>;
 }
 
 // GetUser クエリ
@@ -112,6 +116,18 @@ export interface GetUserQuery {
 export interface GetUserEvt {
   user: User;
 }
+
+// UpdateUser コマンド
+export type UpdateUserCmd = {
+  id: string; // 更新するユーザーのID
+  name: string;
+  imgUrl: string;
+  discord: string;
+  github: string;
+};
+
+// UpdateUser イベント
+export type UpdateUserEvt = undefined;
 
 // ---------------------------
 
