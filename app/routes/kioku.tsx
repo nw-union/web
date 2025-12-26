@@ -43,6 +43,44 @@ export const meta = (_: Route.MetaArgs) =>
   });
 
 /**
+ * 相対時間を計算（YouTube スタイル）
+ *
+ * @param date 対象の日時
+ * @returns 相対時間の文字列（例: "3分前", "2日前"）
+ */
+const getRelativeTime = (date: Date): string => {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+  const diffWeek = Math.floor(diffDay / 7);
+  const diffMonth = Math.floor(diffDay / 30);
+  const diffYear = Math.floor(diffDay / 365);
+
+  if (diffMin < 1) {
+    return "たった今";
+  }
+  if (diffMin < 60) {
+    return `${diffMin}分前`;
+  }
+  if (diffHour < 24) {
+    return `${diffHour}時間前`;
+  }
+  if (diffDay < 7) {
+    return `${diffDay}日前`;
+  }
+  if (diffWeek < 4) {
+    return `${diffWeek}週間前`;
+  }
+  if (diffMonth < 12) {
+    return `${diffMonth}ヶ月前`;
+  }
+  return `${diffYear}年前`;
+};
+
+/**
  * カテゴリーラベルを取得
  *
  * @param category カテゴリー
@@ -120,7 +158,7 @@ const KiokuCard = ({ kioku }: { kioku: Kioku }): JSX.Element => (
           {getCategoryIcon(kioku.category, "w-3 h-3")}
           <span>{getCategoryLabel(kioku.category)}</span>
           <span>•</span>
-          <span>{kioku.createdAt.toLocaleDateString("ja-JP")}</span>
+          <span>{getRelativeTime(kioku.createdAt)}</span>
         </p>
       </div>
     </div>
