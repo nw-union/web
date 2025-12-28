@@ -38,28 +38,6 @@ export const docTable = sqliteTable(
 );
 
 // -----------------------------------------
-// Video Table
-// -----------------------------------------
-// Video テーブルのスキーマ
-export const videoTable = sqliteTable(
-  "video",
-  {
-    id: text("video_id").primaryKey().notNull(),
-    title: text("title").notNull(),
-    channelName: text("channel_name").notNull(),
-    duration: text("duration").notNull(),
-    isPublic: integer("is_public").notNull(), // boolean を整数で保存 (0 or 1)
-    uploadedAt: text("uploaded_at").notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-  },
-  (table) => [
-    // インデックス設定
-    index("idx_video_created_at").on(table.createdAt),
-  ],
-);
-
-// -----------------------------------------
 // User table
 // -----------------------------------------
 export const userTable = sqliteTable("user", {
