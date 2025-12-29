@@ -53,6 +53,9 @@ export const newUserWorkFlows = (
       .andThen(r.upsert),
 });
 
+/**
+ * ユーザーを取得する. 存在しなければ新規作成する
+ */
 const getOrCreateUser =
   (r: UserRepositoryPort, t: TimePort) =>
   (id: string) =>
