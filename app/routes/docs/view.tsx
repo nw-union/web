@@ -1,5 +1,4 @@
 import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
-import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -63,7 +62,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         inline: true,
         allowBase64: true,
       }),
-      Dropcursor,
     ],
     content: "",
     editable: false, // 閲覧モードのため編集不可
@@ -85,6 +83,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       try {
         const content = JSON.parse(doc.body);
         editor.commands.setContent(content);
+        // Safari でのスクロール問題を回避: レンダリング完了後にスクロールをリセット
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+          });
+        });
       } catch (error) {
         console.error("Failed to parse document body:", error);
       }
