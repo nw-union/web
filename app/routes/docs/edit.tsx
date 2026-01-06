@@ -138,6 +138,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         const content = JSON.parse(doc.body);
         editor.commands.setContent(content);
         setEditorContent(content);
+        // Safari でのスクロール問題を回避: レンダリング完了後にスクロールをリセット
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+          });
+        });
       } catch (error) {
         console.error("Failed to parse document body:", error);
       }
