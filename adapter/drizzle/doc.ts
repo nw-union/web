@@ -19,6 +19,7 @@ import {
   newString1To100,
   newString1To100OrNone,
   newUrlOrNone,
+  newUserId,
 } from "../../domain/vo";
 import type { Doc as DocDto } from "../../type";
 import { type DocStatusDbEnum, docTable, userTable } from "./schema";
@@ -61,6 +62,7 @@ const convToDocInsertModel = (doc: Doc): DocInsertModel => ({
   thumbnailUrl: match(doc.thumbnailUrl)
     .with(null, () => "")
     .otherwise((u) => u),
+  postedUserId: doc.userId,
   createdAt: doc.createdAt,
   updatedAt: doc.updatedAt,
 });
@@ -86,7 +88,8 @@ const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
     newString1To100(d.title, "Doc.title"),
     newString1To100OrNone(d.description, "Doc.description"),
     newUrlOrNone(d.thumbnailUrl, "Doc.thumbnailUrl"),
-  ]).map(([id, title, description, thumbnailUrl]) => ({
+    newUserId(d.postedUserId, "Doc.userId"),
+  ]).map(([id, title, description, thumbnailUrl, userId]) => ({
     type: "Doc",
     id: id,
     title: title,
@@ -98,6 +101,7 @@ const validateDoc = (d: DocSelectModel): Result<Doc, AppError> =>
       .exhaustive(),
     body: d.body,
     thumbnailUrl: thumbnailUrl,
+    userId: userId,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   }));

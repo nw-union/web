@@ -1,4 +1,4 @@
-import type { DocId, String1To100, Url } from "../vo";
+import type { DocId, String1To100, Url, UserId } from "../vo";
 
 export type Doc = {
   type: "Doc";
@@ -9,6 +9,7 @@ export type Doc = {
   status: "public" | "private";
   body: string;
   thumbnailUrl: Url | null;
+  userId: UserId;
   createdAt: Date;
   updatedAt: Date;
 };

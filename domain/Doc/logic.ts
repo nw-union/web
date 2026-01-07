@@ -1,4 +1,4 @@
-import { createDocId, type String1To100 } from "../vo";
+import { createDocId, type String1To100, type UserId } from "../vo";
 import type { Doc } from "./type";
 
 // ----------------------------------------------------------------------------
@@ -13,6 +13,7 @@ import type { Doc } from "./type";
  * Doc を新規作成
  *
  * @param title - Doc のタイトル
+ * @param userId - 作成者のユーザーID
  * @param now - 現在日時
  * @return Doc - 作成された Doc
  *
@@ -21,9 +22,14 @@ import type { Doc } from "./type";
  *   - title を見出し1として body にセット
  *   - description, thumbnailUrl は null にセット
  *   - status は "private" にセット
+ *   - userId は 引数 userId となる
  *   - createdAt, updatedAt は 引数 now となる
  */
-export const createDoc = ([title, now]: [String1To100, Date]): Doc => ({
+export const createDoc = ([title, userId, now]: [
+  String1To100,
+  UserId,
+  Date,
+]): Doc => ({
   type: "Doc",
   id: createDocId(),
   title,
@@ -41,6 +47,7 @@ export const createDoc = ([title, now]: [String1To100, Date]): Doc => ({
     ],
   }),
   thumbnailUrl: null,
+  userId,
   createdAt: now,
   updatedAt: now,
 });
