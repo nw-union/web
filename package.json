@@ -21,6 +21,7 @@
     "@react-router/cloudflare": "^7.11.0",
     "@tiptap/extension-dropcursor": "^3.14.0",
     "@tiptap/extension-image": "^3.14.0",
+    "@tiptap/extension-youtube": "^3.15.3",
     "@tiptap/pm": "^3.14.0",
     "@tiptap/react": "^3.14.0",
     "@tiptap/starter-kit": "^3.14.0",

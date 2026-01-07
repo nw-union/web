@@ -1,5 +1,6 @@
 import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
@@ -61,6 +62,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       Image.configure({
         inline: true,
         allowBase64: true,
+      }),
+      Youtube.configure({
+        width: 640,
+        height: 360,
+        controls: true,
+        nocookie: true,
       }),
     ],
     content: "",

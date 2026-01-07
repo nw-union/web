@@ -69,6 +69,14 @@ export function MenuBar({ editor }: { editor: Editor }) {
     }
   }, [editor]);
 
+  const addYoutube = useCallback(() => {
+    const url = window.prompt("YouTube動画のURLを入力してください");
+
+    if (url) {
+      editor.chain().focus().setYoutubeVideo({ src: url }).run();
+    }
+  }, [editor]);
+
   return (
     <div className="pt-1">
       <div className="flex flex-wrap gap-2">
@@ -155,6 +163,13 @@ export function MenuBar({ editor }: { editor: Editor }) {
           className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
         >
           画像
+        </button>
+        <button
+          type="button"
+          onClick={addYoutube}
+          className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
+        >
+          YouTube
         </button>
       </div>
     </div>

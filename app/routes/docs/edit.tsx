@@ -1,6 +1,7 @@
 import { fromShortUuid } from "@nw-union/nw-utils/lib/uuid";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useId, useState } from "react";
@@ -124,6 +125,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
           directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
           alwaysPreserveAspectRatio: true,
         },
+      }),
+      Youtube.configure({
+        width: 640,
+        height: 360,
+        controls: true,
+        nocookie: true,
       }),
       Dropcursor,
     ],
