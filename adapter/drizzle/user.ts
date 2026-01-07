@@ -35,8 +35,8 @@ const convToUserInsertModel = (u: User): UserInsertModel => ({
   name: u.name,
   email: u.email,
   imgUrl: u.imgUrl ?? "",
-  discord: "",
-  github: "",
+  discord: u.discord,
+  github: u.github,
   createdAt: u.createdAt,
   updatedAt: u.updatedAt,
 });
@@ -56,6 +56,8 @@ const validateUser = (d: UserSelectModel): Result<User, AppError> =>
     name: d.name,
     email: email,
     imgUrl: imgUrl,
+    discord: d.discord,
+    github: d.github,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   }));
@@ -65,6 +67,8 @@ const validateUserDto = (d: UserSelectModel): UserDto => ({
   name: d.name,
   email: d.email,
   imgUrl: d.imgUrl,
+  discord: d.discord,
+  github: d.github,
 });
 
 // ----------------------------------------------------------------------------

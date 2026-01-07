@@ -7,6 +7,8 @@ export type User = {
   name: string;
   email: Email;
   imgUrl: Url | null;
+  discord: string;
+  github: string;
   createdAt: Date;
   updatedAt: Date;
 };

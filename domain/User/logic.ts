@@ -16,6 +16,7 @@ import type { User } from "./type";
  * Logic Rules:
  *  - name は email の @ より前の部分をデフォルトとする
  *  - imgUrl は null にセット
+ *  - discord, github は空文字列にセット
  *  - createdAt, updatedAt は 引数 now となる
  */
 export const createUser = ([id, email, now]: [string, Email, Date]): User => ({
@@ -24,6 +25,8 @@ export const createUser = ([id, email, now]: [string, Email, Date]): User => ({
   name: email.split("@")[0], // デフォルトは email の @ より前の部分
   email: email,
   imgUrl: null,
+  discord: "",
+  github: "",
   createdAt: now,
   updatedAt: now,
 });
@@ -32,18 +35,22 @@ export const createUser = ([id, email, now]: [string, Email, Date]): User => ({
  * User を更新
  *
  * Logic Rules:
- *  - name, imgUrl を 引数の値で更新する
+ *  - name, imgUrl, discord, github を 引数の値で更新する
  *  - updatedAt は 引数 now となる
  */
-export const updateUser = ([user, name, imgUrl, now]: [
+export const updateUser = ([user, name, imgUrl, discord, github, now]: [
   User,
   string,
   Url | null,
+  string,
+  string,
   Date,
 ]): User => ({
   ...user,
   name,
   imgUrl,
+  discord,
+  github,
   updatedAt: now,
 });
 
@@ -58,4 +65,6 @@ export const convToUserDto = (u: User): UserDto => ({
   name: u.name,
   email: u.email,
   imgUrl: u.imgUrl ?? "",
+  discord: u.discord,
+  github: u.github,
 });

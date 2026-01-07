@@ -1,6 +1,6 @@
 import type { AppError } from "@nw-union/nw-utils";
 import { newType } from "@nw-union/nw-utils/lib/zod";
-import { okAsync, type ResultAsync } from "neverthrow";
+import type { ResultAsync } from "neverthrow";
 import z from "zod";
 
 // ---------------------------
@@ -95,11 +95,15 @@ export type User = {
   name: string;
   email: string;
   imgUrl: string;
+  discord: string;
+  github: string;
 };
 
 export interface UserWorkFlows {
   // ユーザーを取得する
   get(q: GetUserQuery): ResultAsync<GetUserEvt, AppError>;
+  // ユーザーを更新する
+  update(cmd: UpdateUserCmd): ResultAsync<UpdateUserEvt, AppError>;
 }
 
 // GetUser クエリ
@@ -112,6 +116,18 @@ export interface GetUserQuery {
 export interface GetUserEvt {
   user: User;
 }
+
+// UpdateUser コマンド
+export type UpdateUserCmd = {
+  id: string; // 更新するユーザーのID
+  name: string;
+  imgUrl: string;
+  discord: string;
+  github: string;
+};
+
+// UpdateUser イベント
+export type UpdateUserEvt = undefined;
 
 // ---------------------------
 
@@ -130,33 +146,6 @@ export interface KiokuWorkFlows {
   // キオクを探す
   get(): ResultAsync<Kioku[], AppError>;
 }
-
-export const newMockKiokuWorkFlows = (): KiokuWorkFlows => ({
-  get: () =>
-    okAsync([
-      {
-        id: "1",
-        title: "画像について",
-        name: "grandcolline",
-        category: "doc",
-        thumbnailUrl: "https://nw-union.net/img/logo card.png",
-        url: "https://example.com/doc/1",
-        createdAt: new Date(),
-      },
-      {
-        id: "2",
-        title:
-          "【日記】2025.10.26 OASIS を観た！【hidelberq / 抑止力 / hisanori ito / 🐙】",
-        name: "NWU",
-        category: "privateYoutube",
-        thumbnailUrl:
-          "https://img.youtube.com/vi/3dplZ0KaxdE/maxresdefault.jpg",
-        duration: "10:00",
-        url: "https://youtube.com/watch?v=sample",
-        createdAt: new Date(),
-      },
-    ]),
-});
 
 // ---------------------------
 
