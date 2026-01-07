@@ -48,9 +48,18 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  *
  */
 export async function action({ context, params, request }: Route.ActionArgs) {
-  const { log, wf } = context;
+  const { log, wf, auth } = context;
 
   log.info(`🔄 ドキュメント編集 Action. slug: ${params.slug}`);
+
+  // 認証チェック
+  const userRes = await auth.auth(request);
+  if (userRes.isErr()) {
+    log.error("認証に失敗しました", userRes.error);
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const user = userRes.value;
+
   const idRes = fromShortUuid(params.slug);
   if (idRes.isErr()) {
     log.error(`Invalid slug: ${params.slug}`);
@@ -73,7 +82,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     description: description || "",
     status: status as "public" | "private",
     thumbnailUrl: "", // FIXME
-    userId: "", // FIXME
+    userId: user.id, // update時は無視されるが、認証されたユーザーIDを設定
   };
 
   // ドキュメントを編集
