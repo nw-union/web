@@ -117,6 +117,12 @@
   @apply block text-sm p-4 text-gray-800 dark:text-green-400 bg-transparent;
 }
 
+/* YouTube embeds (iframes) - Responsive with margins */
+.md-body iframe {
+  @apply max-w-full my-6 mx-auto block;
+  aspect-ratio: 16 / 9;
+}
+
 /* ------------------------------------------------------- */
 /* ---------- TipTap Image Resize Handles ---------- */
 /* ------------------------------------------------------- */
