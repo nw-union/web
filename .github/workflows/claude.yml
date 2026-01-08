@@ -7,13 +7,18 @@ on:
   issues:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   issues: read
   id-token: write
 
 jobs:
   claude:
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      id-token: write
     uses: nw-union/.github/.github/workflows/claude.yml@main
     secrets: inherit
 
