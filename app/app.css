@@ -118,11 +118,9 @@
 }
 
 /* YouTube embeds (iframes) - Responsive with margins */
-.md-body iframe {
-  @apply max-w-full my-6 mx-auto block;
-}
 .md-body iframe[src*="youtube.com"],
 .md-body iframe[src*="youtu.be"] {
+  @apply w-full max-w-full my-6 mx-auto block;
   aspect-ratio: 16 / 9;
 }
 
