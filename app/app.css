@@ -117,11 +117,23 @@
   @apply block text-sm p-4 text-gray-800 dark:text-green-400 bg-transparent;
 }
 
-/* YouTube embeds (iframes) - Responsive with margins */
+/* YouTube embeds (iframes) - Responsive with 16:9 aspect ratio */
 .md-body iframe[src*="youtube.com"],
 .md-body iframe[src*="youtu.be"] {
   @apply w-full max-w-full my-6 mx-auto block;
   aspect-ratio: 16 / 9;
+  height: auto !important;
+}
+
+/* TipTap YouTube wrapper responsive styling with 16:9 aspect ratio */
+.md-body div[data-youtube-video] {
+  @apply w-full my-6;
+}
+
+.md-body div[data-youtube-video] iframe {
+  @apply w-full;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
 }
 
 /* ------------------------------------------------------- */

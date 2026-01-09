@@ -5,7 +5,7 @@ import Youtube from "@tiptap/extension-youtube";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useId, useState } from "react";
-import { Form, useNavigation } from "react-router";
+import { Form, redirect, useNavigation } from "react-router";
 import type { UpdateDocCmd } from "../../../type.ts";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
 import type { Route } from "./+types/edit.ts";
@@ -88,7 +88,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   // ドキュメントを編集
   return await wf.doc.update(cmd).match(
-    () => ({ success: true }),
+    () => redirect(`/docs/${params.slug}`),
     (e) => {
       log.error("ドキュメントの更新に失敗しました", e);
       return new Response("Internal Server Error", { status: 500 });
@@ -127,8 +127,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         },
       }),
       Youtube.configure({
-        width: 640,
-        height: 360,
         controls: true,
         nocookie: true,
       }),
@@ -168,7 +166,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="w-full md:w-[700px] mx-auto px-6 py-8">
         {editor && (
           <>
             <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 -mx-4 px-4">
@@ -284,7 +282,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         )}
       </main>
 
-      <div className="max-w-4xl mx-auto px-4 pb-8">
+      <div className="w-full md:w-[700px] mx-auto px-6 pb-8">
         <details className="cursor-pointer">
           <summary className="font-medium text-gray-700 dark:text-gray-300 mb-2">
             JSON データを表示

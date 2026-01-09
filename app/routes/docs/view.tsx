@@ -64,8 +64,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         allowBase64: true,
       }),
       Youtube.configure({
-        width: 640,
-        height: 360,
         controls: true,
         nocookie: true,
       }),
