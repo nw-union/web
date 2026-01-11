@@ -16,6 +16,7 @@
     "LOG_LEVEL": "debug",
     "AUTH_ADAPTER": "mock",
     "AUTH_TEAM_DOMAIN": "",
+    "STORAGE_ADAPTER": "localstorage",
     "STORAGE_DOMAIN": "local"
   },
   "d1_databases": [
@@ -71,6 +72,7 @@
         "LOG_LEVEL": "info",
         "AUTH_ADAPTER": "cloudflare",
         "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com",
+        "STORAGE_ADAPTER": "r2",
         "STORAGE_DOMAIN": "local"
       },
       "d1_databases": [
