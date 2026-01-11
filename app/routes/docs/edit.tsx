@@ -74,6 +74,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const status = formData.get("status") as string;
+  const thumbnailUrl = formData.get("thumbnailUrl") as string;
 
   // コマンド作成
   const cmd: UpdateDocCmd = {
@@ -82,7 +83,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     body,
     description: description || "",
     status: status as "public" | "private",
-    thumbnailUrl: "", // FIXME
+    thumbnailUrl: thumbnailUrl || "",
     userId: user.id, // update時は無視されるが、認証されたユーザーIDを設定
   };
 
@@ -107,11 +108,13 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const [title, setTitle] = useState(doc.title);
   const [description, setDescription] = useState(doc.description);
   const [status, setStatus] = useState(doc.status);
+  const [thumbnailUrl, setThumbnailUrl] = useState(doc.thumbnailUrl || "");
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const titleId = useId();
   const descriptionId = useId();
   const statusId = useId();
+  const thumbnailUrlId = useId();
 
   // tiptap エディタの初期化
   const editor = useEditor({
@@ -256,6 +259,23 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                           <option value="public">公開</option>
                           <option value="private">メンバー限定</option>
                         </select>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor={thumbnailUrlId}
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
+                          サムネイルURL
+                        </label>
+                        <input
+                          type="url"
+                          id={thumbnailUrlId}
+                          name="thumbnailUrl"
+                          value={thumbnailUrl}
+                          onChange={(e) => setThumbnailUrl(e.target.value)}
+                          placeholder="https://example.com/image.jpg"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        />
                       </div>
                     </div>
                     <div className="flex justify-end gap-3 mt-6">
