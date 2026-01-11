@@ -31,6 +31,8 @@ export interface DocWorkFlows {
   create(cmd: CreateDocCmd): ResultAsync<CreateDocEvt, AppError>;
   // ドキュメントを編集する
   update(cmd: UpdateDocCmd): ResultAsync<UpdateDocEvt, AppError>;
+  // ドキュメントを削除する
+  delete(cmd: DeleteDocCmd): ResultAsync<DeleteDocEvt, AppError>;
 
   // ドキュメントを見る
   get(q: GetDocQuery): ResultAsync<GetDocEvt, AppError>;
@@ -60,6 +62,14 @@ export type UpdateDocCmd = {
 
 // UpdateDoc イベント
 export type UpdateDocEvt = undefined;
+
+// DeleteDoc コマンド
+export type DeleteDocCmd = {
+  id: string; // 削除するドキュメントのID
+};
+
+// DeleteDoc イベント
+export type DeleteDocEvt = undefined;
 
 // GetDoc クエリ
 export type GetDocQuery = {

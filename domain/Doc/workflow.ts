@@ -67,6 +67,23 @@ export const newDocWorkFlows = (
       // ドキュメント保存
       .andThen(r.upsert),
 
+  /**
+   * ドキュメント削除
+   */
+  delete: ({ id }) =>
+    // Step.1 ID検証 & ドキュメント取得
+    //   string -> Doc
+    okAsync(id)
+      // SubStep.1 ID検証
+      //   string -> DocId
+      .andThen(newDocId)
+      // SubStep.2 ドキュメント取得
+      //   DocId -> Doc
+      .andThen(r.read)
+      // Step.2 ドキュメント削除
+      //   Doc -> undefined
+      .andThen(r.delete),
+
   /*
    * ドキュメントを見る
    */
