@@ -1,4 +1,4 @@
-import { createDocId, type String1To100, type UserId } from "../vo";
+import { createDocId, type String1To100, type Url, type UserId } from "../vo";
 import type { Doc } from "./type";
 
 // ----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ export const updatedDoc = ([
   String1To100 | null,
   "public" | "private",
   string,
-  import("../vo").Url | null,
+  Url | null,
   Date,
 ]): Doc => ({
   ...doc,
