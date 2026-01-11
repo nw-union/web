@@ -5,6 +5,7 @@ import {
   newDocId,
   newString1To100,
   newString1To100OrNone,
+  newUrlOrNone,
   newUserId,
 } from "../vo";
 import { createDoc, updatedDoc } from "./logic";
@@ -56,6 +57,8 @@ export const newDocWorkFlows = (
       okAsync(cmd.status),
       // 本文
       okAsync(cmd.body),
+      // サムネイルURL検証
+      okAsync(cmd.thumbnailUrl).andThen(newUrlOrNone),
       // 現在日時取得
       t.getNow(),
     ])

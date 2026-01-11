@@ -60,20 +60,30 @@ export const createDoc = ([title, userId, now]: [
  * @param description - Doc の説明文
  * @param status - Doc の公開ステータス
  * @param body - Doc の本文
+ * @param thumbnailUrl - Doc のサムネイルURL
  * @param now - 現在日時
  *
  * @return Doc - 更新された Doc
  *
  * Logic Rules:
- *  - title, description, status, body を 引数の値で更新する
+ *  - title, description, status, body, thumbnailUrl を 引数の値で更新する
  *  - updatedAt は 引数 now となる
  */
-export const updatedDoc = ([doc, title, description, status, body, now]: [
+export const updatedDoc = ([
+  doc,
+  title,
+  description,
+  status,
+  body,
+  thumbnailUrl,
+  now,
+]: [
   Doc,
   String1To100,
   String1To100 | null,
   "public" | "private",
   string,
+  import("../vo").Url | null,
   Date,
 ]): Doc => ({
   ...doc,
@@ -81,6 +91,7 @@ export const updatedDoc = ([doc, title, description, status, body, now]: [
   description,
   status,
   body,
+  thumbnailUrl,
   updatedAt: now,
 });
 
