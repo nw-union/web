@@ -287,12 +287,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 </a>
               </div>
               {isLogin && (
-                <div className="mt-12 flex justify-center">
+                <div className="mt-12 flex justify-start">
                   <a href="https://lin.ee/P7c9lgo">
                     <img
                       src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
                       alt="友だち追加"
-                      height="36"
+                      height="18"
                       className="border-0"
                     />
                   </a>
