@@ -79,5 +79,5 @@ export const newLocalStorage = (
     okAsync(data)
       .andThen(getFilePath)
       .andThrough(writeLocalFile(basePath, log, data))
-      .map((path) => `/localstorage/${path}`),
+      .map((path) => `http://localhost:5173/localstorage/${path}`),
 });
