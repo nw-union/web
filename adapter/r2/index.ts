@@ -1,4 +1,4 @@
-import { type AppError, type Logger, SystemError } from "@nw-union/nw-utils";
+import { AppError, type Logger, SystemError } from "@nw-union/nw-utils";
 import { uuidv4 } from "@nw-union/nw-utils/lib/uuid";
 import {
   err,
@@ -8,9 +8,17 @@ import {
   type Result,
   type ResultAsync,
 } from "neverthrow";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 import type { StoragePort } from "../../domain/System/workflow";
-import { dbErrorHandling } from "../drizzle/util"; // FIXME
+
+// ----------------------------------------------------------------------------
+// Error Handling
+// ----------------------------------------------------------------------------
+const r2ErrorHandling = (e: unknown): AppError =>
+  match(e)
+    .with(P.instanceOf(AppError), (e) => e)
+    .with(P.instanceOf(Error), (e) => new SystemError(e.message, [], e))
+    .otherwise((e) => new SystemError(`r2 unknown error. error: ${e}`));
 
 // ----------------------------------------------------------------------------
 // Adapter Logic
@@ -31,7 +39,7 @@ const uploadFile =
 
         return;
       })(),
-      dbErrorHandling, // FIXME
+      r2ErrorHandling,
     );
 
 // ファイルからファイルパスを作成します

@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { AppError, type Logger, SystemError } from "@nw-union/nw-utils";
 import { uuidv4 } from "@nw-union/nw-utils/lib/uuid";
@@ -37,12 +36,13 @@ const writeLocalFile =
         const dirPath = dirname(fullPath);
 
         // ディレクトリを再帰的に作成
-        await mkdir(dirPath, { recursive: true });
+        const fs = await import("node:fs/promises");
+        await fs.mkdir(dirPath, { recursive: true });
 
         // Blob を Buffer に変換して書き込み
         const arrayBuffer = await data.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        await writeFile(fullPath, buffer);
+        await fs.writeFile(fullPath, buffer);
 
         log.debug(`file written: ${fullPath}`);
       })(),
