@@ -80,6 +80,58 @@ bun run db:sampledata:local
 bun run typegen
 ```
 
+## Git Workflow
+
+### Pre-commit Requirements
+
+コミットを作成する前に、必ず以下を実行してください:
+
+```bash
+# すべてのチェック (フォーマット、リント、型チェック) を実行
+bun run check
+```
+
+このコマンドは以下を実行します:
+- コードフォーマットの検証 (Biome)
+- Lintエラーのチェック (Biome)
+- TypeScript型エラーのチェック
+
+**重要**: すべてのチェックが成功してからコミットを作成してください。
+
+### Commit Message Convention
+
+このプロジェクトでは **Conventional Commits** に従ったコミットメッセージを使用します。
+
+**フォーマット**:
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Type の種類**:
+- `feat`: 新機能の追加
+- `fix`: バグ修正
+- `docs`: ドキュメントのみの変更
+- `style`: コードの動作に影響しない変更 (フォーマット、セミコロンの追加など)
+- `refactor`: バグ修正や機能追加ではないコードの変更
+- `perf`: パフォーマンス向上のためのコード変更
+- `test`: テストの追加や既存テストの修正
+- `chore`: ビルドプロセスやツールの変更、依存関係の更新など
+
+**例**:
+```bash
+feat(docs): TipTapエディタにYouTube埋め込み機能を追加
+
+fix(video): サムネイルURLがデータベースに保存されない問題を修正
+
+docs(readme): 開発環境のセットアップ手順を更新
+
+refactor(domain): ユーザーリポジトリのエラーハンドリングを改善
+```
+
 ## Architecture
 
 ### Hexagonal Architecture (Ports & Adapters)
