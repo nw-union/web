@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link, redirect, useNavigation, useSubmit } from "react-router";
-import { UserIcon } from "../components/Icons";
+import { EditIcon, UserIcon } from "../components/Icons";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/you";
@@ -207,25 +207,10 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               <button
                 type="button"
                 onClick={handleIconClick}
-                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white flex items-center justify-center shadow-lg transition-colors duration-200"
+                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center justify-center shadow-lg transition-all duration-200 border border-gray-400 dark:border-gray-600 hover:scale-110"
                 title="プロフィール画像を変更"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-4 h-4"
-                  role="img"
-                  aria-label="編集"
-                >
-                  <title>編集</title>
-                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                  <path d="m15 5 4 4" />
-                </svg>
+                <EditIcon className="w-4 h-4" />
               </button>
 
               {/* Hidden file input */}
