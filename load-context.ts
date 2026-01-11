@@ -15,7 +15,7 @@ import {
   newYoutubeKiokuRepository,
   newYoutubeRepository,
 } from "./adapter/drizzle/youtube";
-import { newStorage } from "./adapter/r2/putBucket";
+import { newStorage } from "./adapter/r2";
 import { newTime } from "./adapter/time/now";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
