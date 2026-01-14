@@ -35,6 +35,33 @@
 
   "env": {
     // ---------------------------
+    // Development 設定
+    // ---------------------------
+    "development": {
+      "compatibility_date": "2025-03-11",
+      "vars": {
+        "LOG_ADAPTER": "json",
+        "LOG_LEVEL": "info",
+        "AUTH_ADAPTER": "cloudflare",
+        "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com",
+        "STORAGE_DOMAIN": "local"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "web-development",
+          "database_id": "789ca029-266a-419d-b616-6ef0caf0fa88",
+          "migrations_dir": "./adapter/drizzle/migrations"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "BUCKET",
+          "bucket_name": "web-development"
+        }
+      ]
+    },
+    // ---------------------------
     // Production 設定
     // ---------------------------
     "production": {

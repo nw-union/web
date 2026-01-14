@@ -12,6 +12,7 @@ jobs:
     secrets: inherit
     with:
       command: versions upload --message "Deployed by GitHub Actions (${{ github.ref_name }})"
+      envs: '["production","development"]'
 
   # コードの静的解析
   analysis:
