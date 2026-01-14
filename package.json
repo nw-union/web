@@ -1,15 +1,17 @@
 {
-  "name": "web-new",
+  "name": "web",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "react-router build",
     "db:generate": "drizzle-kit generate --config ./adapter/drizzle/drizzle.config.ts",
     "db:migrate:local": "wrangler d1 migrations apply --local DB",
+    "db:migrate:development": "wrangler d1 migrations apply --env development --remote DB",
     "db:migrate:production": "wrangler d1 migrations apply --env production --remote DB",
     "db:sampledata:local": "wrangler d1 execute web-local --file ./adapter/drizzle/sampledata/data.sql --local",
     "dev": "react-router dev",
     "start": "wrangler dev",
+    "deploy:development": "wrangler deploy --env development",
     "deploy:production": "wrangler deploy --env production",
     "typecheck": "wrangler types && react-router typegen && tsc -b",
     "check": "biome check --write . && bun run typecheck",

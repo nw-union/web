@@ -12,3 +12,5 @@ jobs:
   deploy:
     uses: nw-union/.github/.github/workflows/deploy_workers_with_bun.yml@main
     secrets: inherit
+    envs: '["development","production"]'
+
