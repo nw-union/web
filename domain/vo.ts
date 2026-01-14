@@ -88,6 +88,18 @@ const path = z.string().min(1).brand("Path");
 export type Path = z.infer<typeof path>;
 export const newPath = newType(path, "Path");
 
+export const newUrlOrPath = (
+  src: unknown,
+  name?: string,
+): Result<Url | Path, ValidationError> =>
+  newUrl(src, name).orElse(() => newPath(src, name));
+
+export const newUrlOrPathOrNone = (
+  src: unknown,
+  name?: string,
+): Result<Url | Path | null, ValidationError> =>
+  src === "" ? ok(null) : newUrlOrPath(src, name);
+
 /**
  * Email
  *

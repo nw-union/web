@@ -3,7 +3,7 @@ import { errAsync, okAsync, ResultAsync } from "neverthrow";
 import { match } from "ts-pattern";
 import type { UserWorkFlows } from "../../type";
 import type { TimePort } from "../port";
-import { type Email, newEmail, newUrlOrNone } from "../vo";
+import { type Email, newEmail, newUrlOrPathOrNone } from "../vo";
 import { convToUserDto, createUser, updateUser } from "./logic";
 import type { UserRepositoryPort } from "./port";
 import type { User } from "./type";
@@ -39,7 +39,9 @@ export const newUserWorkFlows = (
       // name
       okAsync(cmd.name),
       // imgUrl 検証
-      okAsync(cmd.imgUrl).andThen((url) => newUrlOrNone(url, "User.imgUrl")),
+      okAsync(cmd.imgUrl).andThen((url) =>
+        newUrlOrPathOrNone(url, "User.imgUrl"),
+      ),
       // discord
       okAsync(cmd.discord),
       // github

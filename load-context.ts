@@ -15,12 +15,13 @@ import {
   newYoutubeKiokuRepository,
   newYoutubeRepository,
 } from "./adapter/drizzle/youtube";
-import { newStorage } from "./adapter/r2/putBucket";
+import { newLocalStorage } from "./adapter/localstorage";
+import { newStorage } from "./adapter/r2";
 import { newTime } from "./adapter/time/now";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
 import { newNoteWorkFlows } from "./domain/Note/workflow";
-import { newSystemWorkFlows } from "./domain/System/workflow";
+import { newSystemWorkFlows, type StoragePort } from "./domain/System/workflow";
 import { newUserWorkFlows } from "./domain/User/workflow";
 import { newYoutubeWorkFlows } from "./domain/Youtube/workflow";
 import type {
@@ -73,9 +74,7 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
     wf: {
       doc: newDocWorkFlows(newDocRepository(db, log), time),
       user: newUserWorkFlows(newUserRepository(db, log), time),
-      sys: newSystemWorkFlows(
-        newStorage(cloudflare.env.BUCKET, cloudflare.env.STORAGE_DOMAIN, log),
-      ),
+      sys: newSystemWorkFlows(createStorage(cloudflare.env, log)),
       kioku: newKiokuWorkFlows(
         newDocKiokuRepository(db, log),
         newYoutubeKiokuRepository(db, log),
@@ -99,4 +98,12 @@ const createLog = (env: CloudflareEnvironment): Logger =>
   match(env.LOG_ADAPTER)
     .with("console", () => newLogConsole(env.LOG_LEVEL))
     .with("json", () => newLogJson(env.LOG_LEVEL))
+    .exhaustive();
+
+const createStorage = (env: CloudflareEnvironment, log: Logger): StoragePort =>
+  match(env.STORAGE_ADAPTER)
+    .with("localstorage", () =>
+      newLocalStorage("./public/localstorage", env.STORAGE_DOMAIN, log),
+    )
+    .with("r2", () => newStorage(env.BUCKET, env.STORAGE_DOMAIN, log))
     .exhaustive();

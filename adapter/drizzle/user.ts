@@ -9,7 +9,7 @@ import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
 import type { UserRepositoryPort } from "../../domain/User/port";
 import type { User } from "../../domain/User/type";
-import { newEmail, newUrlOrNone } from "../../domain/vo";
+import { newEmail, newUrlOrPathOrNone } from "../../domain/vo";
 import type { User as UserDto } from "../../type";
 import { userTable } from "./schema";
 import { dbErrorHandling } from "./util";
@@ -48,7 +48,7 @@ const convToUserInsertModelList = (us: User | User[]): UserInsertModel[] =>
 
 const validateUser = (d: UserSelectModel): Result<User, AppError> =>
   Result.combine([
-    newUrlOrNone(d.imgUrl, "User.imgUrl"),
+    newUrlOrPathOrNone(d.imgUrl, "User.imgUrl"),
     newEmail(d.email, "User.email"),
   ]).map(([imgUrl, email]) => ({
     type: "User",
