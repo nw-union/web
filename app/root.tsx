@@ -101,7 +101,7 @@ export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
   const isAuthenticated = data?.isAuthenticated ?? false;
   const navigation = useNavigation();
-  const isNavigating = navigation.state === "loading";
+  const isNavigating = navigation.state !== "idle";
 
   return (
     <>
