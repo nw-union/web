@@ -1,4 +1,3 @@
-import { dirname, join } from "node:path";
 import { AppError, type Logger, SystemError } from "@nw-union/nw-utils";
 import { uuidv4 } from "@nw-union/nw-utils/lib/uuid";
 import {
@@ -20,6 +19,28 @@ const fsErrorHandling = (e: unknown): AppError =>
     .with(P.instanceOf(AppError), (e) => e)
     .with(P.instanceOf(Error), (e) => new SystemError(e.message, [], e))
     .otherwise((e) => new SystemError(`filesystem unknown error. error: ${e}`));
+
+// パスを結合する関数 (join)
+const join = (...parts: string[]): string => {
+  return parts
+    .filter((part) => typeof part === "string" && part.length > 0) // 空文字を除外
+    .join("/")
+    .replace(/\/+/g, "/"); // 重複したスラッシュを1つにまとめる
+};
+
+// ディレクトリ名を取得する関数 (dirname)
+const dirname = (path: string): string =>
+  match(path)
+    .with("", () => ".")
+    .otherwise((p) => {
+      const normalized = p.replace(/\/+$/, "");
+      const lastSlash = normalized.lastIndexOf("/");
+
+      return match(lastSlash)
+        .with(-1, () => ".") // スラッシュがない場合はカレントディレクトリ
+        .with(0, () => "/") // ルート直下の場合
+        .otherwise((idx) => normalized.substring(0, idx));
+    });
 
 // ----------------------------------------------------------------------------
 // Adapter Logic
