@@ -101,14 +101,14 @@ export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
   const isAuthenticated = data?.isAuthenticated ?? false;
   const navigation = useNavigation();
-  const isNavigating = navigation.state === "loading";
+  const isNavigating = navigation.state !== "idle";
 
   return (
     <>
-      {/* ローディングバー */}
+      {/* ローディング画面 */}
       {isNavigating && (
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <div className="h-px bg-blue-500 animate-progress-bar shadow-lg shadow-blue-500/50" />
+        <div className="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50 transition-colors duration-300">
+          <div className="w-12 h-12 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
         </div>
       )}
 

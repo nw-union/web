@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link, redirect, useNavigation, useSubmit } from "react-router";
+import { Link, redirect, useSubmit } from "react-router";
 import { EditIcon, UserIcon } from "../components/Icons";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { createMetaTags } from "../util";
@@ -108,14 +108,9 @@ export const meta = (_: Route.MetaArgs) =>
 export default function Show({ loaderData }: Route.ComponentProps) {
   const user = loaderData;
   const submit = useSubmit();
-  const navigation = useNavigation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-
-  // フォーム送信中またはナビゲーション中かを判定
-  const isSubmitting = navigation.state !== "idle";
-  const showLoading = isUploading || isSubmitting;
 
   // プロフィールアイコンをクリックしてファイル選択ダイアログを開く
   const handleIconClick = () => {
@@ -250,12 +245,10 @@ export default function Show({ loaderData }: Route.ComponentProps) {
         </div>
       </div>
 
-      {/* ---------------- Loading Overlay ---------------- */}
-      {showLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-xl">
-            <div className="w-12 h-12 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
-          </div>
+      {/* ---------------- Loading Overlay (ファイルアップロード中のみ) ---------------- */}
+      {isUploading && (
+        <div className="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50 transition-colors duration-300">
+          <div className="w-12 h-12 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
         </div>
       )}
     </main>
