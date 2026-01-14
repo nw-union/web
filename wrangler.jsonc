@@ -12,12 +12,18 @@
   // ローカル開発設定
   // ---------------------------
   "vars": {
+    // LOG アダプター用設定
     "LOG_ADAPTER": "console",
     "LOG_LEVEL": "debug",
+
+    // 認証アダプター用設定
     "AUTH_ADAPTER": "mock",
     "AUTH_TEAM_DOMAIN": "",
+
+    // ストレージアダプター用設定
     "STORAGE_ADAPTER": "localstorage",
-    "STORAGE_DOMAIN": "local"
+    "STORAGE_LOCAL_PATH": "./public/localstorage/",
+    "STORAGE_DOMAIN": "/localstorage"
   },
   "d1_databases": [
     {
@@ -41,11 +47,17 @@
     "development": {
       "compatibility_date": "2025-03-11",
       "vars": {
+        // LOG アダプター用設定
         "LOG_ADAPTER": "json",
         "LOG_LEVEL": "info",
+
+        // 認証アダプター用設定
         "AUTH_ADAPTER": "cloudflare",
         "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com",
-        "STORAGE_DOMAIN": "local"
+
+        // ストレージアダプター用設定
+        "STORAGE_ADAPTER": "r2",
+        "STORAGE_DOMAIN": "https://pub-bf093e0a2f9a4a39ae6c52701afa6523.r2.dev"
       },
       "d1_databases": [
         {
@@ -68,12 +80,17 @@
     "production": {
       "compatibility_date": "2025-03-11",
       "vars": {
+        // LOG アダプター用設定
         "LOG_ADAPTER": "json",
         "LOG_LEVEL": "info",
+
+        // 認証アダプター用設定
         "AUTH_ADAPTER": "cloudflare",
         "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com",
+
+        // ストレージアダプター用設定
         "STORAGE_ADAPTER": "r2",
-        "STORAGE_DOMAIN": "local"
+        "STORAGE_DOMAIN": "https://r2.nw-union.net"
       },
       "d1_databases": [
         {

@@ -1,5 +1,5 @@
 import type { User as UserDto } from "../../type";
-import type { Email, Url } from "../vo";
+import type { Email, Path, Url } from "../vo";
 import type { User } from "./type";
 
 // ----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ export const createUser = ([id, email, now]: [string, Email, Date]): User => ({
 export const updateUser = ([user, name, imgUrl, discord, github, now]: [
   User,
   string,
-  Url | null,
+  Url | Path | null,
   string,
   string,
   Date,

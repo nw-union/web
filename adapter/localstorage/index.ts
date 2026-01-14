@@ -12,8 +12,9 @@ import { match, P } from "ts-pattern";
 import type { StoragePort } from "../../domain/System/workflow";
 
 // ----------------------------------------------------------------------------
-// Error Handling
+// Helper Functions
 // ----------------------------------------------------------------------------
+// エラーハンドリング
 const fsErrorHandling = (e: unknown): AppError =>
   match(e)
     .with(P.instanceOf(AppError), (e) => e)
@@ -57,6 +58,7 @@ const writeLocalFile =
         const dirPath = dirname(fullPath);
 
         // ディレクトリを再帰的に作成
+        // NOTE: cloudflare workers 環境では fs が使えないため、ビルドエラーが出ないように動的インポートを使用
         const fs = await import("node:fs/promises");
         await fs.mkdir(dirPath, { recursive: true });
 
@@ -94,11 +96,12 @@ const getFilePath = (file: Blob): Result<string, AppError> =>
 // ----------------------------------------------------------------------------
 export const newLocalStorage = (
   basePath: string,
+  domain: string,
   log: Logger,
 ): StoragePort => ({
   putObject: (data: Blob) =>
     okAsync(data)
       .andThen(getFilePath)
       .andThrough(writeLocalFile(basePath, log, data))
-      .map((path) => `http://localhost:5173/localstorage/${path}`),
+      .map((path) => `${domain}/${path}`),
 });

@@ -102,6 +102,8 @@ const createLog = (env: CloudflareEnvironment): Logger =>
 
 const createStorage = (env: CloudflareEnvironment, log: Logger): StoragePort =>
   match(env.STORAGE_ADAPTER)
-    .with("localstorage", () => newLocalStorage("./public/localstorage", log))
+    .with("localstorage", () =>
+      newLocalStorage("./public/localstorage", env.STORAGE_DOMAIN, log),
+    )
     .with("r2", () => newStorage(env.BUCKET, env.STORAGE_DOMAIN, log))
     .exhaustive();

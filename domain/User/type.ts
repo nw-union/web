@@ -1,4 +1,4 @@
-import type { Email, Url } from "../vo";
+import type { Email, Path, Url } from "../vo";
 
 export type User = {
   type: "User";
@@ -6,7 +6,7 @@ export type User = {
   id: string;
   name: string;
   email: Email;
-  imgUrl: Url | null;
+  imgUrl: Url | Path | null;
   discord: string;
   github: string;
   createdAt: Date;
