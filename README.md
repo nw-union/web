@@ -19,11 +19,12 @@
 
 ## 🌏 URL
 
-| Name             | URL                    |
-| :--------------- | :--------------------- |
-| Production       | https://nw-union.net/  |
-| Local (Dev)      | http://localhost:5173/ |
-| Local (Wrangler) | http://localhost:8787/ |
+| Name             | URL                                           |
+| :--------------- | :-------------------------------------------- |
+| Production       | https://nw-union.net/                         |
+| Development      | https://web-development.nw-union.workers.dev  |
+| Local (Dev)      | http://localhost:5173/                        |
+| Local (Wrangler) | http://localhost:8787/                        |
 
 <br/>
 
