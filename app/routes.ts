@@ -9,6 +9,7 @@ export default [
   // docs
   route("docs/create", "routes/docs/create.ts"),
   route("docs/:slug", "routes/docs/view.tsx"),
+  route("docs/:slug/markdown", "routes/docs/markdown.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
 
   // kioku
