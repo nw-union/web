@@ -1,5 +1,5 @@
 import { type JSX, useState } from "react";
-import { redirect } from "react-router";
+import { Link, redirect } from "react-router";
 import { match } from "ts-pattern";
 import type { Kioku } from "../../type";
 import { DocumentIcon, NoteIcon, YouTubeIcon } from "../components/Icons";
@@ -115,55 +115,74 @@ const getCategoryIcon = (
     ))
     .exhaustive();
 
-const KiokuCard = ({ kioku }: { kioku: Kioku }): JSX.Element => (
-  <a
-    href={kioku.url}
-    {...(kioku.category !== "doc" && {
-      target: "_blank",
-      rel: "noopener noreferrer",
-    })}
-    className="flex gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-  >
-    {/* ---------------- サムネイル画像表示 ---------------- */}
-    <div className="relative flex-shrink-0">
-      {!kioku.thumbnailUrl ? (
-        <div className="w-40 h-[90px] bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-          {getCategoryIcon(
-            kioku.category,
-            "w-12 h-12 text-gray-400 dark:text-gray-500",
-          )}
-        </div>
-      ) : (
-        <img
-          src={kioku.thumbnailUrl}
-          alt={kioku.title}
-          className="w-40 h-[90px] object-cover rounded-lg"
-        />
-      )}
-      {kioku.duration && (
-        <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
-          {kioku.duration}
-        </div>
-      )}
-    </div>
+const KiokuCard = ({ kioku }: { kioku: Kioku }): JSX.Element => {
+  const commonClassName =
+    "flex gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer";
 
-    {/* ---------------- 情報エリア ---------------- */}
-    <div className="flex-1 min-w-0">
-      <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-1">
-        {kioku.title}
-      </h3>
-      <div className="text-xs text-zinc-600 dark:text-zinc-400 space-y-0.5">
-        <p>{kioku.name}</p>
-        <p className="flex items-center gap-1">
-          {getCategoryIcon(kioku.category, "w-3 h-3")}
-          <span>{getCategoryLabel(kioku.category)}</span>
-          <span>•</span>
-          <span>{getRelativeTime(kioku.createdAt)}</span>
-        </p>
+  const content = (
+    <>
+      {/* ---------------- サムネイル画像表示 ---------------- */}
+      <div className="relative flex-shrink-0">
+        {!kioku.thumbnailUrl ? (
+          <div className="w-40 h-[90px] bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+            {getCategoryIcon(
+              kioku.category,
+              "w-12 h-12 text-gray-400 dark:text-gray-500",
+            )}
+          </div>
+        ) : (
+          <img
+            src={kioku.thumbnailUrl}
+            alt={kioku.title}
+            className="w-40 h-[90px] object-cover rounded-lg"
+          />
+        )}
+        {kioku.duration && (
+          <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
+            {kioku.duration}
+          </div>
+        )}
       </div>
-    </div>
-  </a>
-);
+
+      {/* ---------------- 情報エリア ---------------- */}
+      <div className="flex-1 min-w-0">
+        <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-1">
+          {kioku.title}
+        </h3>
+        <div className="text-xs text-zinc-600 dark:text-zinc-400 space-y-0.5">
+          <p>{kioku.name}</p>
+          <p className="flex items-center gap-1">
+            {getCategoryIcon(kioku.category, "w-3 h-3")}
+            <span>{getCategoryLabel(kioku.category)}</span>
+            <span>•</span>
+            <span>{getRelativeTime(kioku.createdAt)}</span>
+          </p>
+        </div>
+      </div>
+    </>
+  );
+
+  // doc カテゴリの場合は Link コンポーネントを使用してローディング画面を表示
+  if (kioku.category === "doc") {
+    return (
+      <Link to={kioku.url} className={commonClassName}>
+        {content}
+      </Link>
+    );
+  }
+
+  // それ以外の場合は外部リンクとして開く
+  return (
+    <a
+      href={kioku.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={commonClassName}
+    >
+      {content}
+    </a>
+  );
+};
 
 export default function Show({ loaderData }: Route.ComponentProps) {
   const { kiokus } = loaderData;
