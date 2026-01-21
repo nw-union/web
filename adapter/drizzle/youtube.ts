@@ -34,10 +34,10 @@ type YoutubeInsertModel = InferInsertModel<typeof youtubeTable>;
  */
 const convToYoutubeInsertModel = (y: Youtube): YoutubeInsertModel => ({
   id: y.id,
-  title: y.title,
-  channelName: y.channelName,
-  duration: y.duration,
-  isPublic: y.isPublic ? 1 : 0, // boolean -> integer (0 or 1)
+  title: y.info.title,
+  channelName: y.info.channelName,
+  duration: y.info.duration,
+  isPublic: y.info.isPublic ? 1 : 0, // boolean -> integer (0 or 1)
   createdAt: y.createdAt,
   updatedAt: y.updatedAt,
 });
@@ -62,10 +62,13 @@ const validateYoutube = (y: YoutubeSelectModel): Result<Youtube, AppError> =>
   Result.combine([newYoutubeId(y.id, "Youtube.id")]).map(([id]) => ({
     type: "Youtube",
     id,
-    title: y.title,
-    channelName: y.channelName,
-    duration: y.duration,
-    isPublic: y.isPublic === 1, // integer -> boolean
+    info: {
+      type: "YoutubeInfo",
+      title: y.title,
+      channelName: y.channelName,
+      duration: y.duration,
+      isPublic: y.isPublic === 1, // integer -> boolean
+    },
     createdAt: y.createdAt,
     updatedAt: y.updatedAt,
   }));

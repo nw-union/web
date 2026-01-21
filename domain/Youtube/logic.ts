@@ -1,5 +1,5 @@
 import type { YoutubeId } from "../vo";
-import type { Youtube } from "./type";
+import type { Youtube, YoutubeInfo } from "./type";
 
 // ----------------------------------------------------------------------------
 // Validator (DTO -> Domain Type)
@@ -16,20 +16,14 @@ import type { Youtube } from "./type";
  *   - id, title, channelName, duration, isPublic は入力値をそのまま使用
  *   - createdAt, updatedAt は引数 now となる
  */
-export const createYoutube = ([
-  id,
-  title,
-  channelName,
-  duration,
-  isPublic,
-  now,
-]: [YoutubeId, string, string, string, boolean, Date]): Youtube => ({
+export const createYoutube = ([id, info, now]: [
+  YoutubeId,
+  YoutubeInfo,
+  Date,
+]): Youtube => ({
   type: "Youtube",
   id,
-  title,
-  channelName,
-  duration,
-  isPublic,
+  info,
   createdAt: now,
   updatedAt: now,
 });

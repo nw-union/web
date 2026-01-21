@@ -1,4 +1,4 @@
-import { toShortUuid } from "@nw-union/nw-utils/lib/uuid";
+import type { AppError } from "@nw-union/nw-utils";
 import { redirect } from "react-router";
 import type { Route } from "./+types/create";
 
@@ -7,12 +7,12 @@ export async function loader() {
 }
 
 /**
- * 新規ドキュメント作成 Action
+ * 新規YouTube 作成 ACtion
  */
 export async function action({ context, request }: Route.ActionArgs) {
   const { log, wf, auth } = context;
 
-  log.info("🔄 ドキュメント作成 Action");
+  log.info("🔄 YouTube 作成 Action");
 
   // 認証チェック
   const userRes = await auth.auth(request);
@@ -23,10 +23,10 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   // フォームデータを取得
   const formData = await request.formData();
-  const title = formData.get("title") as string;
+  const id = formData.get("id") as string;
 
-  if (!title || title.trim() === "") {
-    log.error("タイトルが空です");
+  if (!id || id.trim() === "") {
+    log.error("IDが空です");
     return new Response("Bad Request", { status: 400 });
   }
 
@@ -34,21 +34,16 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   // 新規ドキュメントを作成
   return (
-    await wf.doc.create({
-      title: title,
+    await wf.youtube.create({
+      id: id,
       userId: userRes.value.id, // FIXME: ユーザを取得したら、そのIDを使う
     })
   ).match(
-    ({ id }) => {
-      const slugRes = toShortUuid(id);
-      if (slugRes.isErr()) {
-        log.error("SlugへのUUID変換に失敗しました");
-        return new Response("Internal Server Error", { status: 500 });
-      }
-      return redirect(`/docs/${slugRes.value}/edit`);
+    () => {
+      return redirect(`/kioku`);
     },
-    (e) => {
-      log.error("ドキュメントの作成に失敗しました", e);
+    (e: AppError) => {
+      log.error("YouTube の作成に失敗しました", e);
       return new Response("Internal Server Error", { status: 500 });
     },
   );

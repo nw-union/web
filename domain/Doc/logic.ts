@@ -35,7 +35,15 @@ export const createDoc = ([title, userId, now]: [
   title,
   description: null,
   status: "private",
-  body: JSON.stringify({
+  body: initialDocBody(title),
+  thumbnailUrl: null,
+  userId,
+  createdAt: now,
+  updatedAt: now,
+});
+
+const initialDocBody = (title: string): string =>
+  JSON.stringify({
     type: "doc",
     content: [
       {
@@ -45,12 +53,7 @@ export const createDoc = ([title, userId, now]: [
       },
       { type: "paragraph" },
     ],
-  }),
-  thumbnailUrl: null,
-  userId,
-  createdAt: now,
-  updatedAt: now,
-});
+  });
 
 /**
  * Doc を更新

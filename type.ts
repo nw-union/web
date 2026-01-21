@@ -165,10 +165,7 @@ export interface YoutubeWorkFlows {
 
 export type CreateYoutubeCmd = {
   id: string;
-  title: string;
-  channelName: string;
-  duration: string;
-  isPublic: boolean;
+  userId: string;
 };
 
 export type CreateYoutubeEvt = {

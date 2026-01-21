@@ -18,10 +18,13 @@ export function FooterNav() {
     null,
   );
   const [title, setTitle] = useState("");
+  const [videoId, setVideoId] = useState("");
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const titleId = useId();
+  const videoIdInputId = useId();
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const videoIdInputRef = useRef<HTMLInputElement>(null);
 
   // /kioku と /docs の両方で Kioku タブをアクティブにする
   const isKiokuActive =
@@ -40,6 +43,13 @@ export function FooterNav() {
   useEffect(() => {
     if (selectedKiokuType === "doc" && titleInputRef.current) {
       titleInputRef.current.focus();
+    }
+  }, [selectedKiokuType]);
+
+  // YouTube が選択されたときに videoID 入力欄にフォーカス
+  useEffect(() => {
+    if (selectedKiokuType === "youtube" && videoIdInputRef.current) {
+      videoIdInputRef.current.focus();
     }
   }, [selectedKiokuType]);
 
@@ -182,14 +192,14 @@ export function FooterNav() {
                 </button>
                 <button
                   type="button"
-                  disabled
-                  className="w-full p-4 text-left border-2 border-gray-300 dark:border-gray-600 rounded-lg opacity-50 cursor-not-allowed"
+                  onClick={() => setSelectedKiokuType("youtube")}
+                  className="w-full p-4 text-left border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-600 dark:hover:border-green-400 transition-colors"
                 >
                   <div className="font-medium text-gray-900 dark:text-white">
                     YouTube
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    YouTube 動画を追加（近日公開）
+                    YouTube 動画を追加
                   </div>
                 </button>
               </div>
@@ -245,6 +255,64 @@ export function FooterNav() {
                     className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
                   >
                     {isSubmitting ? "作成中..." : "作成"}
+                  </button>
+                </div>
+              </Form>
+            )}
+
+            {/* YouTube videoID 入力フォーム */}
+            {selectedKiokuType === "youtube" && (
+              <Form
+                method="post"
+                action="/youtube/create"
+                onSubmit={() => {
+                  setIsModalOpen(false);
+                  setSelectedKiokuType(null);
+                  setVideoId("");
+                }}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor={videoIdInputId}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      YouTube Video ID
+                    </label>
+                    <input
+                      type="text"
+                      id={videoIdInputId}
+                      name="id"
+                      value={videoId}
+                      onChange={(e) => setVideoId(e.target.value)}
+                      ref={videoIdInputRef}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      placeholder="例: dQw4w9WgXcQ"
+                      required
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      YouTube URL の v= 以降の文字列
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedKiokuType(null);
+                      setVideoId("");
+                    }}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg border border-gray-400 dark:border-gray-600 transition-colors duration-200"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !videoId.trim()}
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
+                  >
+                    {isSubmitting ? "追加中..." : "追加"}
                   </button>
                 </div>
               </Form>

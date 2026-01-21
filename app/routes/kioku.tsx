@@ -81,6 +81,28 @@ const getRelativeTime = (date: Date): string => {
 };
 
 /**
+ * ISO 8601 期間形式を YouTube スタイルの表示形式に変換
+ *
+ * @param duration ISO 8601 期間形式（例: PT4H23M, PT45M59S, PT10S）
+ * @returns YouTube スタイルの表示形式（例: 4:23:00, 45:59, 0:10）
+ */
+const formatDuration = (duration: string): string => {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return duration;
+
+  const hours = Number.parseInt(match[1] || "0", 10);
+  const minutes = Number.parseInt(match[2] || "0", 10);
+  const seconds = Number.parseInt(match[3] || "0", 10);
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  if (hours > 0) {
+    return `${hours}:${pad(minutes)}:${pad(seconds)}`;
+  }
+  return `${minutes}:${pad(seconds)}`;
+};
+
+/**
  * カテゴリーラベルを取得
  *
  * @param category カテゴリー
@@ -139,7 +161,7 @@ const KiokuCard = ({ kioku }: { kioku: Kioku }): JSX.Element => {
         )}
         {kioku.duration && (
           <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded">
-            {kioku.duration}
+            {formatDuration(kioku.duration)}
           </div>
         )}
       </div>
