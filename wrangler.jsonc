@@ -18,12 +18,16 @@
 
     // 認証アダプター用設定
     "AUTH_ADAPTER": "mock",
-    "AUTH_TEAM_DOMAIN": "",
+    "aUTH_TEAM_DOMAIN": "",
 
     // ストレージアダプター用設定
     "STORAGE_ADAPTER": "localstorage",
     "STORAGE_LOCAL_PATH": "./public/localstorage/",
-    "STORAGE_DOMAIN": "/localstorage"
+    "STORAGE_DOMAIN": "/localstorage",
+
+    // YouTube アダプター設定
+    "YOUTUBE_ADAPTER": "mock",
+    "YOUTUBE_API_KEY": ""
   },
   "d1_databases": [
     {
@@ -47,17 +51,21 @@
     "development": {
       "compatibility_date": "2025-03-11",
       "vars": {
-        // LOG アダプター用設定
+        // LOG アダプター設定
         "LOG_ADAPTER": "json",
         "LOG_LEVEL": "info",
 
-        // 認証アダプター用設定
+        // 認証アダプター設定
         "AUTH_ADAPTER": "cloudflare",
         "AUTH_TEAM_DOMAIN": "https://nw-union.cloudflareaccess.com",
 
-        // ストレージアダプター用設定
+        // ストレージアダプター設定
         "STORAGE_ADAPTER": "r2",
-        "STORAGE_DOMAIN": "https://pub-bf093e0a2f9a4a39ae6c52701afa6523.r2.dev"
+        "STORAGE_DOMAIN": "https://pub-bf093e0a2f9a4a39ae6c52701afa6523.r2.dev",
+
+        // YouTube アダプター設定
+        "YOUTUBE_ADAPTER": "api"
+        // YOUTUBE_API_KEY は Secret で設定 ( https://console.cloud.google.com/apis/credentials/key/0754ecfd-00d7-4400-8709-82a1036d3dbf )
       },
       "d1_databases": [
         {
@@ -90,7 +98,11 @@
 
         // ストレージアダプター用設定
         "STORAGE_ADAPTER": "r2",
-        "STORAGE_DOMAIN": "https://r2.nw-union.net"
+        "STORAGE_DOMAIN": "https://r2.nw-union.net",
+
+        // YouTube アダプター設定
+        "YOUTUBE_ADAPTER": "api"
+        // YOUTUBE_API_KEY は Secret で設定 ( https://console.cloud.google.com/apis/credentials/key/0754ecfd-00d7-4400-8709-82a1036d3dbf )
       },
       "d1_databases": [
         {

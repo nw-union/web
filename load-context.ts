@@ -18,6 +18,8 @@ import {
 import { newLocalStorage } from "./adapter/localstorage";
 import { newStorage } from "./adapter/r2";
 import { newTime } from "./adapter/time/now";
+import { newYoutubeApi } from "./adapter/youtube";
+import { newYoutubeMock } from "./adapter/youtubemock";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
 import { newNoteWorkFlows } from "./domain/Note/workflow";
@@ -80,7 +82,11 @@ export function getLoadContext({ context }: GetLoadContextArgs) {
         newYoutubeKiokuRepository(db, log),
         newNoteKiokuRepository(db, log),
       ),
-      youtube: newYoutubeWorkFlows(newYoutubeRepository(db, log), time),
+      youtube: newYoutubeWorkFlows(
+        newYoutubeRepository(db, log),
+        createYoutube(cloudflare.env, log),
+        time,
+      ),
       note: newNoteWorkFlows(newNoteRepository(db, log), time),
     },
   };
@@ -106,4 +112,10 @@ const createStorage = (env: CloudflareEnvironment, log: Logger): StoragePort =>
       newLocalStorage("./public/localstorage", env.STORAGE_DOMAIN, log),
     )
     .with("r2", () => newStorage(env.BUCKET, env.STORAGE_DOMAIN, log))
+    .exhaustive();
+
+const createYoutube = (env: CloudflareEnvironment, log: Logger) =>
+  match(env.YOUTUBE_ADAPTER)
+    .with("mock", () => newYoutubeMock())
+    .with("api", () => newYoutubeApi(env.YOUTUBE_API_KEY, log))
     .exhaustive();

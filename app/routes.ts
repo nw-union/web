@@ -11,6 +11,9 @@ export default [
   route("docs/:slug", "routes/docs/view.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
 
+  // youtube
+  route("youtube/create", "routes/youtube/create.ts"),
+
   // kioku
   route("kioku", "routes/kioku.tsx"),
 
@@ -27,7 +30,7 @@ export default [
 
   // SNS リダイレクト
   route("discord", "routes/discord.ts"),
-  route("youtube", "routes/youtube.ts"),
+  route("youtube", "routes/youtube/link.ts"),
   route("github", "routes/github.ts"),
   route("shop", "routes/shop.ts"),
   route("note", "routes/note.ts"),
