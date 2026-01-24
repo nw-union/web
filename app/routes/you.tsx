@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
 import { Link, redirect, useSubmit } from "react-router";
 import { EditIcon, UserIcon } from "../components/Icons";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { useImageUpload } from "../hooks/useImageUpload";
 import { createMetaTags } from "../util";
 import type { Route } from "./+types/you";
 
@@ -109,73 +109,20 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const user = loaderData;
   const submit = useSubmit();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
-  // プロフィールアイコンをクリックしてファイル選択ダイアログを開く
-  const handleIconClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  // ファイル選択時の処理
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // ファイル形式の検証
-    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
-      alert("PNG, JPEG, JPG形式の画像のみアップロード可能です");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-      return;
-    }
-
-    // ファイルサイズの検証（3MB）
-    if (file.size > 1024 * 1024 * 3) {
-      alert("ファイルサイズは3MB以下にしてください");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-      return;
-    }
-
-    // ファイルを /fileupload にアップロード
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/fileupload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("アップロードに失敗しました");
-      }
-
-      const result = (await response.json()) as { url: string };
-      const imgUrl = result.url;
-
-      // ファイルアップロード完了、次はフォーム送信
-      setIsUploading(false);
-
-      // 取得したURLでユーザー情報を更新
+  const {
+    isUploading,
+    fileInputRef,
+    triggerFileSelect: handleIconClick,
+    handleFileChange,
+    acceptedTypes,
+  } = useImageUpload({
+    onSuccess: (imgUrl) => {
       const updateFormData = new FormData();
       updateFormData.append("intent", "update-image");
       updateFormData.append("imgUrl", imgUrl);
-
       submit(updateFormData, { method: "post" });
-    } catch (_error) {
-      alert("画像のアップロードに失敗しました");
-      setIsUploading(false);
-    } finally {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
+    },
+  });
 
   return (
     <main className="bg-white dark:bg-gray-900 min-h-screen pb-20 flex flex-col justify-start items-center p-8 pt-10 md:pt-16 transition-colors duration-300 font-sg">
@@ -212,7 +159,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/png,image/jpeg,image/jpg"
+                accept={acceptedTypes}
                 onChange={handleFileChange}
                 className="hidden"
               />
