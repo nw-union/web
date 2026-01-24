@@ -182,8 +182,12 @@ export default function Show({ loaderData }: Route.ComponentProps) {
     if (!file) return;
 
     // ファイル形式の検証
-    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
-      alert("PNG, JPEG, JPG形式の画像のみアップロード可能です");
+    if (
+      !["image/png", "image/jpeg", "image/jpg", "image/webp"].includes(
+        file.type,
+      )
+    ) {
+      alert("PNG, JPEG, JPG, WebP形式の画像のみアップロード可能です");
       if (thumbnailFileInputRef.current) {
         thumbnailFileInputRef.current.value = "";
       }
@@ -354,7 +358,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                         <input
                           ref={thumbnailFileInputRef}
                           type="file"
-                          accept="image/png,image/jpeg,image/jpg"
+                          accept="image/png,image/jpeg,image/jpg,image/webp"
                           onChange={handleThumbnailFileChange}
                           className="hidden"
                         />
