@@ -201,16 +201,20 @@ export default function Show({ loaderData }: Route.ComponentProps) {
             <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 -mx-4 px-4">
               <div className="flex items-end justify-between gap-4">
                 <div className="flex-1">
-                  <MenuBar
-                    editor={editor}
-                    onDeleteClick={() => setIsDeleteModalOpen(true)}
-                  />
+                  <MenuBar editor={editor} />
                 </div>
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-red-100 text-red-700 border-red-400 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-colors duration-200"
+                  >
+                    削除
+                  </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200 whitespace-nowrap"
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-blue-600 text-white border-blue-700 hover:bg-blue-700 dark:bg-blue-700 dark:border-blue-800 dark:hover:bg-blue-800 transition-colors duration-200"
                   >
                     保存
                   </button>
@@ -351,9 +355,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
             {isDeleteModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    ドキュメントを削除
-                  </h2>
                   <p className="text-gray-700 dark:text-gray-300 mb-6">
                     「{doc.title}」を削除しますか？この操作は取り消せません。
                   </p>

@@ -38,12 +38,7 @@ const EditorButton = ({
   </button>
 );
 
-interface MenuBarProps {
-  editor: Editor;
-  onDeleteClick?: () => void;
-}
-
-export function MenuBar({ editor, onDeleteClick }: MenuBarProps) {
+export function MenuBar({ editor }: { editor: Editor }) {
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
@@ -209,15 +204,6 @@ export function MenuBar({ editor, onDeleteClick }: MenuBarProps) {
         >
           YouTube
         </button>
-        {onDeleteClick && (
-          <button
-            type="button"
-            onClick={onDeleteClick}
-            className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-red-100 text-red-700 border-red-400 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-colors duration-200"
-          >
-            削除
-          </button>
-        )}
       </div>
 
       {/* 画像挿入モーダル */}
