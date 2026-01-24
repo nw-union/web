@@ -9,11 +9,11 @@ import {
 } from "drizzle-orm";
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
-import type { NoteKiokuRepositoryPort } from "../../domain/Kioku/port";
-import type { NoteKioku } from "../../domain/Kioku/type";
-import type { NoteRepositoryPort } from "../../domain/Note/port";
-import type { Note } from "../../domain/Note/type";
-import { newNoteId, newUrl, newUrlOrNone } from "../../domain/vo";
+import type { NoteKiokuRepositoryPort } from "../../../domain/Kioku/port";
+import type { NoteKioku } from "../../../domain/Kioku/type";
+import type { NoteRepositoryPort } from "../../../domain/Note/port";
+import type { Note } from "../../../domain/Note/type";
+import { newNoteId, newUrl, newUrlOrNone } from "../../../domain/vo";
 import { noteTable } from "./schema";
 import { dbErrorHandling } from "./util";
 

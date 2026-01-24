@@ -18,7 +18,7 @@
 
     // 認証アダプター用設定
     "AUTH_ADAPTER": "mock",
-    "aUTH_TEAM_DOMAIN": "",
+    "AUTH_TEAM_DOMAIN": "",
 
     // ストレージアダプター用設定
     "STORAGE_ADAPTER": "localstorage",
@@ -34,7 +34,7 @@
       "binding": "DB",
       "database_name": "web-local",
       "database_id": "local",
-      "migrations_dir": "./adapter/drizzle/migrations"
+      "migrations_dir": "./adapter/repository/drizzle/migrations"
     }
   ],
   "r2_buckets": [
@@ -72,7 +72,7 @@
           "binding": "DB",
           "database_name": "web-development",
           "database_id": "789ca029-266a-419d-b616-6ef0caf0fa88",
-          "migrations_dir": "./adapter/drizzle/migrations"
+          "migrations_dir": "./adapter/repository/drizzle/migrations"
         }
       ],
       "r2_buckets": [
@@ -109,7 +109,7 @@
           "binding": "DB",
           "database_name": "web-production",
           "database_id": "f123f103-75a3-490d-a22e-bf6cc6cddabe",
-          "migrations_dir": "./adapter/drizzle/migrations"
+          "migrations_dir": "./adapter/repository/drizzle/migrations"
         }
       ],
       "r2_buckets": [

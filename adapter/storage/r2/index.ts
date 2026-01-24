@@ -9,7 +9,7 @@ import {
   type ResultAsync,
 } from "neverthrow";
 import { match, P } from "ts-pattern";
-import type { StoragePort } from "../../domain/System/workflow";
+import type { StoragePort } from "../../../domain/System/workflow";
 
 // ----------------------------------------------------------------------------
 // Error Handling
@@ -48,6 +48,7 @@ const getFilePath = (file: Blob): Result<string, AppError> =>
     .with("image/png", () => ok(`image/${uuidv4()}.png`))
     .with("image/jpeg", () => ok(`image/${uuidv4()}.jpg`))
     .with("image/jpg", () => ok(`image/${uuidv4()}.jpg`))
+    .with("image/webp", () => ok(`image/${uuidv4()}.webp`))
     .with("audio/mpeg", () => ok(`audio/${uuidv4()}.mp3`))
     .with("audio/x-m4a", () => ok(`audio/${uuidv4()}.m4a`))
     .with("video/mp4", () => ok(`video/${uuidv4()}.mp4`))

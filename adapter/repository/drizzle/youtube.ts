@@ -9,11 +9,11 @@ import {
 } from "drizzle-orm";
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
-import type { YoutubeKiokuRepositoryPort } from "../../domain/Kioku/port";
-import type { YoutubeKioku } from "../../domain/Kioku/type";
-import { newYoutubeId } from "../../domain/vo";
-import type { YoutubeRepositoryPort } from "../../domain/Youtube/port";
-import type { Youtube } from "../../domain/Youtube/type";
+import type { YoutubeKiokuRepositoryPort } from "../../../domain/Kioku/port";
+import type { YoutubeKioku } from "../../../domain/Kioku/type";
+import { newYoutubeId } from "../../../domain/vo";
+import type { YoutubeRepositoryPort } from "../../../domain/Youtube/port";
+import type { Youtube } from "../../../domain/Youtube/type";
 import { youtubeTable } from "./schema";
 import { dbErrorHandling } from "./util";
 

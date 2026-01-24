@@ -10,18 +10,18 @@ import {
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
 import { match } from "ts-pattern";
-import type { DocRepositoryPort } from "../../domain/Doc/port";
-import type { Doc } from "../../domain/Doc/type";
-import type { DocKiokuRepositoryPort } from "../../domain/Kioku/port";
-import type { DocKioku } from "../../domain/Kioku/type";
+import type { DocRepositoryPort } from "../../../domain/Doc/port";
+import type { Doc } from "../../../domain/Doc/type";
+import type { DocKiokuRepositoryPort } from "../../../domain/Kioku/port";
+import type { DocKioku } from "../../../domain/Kioku/type";
 import {
   newDocId,
   newString1To100,
   newString1To100OrNone,
   newUrlOrNone,
   newUserId,
-} from "../../domain/vo";
-import type { Doc as DocDto } from "../../type";
+} from "../../../domain/vo";
+import type { Doc as DocDto } from "../../../type";
 import { type DocStatusDbEnum, docTable, userTable } from "./schema";
 import { dbErrorHandling } from "./util";
 
