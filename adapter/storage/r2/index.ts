@@ -9,7 +9,7 @@ import {
   type ResultAsync,
 } from "neverthrow";
 import { match, P } from "ts-pattern";
-import type { StoragePort } from "../../domain/System/workflow";
+import type { StoragePort } from "../../../domain/System/workflow";
 
 // ----------------------------------------------------------------------------
 // Error Handling

@@ -123,11 +123,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       Image.configure({
         inline: true,
         allowBase64: true,
-        resize: {
-          enabled: true,
-          directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
-          alwaysPreserveAspectRatio: true,
-        },
       }),
       Youtube.configure({
         controls: true,

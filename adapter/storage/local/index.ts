@@ -9,7 +9,7 @@ import {
   type ResultAsync,
 } from "neverthrow";
 import { match, P } from "ts-pattern";
-import type { StoragePort } from "../../domain/System/workflow";
+import type { StoragePort } from "../../../domain/System/workflow";
 
 // ----------------------------------------------------------------------------
 // Helper Functions
@@ -47,18 +47,20 @@ const dirname = (path: string): string =>
 // Adapter Logic
 // ----------------------------------------------------------------------------
 const writeLocalFile =
-  (basePath: string, log: Logger, data: Blob) =>
-  (path: string): ResultAsync<void, AppError> =>
+  (log: Logger, data: Blob) =>
+  (src: string): ResultAsync<string, AppError> =>
     fromPromise(
       (async () => {
         log.info("💾 writeLocalFile 開始");
+        const path = `/storage/${src}`;
         log.debug(`path: ${path}`);
 
-        const fullPath = join(basePath, path);
+        const fullPath = join("./adapter/storage/local", path);
         const dirPath = dirname(fullPath);
 
         // ディレクトリを再帰的に作成
-        // NOTE: cloudflare workers 環境では fs が使えないため、ビルドエラーが出ないように動的インポートを使用
+        // NOTE: cloudflare workers 環境では fs が使えないため、
+        //       ビルドエラーが出ないように動的インポートを使用
         const fs = await import("node:fs/promises");
         await fs.mkdir(dirPath, { recursive: true });
 
@@ -68,6 +70,7 @@ const writeLocalFile =
         await fs.writeFile(fullPath, buffer);
 
         log.debug(`file written: ${fullPath}`);
+        return path;
       })(),
       fsErrorHandling,
     );
@@ -81,7 +84,7 @@ const getFilePath = (file: Blob): Result<string, AppError> =>
     .with("audio/mpeg", () => ok(`audio/${uuidv4()}.mp3`))
     .with("audio/x-m4a", () => ok(`audio/${uuidv4()}.m4a`))
     .with("video/mp4", () => ok(`video/${uuidv4()}.mp4`))
-    // .... FIXME: 必要に応じて追加
+    // .... TODO: 必要に応じて追加
     .otherwise(() =>
       // FIXME
       err(
@@ -94,14 +97,7 @@ const getFilePath = (file: Blob): Result<string, AppError> =>
 // ----------------------------------------------------------------------------
 // Port 実装
 // ----------------------------------------------------------------------------
-export const newLocalStorage = (
-  basePath: string,
-  domain: string,
-  log: Logger,
-): StoragePort => ({
+export const newLocalStorage = (log: Logger): StoragePort => ({
   putObject: (data: Blob) =>
-    okAsync(data)
-      .andThen(getFilePath)
-      .andThrough(writeLocalFile(basePath, log, data))
-      .map((path) => `${domain}/${path}`),
+    okAsync(data).andThen(getFilePath).andThen(writeLocalFile(log, data)),
 });
