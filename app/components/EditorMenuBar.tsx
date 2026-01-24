@@ -1,5 +1,6 @@
 import { type Editor, useEditorState } from "@tiptap/react";
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useId, useState } from "react";
+import { useImageUpload } from "../hooks/useImageUpload";
 
 // スタイルをヘルパー関数で共通化
 const getButtonClassName = (isActive: boolean, isDisabled = false) => {
@@ -64,9 +65,23 @@ export function MenuBar({ editor }: { editor: Editor }) {
   // 画像モーダル関連のstate
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const imageUrlId = useId();
+
+  const insertImage = useCallback(
+    (url: string) => {
+      // 先にモーダルを閉じてstateをリセット
+      setIsImageModalOpen(false);
+      setImageUrl("");
+      // エディタにフォーカスを戻して画像を挿入
+      editor.chain().focus().setImage({ src: url }).run();
+    },
+    [editor],
+  );
+
+  const { isUploading, fileInputRef, handleFileChange, acceptedTypes } =
+    useImageUpload({
+      onSuccess: insertImage,
+    });
 
   const openImageModal = useCallback(() => {
     setImageUrl("");
@@ -79,83 +94,13 @@ export function MenuBar({ editor }: { editor: Editor }) {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, []);
-
-  const insertImage = useCallback(
-    (url: string) => {
-      // 先にモーダルを閉じてstateをリセット
-      setIsImageModalOpen(false);
-      setImageUrl("");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-      // エディタにフォーカスを戻して画像を挿入
-      editor.chain().focus().setImage({ src: url }).run();
-    },
-    [editor],
-  );
+  }, [fileInputRef]);
 
   const handleUrlSubmit = useCallback(() => {
     if (imageUrl) {
       insertImage(imageUrl);
     }
   }, [imageUrl, insertImage]);
-
-  const handleFileChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      // ファイル形式の検証
-      if (
-        !["image/png", "image/jpeg", "image/jpg", "image/webp"].includes(
-          file.type,
-        )
-      ) {
-        alert("PNG, JPEG, JPG, WebP形式の画像のみアップロード可能です");
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-        return;
-      }
-
-      // ファイルサイズの検証（3MB）
-      if (file.size > 1024 * 1024 * 3) {
-        alert("ファイルサイズは3MB以下にしてください");
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-        return;
-      }
-
-      // ファイルをアップロード
-      setIsUploading(true);
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await fetch("/fileupload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("アップロードに失敗しました");
-        }
-
-        const result = (await response.json()) as { url: string };
-        insertImage(result.url);
-      } catch (_error) {
-        alert("画像のアップロードに失敗しました");
-      } finally {
-        setIsUploading(false);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-      }
-    },
-    [insertImage],
-  );
 
   const addYoutube = useCallback(() => {
     const url = window.prompt("YouTube動画のURLを入力してください");
@@ -313,7 +258,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  accept={acceptedTypes}
                   onChange={handleFileChange}
                   className="hidden"
                 />
