@@ -107,8 +107,12 @@ export function MenuBar({ editor }: { editor: Editor }) {
       if (!file) return;
 
       // ファイル形式の検証
-      if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
-        alert("PNG, JPEG, JPG形式の画像のみアップロード可能です");
+      if (
+        !["image/png", "image/jpeg", "image/jpg", "image/webp"].includes(
+          file.type,
+        )
+      ) {
+        alert("PNG, JPEG, JPG, WebP形式の画像のみアップロード可能です");
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
@@ -304,12 +308,12 @@ export function MenuBar({ editor }: { editor: Editor }) {
                   {isUploading ? "アップロード中..." : "ファイルを選択"}
                 </button>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  PNG, JPEG, JPG形式（3MB以下）
+                  PNG, JPEG, JPG, WebP形式（3MB以下）
                 </p>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/png,image/jpeg,image/jpg"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
                   onChange={handleFileChange}
                   className="hidden"
                 />
