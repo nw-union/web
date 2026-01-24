@@ -71,6 +71,20 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   // フォームデータを取得
   const formData = await request.formData();
+  const intent = formData.get("_intent") as string;
+
+  // 削除処理
+  if (intent === "delete") {
+    return await wf.doc.delete({ id }).match(
+      () => redirect("/kioku"),
+      (e) => {
+        log.error("ドキュメントの削除に失敗しました", e);
+        return new Response("Internal Server Error", { status: 500 });
+      },
+    );
+  }
+
+  // 更新処理
   const body = formData.get("body") as string;
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
@@ -106,6 +120,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const { doc } = loaderData;
   const [editorContent, setEditorContent] = useState<object | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [title, setTitle] = useState(doc.title);
   const [description, setDescription] = useState(doc.description);
   const [status, setStatus] = useState(doc.status);
@@ -188,11 +203,18 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                 <div className="flex-1">
                   <MenuBar editor={editor} />
                 </div>
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-red-100 text-red-700 border-red-400 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-700 dark:hover:bg-red-800 transition-colors duration-200"
+                  >
+                    削除
+                  </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200 whitespace-nowrap"
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-blue-600 text-white border-blue-700 hover:bg-blue-700 dark:bg-blue-700 dark:border-blue-800 dark:hover:bg-blue-800 transition-colors duration-200"
                   >
                     保存
                   </button>
@@ -207,9 +229,6 @@ export default function Show({ loaderData }: Route.ComponentProps) {
             {isModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    ドキュメントを保存
-                  </h2>
                   <Form method="post" onSubmit={() => setIsModalOpen(false)}>
                     <input
                       type="hidden"
@@ -322,6 +341,39 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                         className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
                       >
                         {isSubmitting ? "保存中..." : "保存"}
+                      </button>
+                    </div>
+                  </Form>
+                </div>
+              </div>
+            )}
+
+            {/* 削除確認モーダル */}
+            {isDeleteModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+                  <p className="text-gray-700 dark:text-gray-300 mb-6">
+                    「{doc.title}」を削除しますか？この操作は取り消せません。
+                  </p>
+                  <Form
+                    method="post"
+                    onSubmit={() => setIsDeleteModalOpen(false)}
+                  >
+                    <input type="hidden" name="_intent" value="delete" />
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setIsDeleteModalOpen(false)}
+                        className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg border border-gray-400 dark:border-gray-600 transition-colors duration-200"
+                      >
+                        キャンセル
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-6 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-red-700 dark:border-red-800 transition-colors duration-200"
+                      >
+                        {isSubmitting ? "削除中..." : "削除"}
                       </button>
                     </div>
                   </Form>
