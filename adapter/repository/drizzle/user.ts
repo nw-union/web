@@ -7,10 +7,10 @@ import {
 } from "drizzle-orm";
 import { type AnyD1Database, drizzle } from "drizzle-orm/d1";
 import { fromPromise, okAsync, Result, type ResultAsync } from "neverthrow";
-import type { UserRepositoryPort } from "../../domain/User/port";
-import type { User } from "../../domain/User/type";
-import { newEmail, newUrlOrPathOrNone } from "../../domain/vo";
-import type { User as UserDto } from "../../type";
+import type { UserRepositoryPort } from "../../../domain/User/port";
+import type { User } from "../../../domain/User/type";
+import { newEmail, newUrlOrPathOrNone } from "../../../domain/vo";
+import type { User as UserDto } from "../../../type";
 import { userTable } from "./schema";
 import { dbErrorHandling } from "./util";
 

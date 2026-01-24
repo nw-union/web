@@ -1,8 +1,8 @@
 import { AppError, type Logger, SystemError } from "@nw-union/nw-utils";
 import { fromPromise, type ResultAsync } from "neverthrow";
 import { match, P } from "ts-pattern";
-import type { YoutubePort } from "../../domain/Youtube/port";
-import type { YoutubeInfo } from "../../domain/Youtube/type";
+import type { YoutubePort } from "../../../domain/Youtube/port";
+import type { YoutubeInfo } from "../../../domain/Youtube/type";
 
 // ----------------------------------------------------------------------------
 // DTO (YouTube API Response Type)

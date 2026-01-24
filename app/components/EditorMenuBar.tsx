@@ -1,5 +1,5 @@
 import { type Editor, useEditorState } from "@tiptap/react";
-import { useCallback } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 
 // スタイルをヘルパー関数で共通化
 const getButtonClassName = (isActive: boolean, isDisabled = false) => {
@@ -61,13 +61,101 @@ export function MenuBar({ editor }: { editor: Editor }) {
     },
   });
 
-  const addImage = useCallback(() => {
-    const url = window.prompt("画像のURLを入力してください");
+  // 画像モーダル関連のstate
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageUrlId = useId();
 
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const openImageModal = useCallback(() => {
+    setImageUrl("");
+    setIsImageModalOpen(true);
+  }, []);
+
+  const closeImageModal = useCallback(() => {
+    setIsImageModalOpen(false);
+    setImageUrl("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
-  }, [editor]);
+  }, []);
+
+  const insertImage = useCallback(
+    (url: string) => {
+      // 先にモーダルを閉じてstateをリセット
+      setIsImageModalOpen(false);
+      setImageUrl("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      // エディタにフォーカスを戻して画像を挿入
+      editor.chain().focus().setImage({ src: url }).run();
+    },
+    [editor],
+  );
+
+  const handleUrlSubmit = useCallback(() => {
+    if (imageUrl) {
+      insertImage(imageUrl);
+    }
+  }, [imageUrl, insertImage]);
+
+  const handleFileChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      // ファイル形式の検証
+      if (
+        !["image/png", "image/jpeg", "image/jpg", "image/webp"].includes(
+          file.type,
+        )
+      ) {
+        alert("PNG, JPEG, JPG, WebP形式の画像のみアップロード可能です");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+        return;
+      }
+
+      // ファイルサイズの検証（3MB）
+      if (file.size > 1024 * 1024 * 3) {
+        alert("ファイルサイズは3MB以下にしてください");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+        return;
+      }
+
+      // ファイルをアップロード
+      setIsUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/fileupload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("アップロードに失敗しました");
+        }
+
+        const result = (await response.json()) as { url: string };
+        insertImage(result.url);
+      } catch (_error) {
+        alert("画像のアップロードに失敗しました");
+      } finally {
+        setIsUploading(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }
+    },
+    [insertImage],
+  );
 
   const addYoutube = useCallback(() => {
     const url = window.prompt("YouTube動画のURLを入力してください");
@@ -159,7 +247,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
         </button>
         <button
           type="button"
-          onClick={addImage}
+          onClick={openImageModal}
           className="px-3 py-1.5 text-sm font-medium rounded-lg border bg-gray-200 text-gray-700 border-gray-400 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200"
         >
           画像
@@ -172,6 +260,93 @@ export function MenuBar({ editor }: { editor: Editor }) {
           YouTube
         </button>
       </div>
+
+      {/* 画像挿入モーダル */}
+      {isImageModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              画像を挿入
+            </h2>
+
+            <div className="space-y-4">
+              {/* URL入力 */}
+              <div>
+                <label
+                  htmlFor={imageUrlId}
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  画像URL
+                </label>
+                <input
+                  type="url"
+                  id={imageUrlId}
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              {/* 区切り線 */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 border-t border-gray-300 dark:border-gray-600" />
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  または
+                </span>
+                <div className="flex-1 border-t border-gray-300 dark:border-gray-600" />
+              </div>
+
+              {/* ファイルアップロード */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:bg-gray-300 dark:disabled:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg border border-gray-300 dark:border-gray-600 transition-colors duration-200"
+                >
+                  {isUploading ? "アップロード中..." : "ファイルを選択"}
+                </button>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  PNG, JPEG, JPG, WebP形式（3MB以下）
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                onClick={closeImageModal}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg border border-gray-400 dark:border-gray-600 transition-colors duration-200"
+              >
+                キャンセル
+              </button>
+              <button
+                type="button"
+                onClick={handleUrlSubmit}
+                disabled={!imageUrl || isUploading}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
+              >
+                挿入
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* アップロード中オーバーレイ */}
+      {isUploading && (
+        <div className="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-[60] transition-colors duration-300">
+          <div className="w-12 h-12 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
+        </div>
+      )}
     </div>
   );
 }

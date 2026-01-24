@@ -5,21 +5,24 @@ import { newLogConsole } from "@nw-union/nw-utils/adapter/log-console";
 import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
-import { newDocKiokuRepository, newDocRepository } from "./adapter/drizzle/doc";
+import {
+  newDocKiokuRepository,
+  newDocRepository,
+} from "./adapter/repository/drizzle/doc";
 import {
   newNoteKiokuRepository,
   newNoteRepository,
-} from "./adapter/drizzle/note";
-import { newUserRepository } from "./adapter/drizzle/user";
+} from "./adapter/repository/drizzle/note";
+import { newUserRepository } from "./adapter/repository/drizzle/user";
 import {
   newYoutubeKiokuRepository,
   newYoutubeRepository,
-} from "./adapter/drizzle/youtube";
-import { newLocalStorage } from "./adapter/localstorage";
-import { newStorage } from "./adapter/r2";
+} from "./adapter/repository/drizzle/youtube";
+import { newLocalStorage } from "./adapter/storage/local";
+import { newStorage } from "./adapter/storage/r2";
 import { newTime } from "./adapter/time/now";
-import { newYoutubeApi } from "./adapter/youtube";
-import { newYoutubeMock } from "./adapter/youtubemock";
+import { newYoutubeApi } from "./adapter/youtube/api";
+import { newYoutubeMock } from "./adapter/youtube/mock";
 import { newDocWorkFlows } from "./domain/Doc/workflow";
 import { newKiokuWorkFlows } from "./domain/Kioku/workflow";
 import { newNoteWorkFlows } from "./domain/Note/workflow";
@@ -108,9 +111,7 @@ const createLog = (env: CloudflareEnvironment): Logger =>
 
 const createStorage = (env: CloudflareEnvironment, log: Logger): StoragePort =>
   match(env.STORAGE_ADAPTER)
-    .with("localstorage", () =>
-      newLocalStorage("./public/localstorage", env.STORAGE_DOMAIN, log),
-    )
+    .with("localstorage", () => newLocalStorage(log))
     .with("r2", () => newStorage(env.BUCKET, env.STORAGE_DOMAIN, log))
     .exhaustive();
 
