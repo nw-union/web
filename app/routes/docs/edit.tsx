@@ -4,7 +4,7 @@ import Image from "@tiptap/extension-image";
 import Youtube from "@tiptap/extension-youtube";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Form, redirect, useNavigation } from "react-router";
 import type { UpdateDocCmd } from "../../../type.ts";
 import { MenuBar } from "../../components/EditorMenuBar.tsx";
@@ -109,12 +109,14 @@ export default function Show({ loaderData }: Route.ComponentProps) {
   const [description, setDescription] = useState(doc.description);
   const [status, setStatus] = useState(doc.status);
   const [thumbnailUrl, setThumbnailUrl] = useState(doc.thumbnailUrl || "");
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const titleId = useId();
   const descriptionId = useId();
   const statusId = useId();
   const thumbnailUrlId = useId();
+  const thumbnailFileInputRef = useRef<HTMLInputElement>(null);
 
   // tiptap エディタの初期化
   const editor = useEditor({
@@ -166,6 +168,71 @@ export default function Show({ loaderData }: Route.ComponentProps) {
       }
     }
   }, [editor, doc.body]);
+
+  // サムネイル画像選択ダイアログを開く
+  const handleThumbnailIconClick = () => {
+    thumbnailFileInputRef.current?.click();
+  };
+
+  // サムネイル画像ファイル選択時の処理
+  const handleThumbnailFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // ファイル形式の検証
+    if (
+      !["image/png", "image/jpeg", "image/jpg", "image/webp"].includes(
+        file.type,
+      )
+    ) {
+      alert("PNG, JPEG, JPG, WebP形式の画像のみアップロード可能です");
+      if (thumbnailFileInputRef.current) {
+        thumbnailFileInputRef.current.value = "";
+      }
+      return;
+    }
+
+    // ファイルサイズの検証（3MB）
+    if (file.size > 1024 * 1024 * 3) {
+      alert("ファイルサイズは3MB以下にしてください");
+      if (thumbnailFileInputRef.current) {
+        thumbnailFileInputRef.current.value = "";
+      }
+      return;
+    }
+
+    // ファイルを /fileupload にアップロード
+    setIsUploadingThumbnail(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/fileupload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("アップロードに失敗しました");
+      }
+
+      const result = (await response.json()) as { url: string };
+      const imgUrl = result.url;
+
+      // 取得したURLをサムネイルURLフィールドに設定
+      setThumbnailUrl(imgUrl);
+      setIsUploadingThumbnail(false);
+    } catch (_error) {
+      alert("画像のアップロードに失敗しました");
+      setIsUploadingThumbnail(false);
+    } finally {
+      if (thumbnailFileInputRef.current) {
+        thumbnailFileInputRef.current.value = "";
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen pb-20 bg-white dark:bg-gray-900">
@@ -267,14 +334,33 @@ export default function Show({ loaderData }: Route.ComponentProps) {
                         >
                           サムネイルURL
                         </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="url"
+                            id={thumbnailUrlId}
+                            name="thumbnailUrl"
+                            value={thumbnailUrl}
+                            onChange={(e) => setThumbnailUrl(e.target.value)}
+                            placeholder="https://example.com/image.jpg"
+                            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleThumbnailIconClick}
+                            disabled={isUploadingThumbnail}
+                            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300 font-medium rounded-md border border-gray-400 dark:border-gray-600 transition-colors duration-200 whitespace-nowrap"
+                          >
+                            {isUploadingThumbnail
+                              ? "アップロード中..."
+                              : "画像選択"}
+                          </button>
+                        </div>
                         <input
-                          type="url"
-                          id={thumbnailUrlId}
-                          name="thumbnailUrl"
-                          value={thumbnailUrl}
-                          onChange={(e) => setThumbnailUrl(e.target.value)}
-                          placeholder="https://example.com/image.jpg"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                          ref={thumbnailFileInputRef}
+                          type="file"
+                          accept="image/png,image/jpeg,image/jpg,image/webp"
+                          onChange={handleThumbnailFileChange}
+                          className="hidden"
                         />
                       </div>
                     </div>
