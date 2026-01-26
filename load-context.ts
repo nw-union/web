@@ -38,6 +38,7 @@ import type {
   UserWorkFlows,
   YoutubeWorkFlows,
 } from "./type";
+import { newNoteApi } from "./adapter/note/api";
 
 declare global {
   interface CloudflareEnvironment extends Env {}
@@ -126,8 +127,8 @@ const createYoutube = (env: CloudflareEnvironment, log: Logger) =>
     .with("api", () => newYoutubeApi(env.YOUTUBE_API_KEY, log))
     .exhaustive();
 
-const createNote = (env: CloudflareEnvironment, _: Logger) =>
+const createNote = (env: CloudflareEnvironment, log: Logger) =>
   match(env.NOTE_ADAPTER)
     .with("mock", () => newNoteMock())
-    .with("api", () => newNoteMock()) // FIXME
+    .with("api", () => newNoteApi(log)) // FIXME
     .exhaustive();
