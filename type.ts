@@ -179,11 +179,8 @@ export interface NoteWorkFlows {
 }
 
 export type CreateNoteCmd = {
-  id: string;
-  title: string;
-  noteUserName: string;
-  url: string;
-  thumbnailUrl: string;
+  noteId: string;
+  userId: string;
 };
 
 export type CreateNoteEvt = {
