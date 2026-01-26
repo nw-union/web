@@ -92,7 +92,7 @@ const serializeNode = (node: JSONContent, level = 0): string =>
       const src = (node.attrs?.src as string) || "";
       const videoId = extractYouTubeId(src);
       const url = `https://www.youtube.com/watch?v=${videoId}`;
-      return `[YouTube](${url})`;
+      return `[YouTube](${url})\n\n`;
     })
     .with("text", () => {
       const text = node.text || "";
