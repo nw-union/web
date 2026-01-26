@@ -5,7 +5,7 @@ import { newLogConsole } from "@nw-union/nw-utils/adapter/log-console";
 import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
-import { newNoteMock } from "./adapter/note/mock";
+import { newNoteApi } from "./adapter/note/api";
 import {
   newDocKiokuRepository,
   newDocRepository,
@@ -126,8 +126,8 @@ const createYoutube = (env: CloudflareEnvironment, log: Logger) =>
     .with("api", () => newYoutubeApi(env.YOUTUBE_API_KEY, log))
     .exhaustive();
 
-const createNote = (env: CloudflareEnvironment, _: Logger) =>
+const createNote = (env: CloudflareEnvironment, log: Logger) =>
   match(env.NOTE_ADAPTER)
-    .with("mock", () => newNoteMock())
-    .with("api", () => newNoteMock()) // FIXME
+    // .with("mock", () => newNoteMock())
+    .with("api", () => newNoteApi(log))
     .exhaustive();

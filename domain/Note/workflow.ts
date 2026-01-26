@@ -1,7 +1,6 @@
 import { okAsync, ResultAsync } from "neverthrow";
 import type { NoteWorkFlows } from "../../type";
 import type { TimePort } from "../port";
-import { newNoteId } from "../vo";
 import { createNote } from "./logic";
 import type { NotePort, NoteRepositoryPort } from "./port";
 
@@ -15,14 +14,11 @@ export const newNoteWorkFlows = (
    */
   create: ({ noteId, userId }) =>
     okAsync(noteId)
-      // Step.1 検証: string -> NoteId
-      .andThen(newNoteId)
-      // Step.2 Note 情報取得 & 現在日時取得 (並列実行)
-      //   NoteId -> [NoteId, NoteInfo, Date]
+      // Step.1 Note 情報取得 & 現在日時取得 (並列実行)
+      //   string -> [NoteInfo, Date]
       .andThen((id) =>
         ResultAsync.combine([
-          okAsync(id), // NoteId をそのまま渡す
-          n.fetchInfo(noteId, userId), // NoteId -> NoteInfo
+          n.fetchInfo(id, userId), // string, string -> NoteInfo
           t.getNow(), // 現在日時取得
         ]),
       )

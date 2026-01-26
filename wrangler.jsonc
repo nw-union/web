@@ -30,7 +30,7 @@
     "YOUTUBE_API_KEY": "",
 
     // Note アダプター設定
-    "NOTE_ADAPTER": "mock"
+    "NOTE_ADAPTER": "api"
   },
   "d1_databases": [
     {
