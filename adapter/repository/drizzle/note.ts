@@ -34,10 +34,10 @@ type NoteInsertModel = InferInsertModel<typeof noteTable>;
  */
 const convToNoteInsertModel = (n: Note): NoteInsertModel => ({
   id: n.id,
-  title: n.title,
-  noteUserName: n.noteUserName,
-  url: n.url,
-  thumbnailUrl: n.thumbnailUrl ?? "", // null -> empty string
+  title: n.info.title,
+  noteUserName: n.info.noteUserName,
+  url: n.info.url,
+  thumbnailUrl: n.info.thumbnailUrl ?? "", // null -> empty string
   createdAt: n.createdAt,
   updatedAt: n.updatedAt,
 });
@@ -62,10 +62,13 @@ const validateNote = (n: NoteSelectModel): Result<Note, AppError> =>
   ]).map(([id, url, thumbnailUrl]) => ({
     type: "Note",
     id,
-    title: n.title,
-    noteUserName: n.noteUserName,
-    url,
-    thumbnailUrl,
+    info: {
+      type: "NoteInfo",
+      title: n.title,
+      noteUserName: n.noteUserName,
+      url: url,
+      thumbnailUrl,
+    },
     createdAt: n.createdAt,
     updatedAt: n.updatedAt,
   }));

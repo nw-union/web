@@ -1,5 +1,5 @@
-import type { NoteId, Url } from "../vo";
-import type { Note } from "./type";
+import type { NoteId } from "../vo";
+import type { Note, NoteInfo } from "./type";
 
 // ----------------------------------------------------------------------------
 // Validator (DTO -> Domain Type)
@@ -16,20 +16,14 @@ import type { Note } from "./type";
  *   - id, title, noteUserName, url, thumbnailUrl は入力値をそのまま使用
  *   - createdAt, updatedAt は引数 now となる
  */
-export const createNote = ([id, title, noteUserName, url, thumbnailUrl, now]: [
+export const createNote = ([id, info, now]: [
   NoteId,
-  string,
-  string,
-  Url,
-  Url | null,
+  NoteInfo,
   Date,
 ]): Note => ({
   type: "Note",
   id,
-  title,
-  noteUserName,
-  url,
-  thumbnailUrl,
+  info,
   createdAt: now,
   updatedAt: now,
 });

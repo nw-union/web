@@ -27,7 +27,10 @@
 
     // YouTube アダプター設定
     "YOUTUBE_ADAPTER": "mock",
-    "YOUTUBE_API_KEY": ""
+    "YOUTUBE_API_KEY": "",
+
+    // Note アダプター設定
+    "NOTE_ADAPTER": "mock"
   },
   "d1_databases": [
     {
@@ -64,8 +67,11 @@
         "STORAGE_DOMAIN": "https://pub-bf093e0a2f9a4a39ae6c52701afa6523.r2.dev",
 
         // YouTube アダプター設定
-        "YOUTUBE_ADAPTER": "api"
+        "YOUTUBE_ADAPTER": "api",
         // YOUTUBE_API_KEY は Secret で設定 ( https://console.cloud.google.com/apis/credentials/key/0754ecfd-00d7-4400-8709-82a1036d3dbf )
+
+        // Note アダプター設定
+        "NOTE_ADAPTER": "api"
       },
       "d1_databases": [
         {
@@ -101,8 +107,11 @@
         "STORAGE_DOMAIN": "https://r2.nw-union.net",
 
         // YouTube アダプター設定
-        "YOUTUBE_ADAPTER": "api"
+        "YOUTUBE_ADAPTER": "api",
         // YOUTUBE_API_KEY は Secret で設定 ( https://console.cloud.google.com/apis/credentials/key/0754ecfd-00d7-4400-8709-82a1036d3dbf )
+
+        // Note アダプター設定
+        "NOTE_ADAPTER": "api"
       },
       "d1_databases": [
         {

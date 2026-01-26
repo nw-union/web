@@ -1,38 +1,36 @@
 import { okAsync, ResultAsync } from "neverthrow";
 import type { NoteWorkFlows } from "../../type";
 import type { TimePort } from "../port";
-import { newNoteId, newUrl, newUrlOrNone } from "../vo";
+import { newNoteId } from "../vo";
 import { createNote } from "./logic";
-import type { NoteRepositoryPort } from "./port";
+import type { NotePort, NoteRepositoryPort } from "./port";
 
 export const newNoteWorkFlows = (
   r: NoteRepositoryPort,
+  n: NotePort,
   t: TimePort,
 ): NoteWorkFlows => ({
   /**
    * Note 作成
    */
-  create: ({ id, title, noteUserName, url, thumbnailUrl }) =>
-    // Step.1 検証 & 現在日時取得
-    //   string -> [NoteId, string, string, Url, Url | null, Date]
-    ResultAsync.combine([
-      // SubStep.1 NoteId 検証 (UUID)
-      okAsync(id).andThen(newNoteId),
-      // SubStep.2 Title と noteUserName はそのまま
-      okAsync(title),
-      okAsync(noteUserName),
-      // SubStep.3 URL 検証 (必須)
-      okAsync(url).andThen(newUrl),
-      // SubStep.4 ThumbnailUrl 検証 (オプショナル)
-      okAsync(thumbnailUrl).andThen(newUrlOrNone),
-      // SubStep.5 現在日時取得
-      t.getNow(),
-    ])
-      // Step.2 Note 作成
-      //   [NoteId, string, string, Url, Url | null, Date] -> Note
+  create: ({ noteId, userId }) =>
+    okAsync(noteId)
+      // Step.1 検証: string -> NoteId
+      .andThen(newNoteId)
+      // Step.2 Note 情報取得 & 現在日時取得 (並列実行)
+      //   NoteId -> [NoteId, NoteInfo, Date]
+      .andThen((id) =>
+        ResultAsync.combine([
+          okAsync(id), // NoteId をそのまま渡す
+          n.fetchInfo(noteId, userId), // NoteId -> NoteInfo
+          t.getNow(), // 現在日時取得
+        ]),
+      )
+      // Step.3 Note 作成
+      //   [NoteId, NoteInfo, Date] -> Note
       .map(createNote)
-      // Step.3 Note 保存
+      // Step.4 Note 保存
       .andThrough(r.upsert)
-      // Step.4 イベント生成
+      // Step.5 イベント生成
       .map((note) => ({ id: note.id })),
 });
