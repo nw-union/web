@@ -10,6 +10,7 @@ export default [
   route("docs/create", "routes/docs/create.ts"),
   route("docs/:slug", "routes/docs/view.tsx"),
   route("docs/:slug/edit", "routes/docs/edit.tsx"),
+  route("docs/:slug/md", "routes/docs/md.tsx"),
 
   // youtube
   route("youtube/create", "routes/youtube/create.ts"),
