@@ -19,12 +19,15 @@ export function FooterNav() {
   );
   const [title, setTitle] = useState("");
   const [videoId, setVideoId] = useState("");
+  const [noteUrl, setNoteUrl] = useState("");
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const titleId = useId();
   const videoIdInputId = useId();
+  const noteUrlInputId = useId();
   const titleInputRef = useRef<HTMLInputElement>(null);
   const videoIdInputRef = useRef<HTMLInputElement>(null);
+  const noteUrlInputRef = useRef<HTMLInputElement>(null);
 
   // /kioku と /docs の両方で Kioku タブをアクティブにする
   const isKiokuActive =
@@ -50,6 +53,13 @@ export function FooterNav() {
   useEffect(() => {
     if (selectedKiokuType === "youtube" && videoIdInputRef.current) {
       videoIdInputRef.current.focus();
+    }
+  }, [selectedKiokuType]);
+
+  // Note が選択されたときに URL 入力欄にフォーカス
+  useEffect(() => {
+    if (selectedKiokuType === "note" && noteUrlInputRef.current) {
+      noteUrlInputRef.current.focus();
     }
   }, [selectedKiokuType]);
 
@@ -180,14 +190,14 @@ export function FooterNav() {
                 </button>
                 <button
                   type="button"
-                  disabled
-                  className="w-full p-4 text-left border-2 border-gray-300 dark:border-gray-600 rounded-lg opacity-50 cursor-not-allowed"
+                  onClick={() => setSelectedKiokuType("note")}
+                  className="w-full p-4 text-left border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-600 dark:hover:border-green-400 transition-colors"
                 >
                   <div className="font-medium text-gray-900 dark:text-white">
                     Note
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    note の記事を追加（近日公開）
+                    note の記事を追加
                   </div>
                 </button>
                 <button
@@ -310,6 +320,64 @@ export function FooterNav() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !videoId.trim()}
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
+                  >
+                    {isSubmitting ? "追加中..." : "追加"}
+                  </button>
+                </div>
+              </Form>
+            )}
+
+            {/* Note URL 入力フォーム */}
+            {selectedKiokuType === "note" && (
+              <Form
+                method="post"
+                action="/note/create"
+                onSubmit={() => {
+                  setIsModalOpen(false);
+                  setSelectedKiokuType(null);
+                  setNoteUrl("");
+                }}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor={noteUrlInputId}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      Note 記事 URL
+                    </label>
+                    <input
+                      type="url"
+                      id={noteUrlInputId}
+                      name="noteUrl"
+                      value={noteUrl}
+                      onChange={(e) => setNoteUrl(e.target.value)}
+                      ref={noteUrlInputRef}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      placeholder="https://note.com/username/n/n1234567890ab"
+                      required
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Note 記事のURLを入力してください
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedKiokuType(null);
+                      setNoteUrl("");
+                    }}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg border border-gray-400 dark:border-gray-600 transition-colors duration-200"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !noteUrl.trim()}
                     className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-medium rounded-lg border border-blue-700 dark:border-blue-800 transition-colors duration-200"
                   >
                     {isSubmitting ? "追加中..." : "追加"}

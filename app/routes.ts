@@ -15,6 +15,9 @@ export default [
   // youtube
   route("youtube/create", "routes/youtube/create.ts"),
 
+  // note
+  route("note/create", "routes/note/create.ts"),
+
   // kioku
   route("kioku", "routes/kioku.tsx"),
 
