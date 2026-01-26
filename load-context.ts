@@ -5,6 +5,7 @@ import { newLogConsole } from "@nw-union/nw-utils/adapter/log-console";
 import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
+import { newNoteApi } from "./adapter/note/api";
 import { newNoteMock } from "./adapter/note/mock";
 import {
   newDocKiokuRepository,
@@ -38,7 +39,6 @@ import type {
   UserWorkFlows,
   YoutubeWorkFlows,
 } from "./type";
-import { newNoteApi } from "./adapter/note/api";
 
 declare global {
   interface CloudflareEnvironment extends Env {}
@@ -130,5 +130,5 @@ const createYoutube = (env: CloudflareEnvironment, log: Logger) =>
 const createNote = (env: CloudflareEnvironment, log: Logger) =>
   match(env.NOTE_ADAPTER)
     .with("mock", () => newNoteMock())
-    .with("api", () => newNoteApi(log)) // FIXME
+    .with("api", () => newNoteApi(log))
     .exhaustive();
