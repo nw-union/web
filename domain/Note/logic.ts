@@ -1,4 +1,4 @@
-import type { NoteId } from "../vo";
+import { createNoteId } from "../vo";
 import type { Note, NoteInfo } from "./type";
 
 // ----------------------------------------------------------------------------
@@ -16,13 +16,9 @@ import type { Note, NoteInfo } from "./type";
  *   - id, title, noteUserName, url, thumbnailUrl は入力値をそのまま使用
  *   - createdAt, updatedAt は引数 now となる
  */
-export const createNote = ([id, info, now]: [
-  NoteId,
-  NoteInfo,
-  Date,
-]): Note => ({
+export const createNote = ([info, now]: [NoteInfo, Date]): Note => ({
   type: "Note",
-  id,
+  id: createNoteId(),
   info,
   createdAt: now,
   updatedAt: now,

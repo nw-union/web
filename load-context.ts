@@ -6,7 +6,6 @@ import { newLogJson } from "@nw-union/nw-utils/adapter/log-json";
 import type { AppLoadContext } from "react-router";
 import { match } from "ts-pattern";
 import { newNoteApi } from "./adapter/note/api";
-import { newNoteMock } from "./adapter/note/mock";
 import {
   newDocKiokuRepository,
   newDocRepository,
@@ -129,6 +128,6 @@ const createYoutube = (env: CloudflareEnvironment, log: Logger) =>
 
 const createNote = (env: CloudflareEnvironment, log: Logger) =>
   match(env.NOTE_ADAPTER)
-    .with("mock", () => newNoteMock())
+    // .with("mock", () => newNoteMock())
     .with("api", () => newNoteApi(log))
     .exhaustive();
