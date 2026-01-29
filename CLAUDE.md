@@ -7,9 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 これは Cloudflare Workers にデプロイされた React Router v7 アプリケーションで、Drizzle ORM が Cloudflare D1 (SQLite) データベースを管理しています。このアプリケーションは nw-union.net の包括的なプラットフォームであり、以下の機能を備えています:
 
 - **ドキュメント管理**: TipTap リッチテキストエディタでドキュメントを作成、編集、公開
-- **ビデオギャラリー**: YouTube 動画の閲覧と紹介
+- **YouTube 管理**: YouTube 動画の追加、閲覧、管理
+- **Note 管理**: note.com の記事を追加、閲覧、管理
+- **記憶（Kioku）機能**: ドキュメント、YouTube 動画、Note 記事の閲覧履歴を記録
 - **ユーザー管理**: Cloudflare Access によるユーザープロフィールと認証
-- **ファイルストレージ**: Cloudflare R2 Object Storage を使用した画像とファイルのアップロード
+- **ファイルストレージ**: Cloudflare R2 Object Storage（本番・開発環境）またはローカルストレージ（ローカル開発）を使用した画像とファイルのアップロード
 - **外部リンク**: Discord、YouTube、GitHub、ショップへの素早いアクセス
 
 ## Development Tools
@@ -58,6 +60,9 @@ bun run check
 # Build for production
 bun run build
 
+# Deploy to development environment
+bun run deploy:development
+
 # Deploy to production environment
 bun run deploy:production
 ```
@@ -70,6 +75,9 @@ bun run db:generate
 # Apply migrations to local D1 database
 bun run db:migrate:local
 
+# Apply migrations to development environment
+bun run db:migrate:development
+
 # Apply migrations to production environment
 bun run db:migrate:production
 
@@ -80,75 +88,26 @@ bun run db:sampledata:local
 bun run typegen
 ```
 
-## Git Workflow
-
-### Pre-commit Requirements
-
-コミットを作成する前に、必ず以下を実行してください:
-
-```bash
-# すべてのチェック (フォーマット、リント、型チェック) を実行
-bun run check
-```
-
-このコマンドは以下を実行します:
-- コードフォーマットの検証 (Biome)
-- Lintエラーのチェック (Biome)
-- TypeScript型エラーのチェック
-
-**重要**: すべてのチェックが成功してからコミットを作成してください。
-
-### Commit Message Convention
-
-このプロジェクトでは **Conventional Commits** に従ったコミットメッセージを使用します。
-
-**フォーマット**:
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**Type の種類**:
-- `feat`: 新機能の追加
-- `fix`: バグ修正
-- `docs`: ドキュメントのみの変更
-- `style`: コードの動作に影響しない変更 (フォーマット、セミコロンの追加など)
-- `refactor`: バグ修正や機能追加ではないコードの変更
-- `perf`: パフォーマンス向上のためのコード変更
-- `test`: テストの追加や既存テストの修正
-- `chore`: ビルドプロセスやツールの変更、依存関係の更新など
-
-**例**:
-```bash
-feat(docs): TipTapエディタにYouTube埋め込み機能を追加
-
-fix(video): サムネイルURLがデータベースに保存されない問題を修正
-
-docs(readme): 開発環境のセットアップ手順を更新
-
-refactor(domain): ユーザーリポジトリのエラーハンドリングを改善
-```
-
 ## Architecture
 
 ### Hexagonal Architecture (Ports & Adapters)
 
 コードベースはヘキサゴナルアーキテクチャの原則に従い、ドメイン、ポート、アダプター間の明確な分離を実現しています:
 
-**ドメイン層** (`domain/`): ほとんどのドメイン (Doc, User, Video) は一貫した構造に従っています:
+**ドメイン層** (`domain/`): ほとんどのドメイン (Doc, User, Youtube, Note) は一貫した構造に従っています:
 - **type.ts**: コアビジネス型と値オブジェクト
 - **port.ts**: 外部アダプターとの契約を定義するポートインターフェース
 - **logic.ts**: 純粋なビジネスロジック関数
 - **workflow.ts**: ポートとロジックを使用してビジネス操作を調整
 
-注: System ドメインは workflow.ts のみを含み、複雑なビジネスロジックを持たない主にストレージ操作を調整するためのものです。
+注: System ドメインは workflow.ts のみを含み、複雑なビジネスロジックを持たない主にストレージ操作を調整するためのものです。Kioku ドメインは記憶（閲覧履歴）機能を提供し、複数のリポジトリを組み合わせて使用します。
 
 **アダプター層** (`adapter/`): ポートインターフェースを実装する外部統合:
-- **drizzle/**: リポジトリポートを実装するデータベースアダプター (doc.ts, user.ts, video.ts)
-- **r2/**: ファイル操作用の Cloudflare R2 Object Storage アダプター
+- **repository/drizzle/**: リポジトリポートを実装するデータベースアダプター (doc.ts, user.ts, youtube.ts, note.ts)
+- **storage/r2/**: Cloudflare R2 Object Storage アダプター（本番・開発環境）
+- **storage/local/**: ローカルファイルストレージアダプター（ローカル開発環境）
+- **youtube/**: YouTube API 統合（api: 実際の YouTube Data API v3、mock: モック実装）
+- **note/**: note.com 統合（api: OGP API を使用して note.com から記事情報を取得）
 - **time/**: 一貫したタイムスタンプ処理のための時刻プロバイダーアダプター
 
 **依存性注入** (`load-context.ts`): 環境設定に基づいてアダプターを接続し、ワークフローをルートに注入します
@@ -157,29 +116,34 @@ refactor(domain): ユーザーリポジトリのエラーハンドリングを�
 
 依存関係は React Router の `AppLoadContext` を通じて注入されます (`load-context.ts` で設定):
 
-- **Logger**: `LOG_ADAPTER` 環境変数に基づいて `console` (ローカル) または `json` (本番) に適応
-- **Auth**: `AUTH_ADAPTER` 環境変数に基づいて `mock` (ローカル) または `cloudflare` (本番) を使用
-- **Workflows**: 適切なアダプターで初期化されたドメインワークフロー (doc, video, user, sys)
+- **Logger**: `LOG_ADAPTER` 環境変数に基づいて `console` (ローカル) または `json` (本番・開発) に適応
+- **Auth**: `AUTH_ADAPTER` 環境変数に基づいて `mock` (ローカル) または `cloudflare` (本番・開発) を使用
+- **Storage**: `STORAGE_ADAPTER` 環境変数に基づいて `localstorage` (ローカル) または `r2` (本番・開発) を使用
+- **Youtube**: `YOUTUBE_ADAPTER` 環境変数に基づいて `mock` (ローカル) または `api` (本番・開発) を使用
+- **Note**: `NOTE_ADAPTER` で `api` を使用（すべての環境で OGP API 経由で note.com から情報を取得）
+- **Workflows**: 適切なアダプターで初期化されたドメインワークフロー (doc, user, sys, kioku, youtube, note)
 
 ### Database Layer
 
 データベースアクセスは以下のパターンに従います:
 
-1. **Schema Definition** (`adapter/drizzle/schema.ts`): すべてのドメイン (docs, users, videos) に対する SQLite 固有の型を持つ Drizzle テーブル定義
-2. **DTO Converters** (例: `adapter/drizzle/doc.ts`):
+1. **Schema Definition** (`adapter/repository/drizzle/schema.ts`): すべてのドメイン (docs, users, youtube, note) に対する SQLite 固有の型を持つ Drizzle テーブル定義
+2. **DTO Converters** (例: `adapter/repository/drizzle/doc.ts`):
    - `convTo*InsertModel`: Domain → DTO (書き込み用)
    - `validate*`: DTO → Domain (読み取り用)
 3. **Adapter Functions**: データベース操作を実行する純粋関数で、`ResultAsync<T, AppError>` を返す
-4. **Port Implementation**: ファクトリー関数 (例: `newDocRepository`, `newUserRepository`) はリポジトリポートを実装するオブジェクトを返す
+4. **Port Implementation**: ファクトリー関数 (例: `newDocRepository`, `newUserRepository`, `newYoutubeRepository`, `newNoteRepository`) はリポジトリポートを実装するオブジェクトを返す
 
 **重要**: Drizzle はコード生成が正しく動作するために、スキーマファイルが `schema.ts` という名前である必要があります。
 
 ### Storage Layer
 
-ファイルストレージは Cloudflare R2 Object Storage を使用します:
+ファイルストレージは環境に応じて以下を使用します:
 
-1. **R2 Adapter** (`adapter/r2/putBucket.ts`): ファイルアップロード操作を実装
-2. **Storage Workflow** (`domain/System/workflow.ts`): R2 アダプターを通じてストレージ操作を調整
+1. **Storage Adapters**:
+   - **R2 Adapter** (`adapter/storage/r2/`): Cloudflare R2 Object Storage を使用（本番・開発環境）
+   - **Local Adapter** (`adapter/storage/local/`): ローカルファイルシステムを使用（ローカル開発環境）
+2. **Storage Workflow** (`domain/System/workflow.ts`): ストレージアダプターを通じてファイル操作を調整
 3. **Access Pattern**: ファイル操作にはルート内で `wf.sys` ワークフローを使用
 
 ### Error Handling
@@ -202,21 +166,42 @@ refactor(domain): ユーザーリポジトリのエラーハンドリングを�
 ### Cloudflare Workers Configuration
 
 - **Main Config** (`wrangler.jsonc`): Workers 設定、D1 バインディング、R2 バインディング、環境変数を定義
-- **Environments**: 本番環境は独立した D1 データベースと R2 バケットを使用 (ローカル開発はローカルバインディングを使用)
+- **Environments**:
+  - **local**: ローカル開発環境（ローカル D1、ローカル R2、モックアダプター）
+  - **development**: 開発環境（リモート D1、リモート R2、実際の API）
+  - **production**: 本番環境（リモート D1、リモート R2、実際の API）
 - **Build Output**: React Router は `build/` ディレクトリにビルドし、サーバーバンドルは `build/server/index.js` に配置
 - **Bindings**:
-  - **D1**: 構造化データ (docs, users, videos) 用の SQLite データベース
+  - **D1**: 構造化データ (docs, users, youtube, note) 用の SQLite データベース
   - **R2**: ファイルアップロード (images, documents) 用のオブジェクトストレージ
 
 ## Environment Variables
 
 `wrangler.jsonc` で設定され、`context.cloudflare.env` を介してアクセス:
 
-- `LOG_ADAPTER`: "console" (ローカル) または "json" (本番)
-- `LOG_LEVEL`: "debug" (ローカル) または "info" (本番)
-- `AUTH_ADAPTER`: "mock" (ローカル) または "cloudflare" (本番)
+### ログ設定
+- `LOG_ADAPTER`: "console" (ローカル) または "json" (本番・開発)
+- `LOG_LEVEL`: "debug" (ローカル) または "info" (本番・開発)
+
+### 認証設定
+- `AUTH_ADAPTER`: "mock" (ローカル) または "cloudflare" (本番・開発)
 - `AUTH_TEAM_DOMAIN`: 認証用の Cloudflare Access チームドメイン
-- `STORAGE_DOMAIN`: "local" (開発環境と本番環境の両方で R2 ストレージ用)
+
+### ストレージ設定
+- `STORAGE_ADAPTER`: "localstorage" (ローカル) または "r2" (本番・開発)
+- `STORAGE_LOCAL_PATH`: ローカルストレージのパス（ローカル開発のみ）
+- `STORAGE_DOMAIN`: ストレージのドメイン
+  - ローカル: "/localstorage"
+  - 開発: "https://pub-bf093e0a2f9a4a39ae6c52701afa6523.r2.dev"
+  - 本番: "https://r2.nw-union.net"
+
+### YouTube 設定
+- `YOUTUBE_ADAPTER`: "mock" (ローカル) または "api" (本番・開発)
+- `YOUTUBE_API_KEY`: YouTube Data API v3 のキー（Secret で設定、本番・開発のみ）
+
+### Note 設定
+- `NOTE_ADAPTER`: "api" (すべての環境)
+  - OGP API (https://ogp.nw-union.net) を使用して note.com から記事情報を取得
 
 ## Type Safety
 
