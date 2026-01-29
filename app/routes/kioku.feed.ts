@@ -6,10 +6,30 @@ import type { Route } from "./+types/kioku.feed";
  *
  * Allタブと同じ内容をRSS 2.0形式で提供
  */
-export async function loader({ context }: Route.LoaderArgs) {
-  const { log, wf } = context;
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { log, wf, auth, cloudflare } = context;
 
   log.info("🔄 Kioku RSS Feed");
+
+  // 認証チェック: ユーザーログインまたはトークン認証
+  const userRes = await auth.auth(request);
+  const isAuthenticated = userRes.isOk();
+
+  if (!isAuthenticated) {
+    // ユーザー未認証の場合、トークン認証を試行
+    const url = new URL(request.url);
+    const token = url.searchParams.get("token");
+    const validToken = cloudflare.env.RSS_TOKEN;
+
+    if (token !== validToken) {
+      log.warn("Kioku RSS Feed: 認証失敗 - 無効なトークンまたは未認証");
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    log.info("Kioku RSS Feed: トークン認証成功");
+  } else {
+    log.info("Kioku RSS Feed: ユーザー認証成功");
+  }
 
   // キオク一覧を取得
   const kiokusResult = await wf.kioku.get();

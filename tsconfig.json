@@ -9,6 +9,7 @@
     "workers/**/*",
     "load-context.ts",
     "worker-configuration.d.ts",
+    "env.d.ts",
     "type.ts"
   ],
   "exclude": ["build", "node_modules"],
