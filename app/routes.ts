@@ -20,6 +20,7 @@ export default [
 
   // kioku
   route("kioku", "routes/kioku.tsx"),
+  route("kioku/feed", "routes/kioku.feed.ts"),
 
   // you
   route("you", "routes/you.tsx"),
