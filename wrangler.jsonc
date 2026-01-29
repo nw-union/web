@@ -30,7 +30,9 @@
     "YOUTUBE_API_KEY": "",
 
     // Note アダプター設定
-    "NOTE_ADAPTER": "api"
+    "NOTE_ADAPTER": "api",
+
+    "RSS_TOKEN": "sample-token"
   },
   "d1_databases": [
     {
@@ -72,6 +74,8 @@
 
         // Note アダプター設定
         "NOTE_ADAPTER": "api"
+
+        // RSS_TOKEN は Secret で設定
       },
       "d1_databases": [
         {
@@ -112,6 +116,8 @@
 
         // Note アダプター設定
         "NOTE_ADAPTER": "api"
+
+       // RSS_TOKEN は Secret で設定
       },
       "d1_databases": [
         {

@@ -46,7 +46,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   return new Response(rssXml, {
     headers: {
-      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": "public, max-age=3600", // 1時間キャッシュ
     },
   });
