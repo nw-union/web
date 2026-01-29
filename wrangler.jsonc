@@ -117,7 +117,7 @@
         // Note アダプター設定
         "NOTE_ADAPTER": "api"
 
-       // RSS_TOKEN は Secret で設定
+        // RSS_TOKEN は Secret で設定
       },
       "d1_databases": [
         {
